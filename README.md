@@ -19,6 +19,6 @@ The code references `zod`, `@noble/hashes`, Node built-ins, and `vitest` in test
 
 ## Source boundary and license
 
-The selected files are byte-identical to the committed platform source named in `SOURCE_SELECTION.json`. The inventory records the 106 excluded files. This snapshot contains no platform Git history, local workstation profiles, collected chats, or imported media. It does not grant access to hosted services or the private development repository.
+The selected files match the committed platform source after CRLF/LF line-ending normalization; the public Git blobs are not byte-identical to the source-commit Git blobs. The SHA-256 hashes and byte lengths in `SOURCE_SELECTION.json` identify the public snapshot files. The inventory records the 106 excluded files. This snapshot contains no platform Git history, local workstation profiles, collected chats, or imported media. It does not grant access to hosted services or the private development repository.
 
 The first-party content in this snapshot is released under the [MIT License](LICENSE). Upstream licenses govern separately obtained dependencies.
