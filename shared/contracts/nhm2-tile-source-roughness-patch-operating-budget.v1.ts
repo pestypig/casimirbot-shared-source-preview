@@ -1,0 +1,764 @@
+import {
+  buildNhm2TileSourceForceGapLoadBudget,
+  isNhm2TileSourceForceGapLoadBudget,
+  type Nhm2TileSourceForceGapLoadBudgetV1,
+} from "./nhm2-tile-source-force-gap-load-budget.v1";
+import type {
+  Nhm2TileSourceRoughnessPatchEvidenceV1,
+} from "./nhm2-tile-source-material-evidence-receipts.v1";
+
+export const NHM2_TILE_SOURCE_ROUGHNESS_PATCH_OPERATING_BUDGET_CONTRACT_VERSION =
+  "nhm2_tile_source_roughness_patch_operating_budget/v1";
+
+export type Nhm2TileSourceRoughnessPatchOperatingBudgetV1 = {
+  contractVersion: typeof NHM2_TILE_SOURCE_ROUGHNESS_PATCH_OPERATING_BUDGET_CONTRACT_VERSION;
+  generatedAt: string;
+  laneId: "nhm2_shift_lapse";
+  selectedProfileId: string;
+  frozenCandidateId: "nhm2_447_layer_topology_optimized_lattice_tin_v1";
+  sourceRefs: {
+    forceGapLoadBudgetRef: string | null;
+    roughnessPatchEvidenceRef: string | null;
+  };
+  operatingTargets: {
+    gapMeters: 8e-9;
+    idealCasimirPressureAbsPa: number;
+    roughnessRmsMaxMeters: 1e-10;
+    roughnessMapLateralResolutionMaxMeters: 5e-10;
+    roughnessMapSampleCountMin: 10000;
+    asperityTailSampleCountMin: 1000;
+    patchVoltageMapSampleCountMin: 10000;
+    roughnessScanAreaFractionMin: 0.95;
+    asperityP99MaxMeters: 2e-9;
+    asperityP999MaxMeters: 3e-9;
+    asperityMaxMeters: 4e-9;
+    patchVoltageRmsMaxVolts: 0.01;
+    patchVoltageCorrelationLengthRequired: true;
+    patchVoltageDerivedElectrostaticFractionMax: 0.05;
+    residualElectrostaticForceFractionMax: 0.05;
+    residualElectrostaticForceMaxN: number;
+  };
+  suppliedRoughnessPatchEvidence: {
+    evidenceTier: string;
+    gapMetrologyRef: string | null;
+    surfacePairingRef: string | null;
+    roughnessMapRef: string | null;
+    asperityDistributionRef: string | null;
+    asperityTailFitRef: string | null;
+    patchVoltageMapRef: string | null;
+    patchVoltageCalibrationRef: string | null;
+    residualElectrostaticModelRef: string | null;
+    mapLateralResolutionMeters: number | null;
+    roughnessMapSampleCount: number | null;
+    asperityTailSampleCount: number | null;
+    patchVoltageMapSampleCount: number | null;
+    scanAreaFraction: number | null;
+    roughnessRmsMeters: number | null;
+    asperityP99Meters: number | null;
+    asperityP999Meters: number | null;
+    asperityMaxMeters: number | null;
+    patchVoltageRmsVolts: number | null;
+    patchVoltageCorrelationLengthMeters: number | null;
+    residualElectrostaticForceFraction: number | null;
+    correctionRef: string | null;
+  };
+  derivedOperatingBudget: {
+    mapRefsAvailable: boolean;
+    mapProvenanceRefsAvailable: boolean;
+    roughnessMapResolutionMargin: number | null;
+    mapSamplingComplete: boolean;
+    roughnessMapSampleCountMargin: number | null;
+    asperityTailSampleCountMargin: number | null;
+    patchVoltageMapSampleCountMargin: number | null;
+    scanAreaCoverageMargin: number | null;
+    roughnessRmsMargin: number | null;
+    asperityP99Margin: number | null;
+    asperityP999Margin: number | null;
+    asperityMaxMargin: number | null;
+    minimumGapClearanceMeters: number | null;
+    patchVoltageMargin: number | null;
+    patchVoltageDerivedElectrostaticPressurePa: number | null;
+    patchVoltageDerivedElectrostaticForceFraction: number | null;
+    patchVoltageDerivedElectrostaticMargin: number | null;
+    residualElectrostaticForceN: number | null;
+    residualElectrostaticMargin: number | null;
+  };
+  requiredCorrections: {
+    roughnessRmsMaxMeters: 1e-10;
+    roughnessMapLateralResolutionMaxMeters: 5e-10;
+    roughnessMapResolutionReductionMeters: number | null;
+    roughnessMapSampleCountMin: 10000;
+    roughnessMapSampleCountShortfall: number | null;
+    asperityTailSampleCountMin: 1000;
+    asperityTailSampleCountShortfall: number | null;
+    patchVoltageMapSampleCountMin: 10000;
+    patchVoltageMapSampleCountShortfall: number | null;
+    roughnessScanAreaFractionMin: 0.95;
+    roughnessScanAreaFractionShortfall: number | null;
+    roughnessRmsReductionMeters: number | null;
+    asperityP99MaxMeters: 2e-9;
+    asperityP99ReductionMeters: number | null;
+    asperityP999MaxMeters: 3e-9;
+    asperityP999ReductionMeters: number | null;
+    asperityMaxMeters: 4e-9;
+    asperityMaxReductionMeters: number | null;
+    minimumGapClearanceRequiredMeters: 4e-9;
+    gapClearanceShortfallMeters: number | null;
+    patchVoltageRmsMaxVolts: 0.01;
+    patchVoltageReductionVolts: number | null;
+    patchVoltageCorrelationLengthRequired: true;
+    patchVoltageCorrelationLengthAvailable: boolean;
+    patchVoltageDerivedElectrostaticFractionMax: 0.05;
+    patchVoltageDerivedElectrostaticFractionReduction: number | null;
+    residualElectrostaticForceFractionMax: 0.05;
+    residualElectrostaticForceFractionReduction: number | null;
+    residualElectrostaticForceMaxN: number;
+    residualElectrostaticForceReductionN: number | null;
+  };
+  blockers: string[];
+  summary: {
+    operatingBudgetComputed: boolean;
+    roughnessPatchEvidenceReady: boolean;
+    falsifiesCurrentCandidate: boolean;
+    firstBlocker: string;
+    physicalViabilityClaimAllowed: false;
+    transportClaimAllowed: false;
+    propulsionClaimAllowed: false;
+  };
+  claimBoundary: {
+    diagnosticOnly: true;
+    operatingBudgetOnly: true;
+    roughnessPatchEvidenceDoesNotSupplyFullApparatusTensor: true;
+    patchElectrostaticTermsMustEnterFullTensor: true;
+    physicalViabilityClaimAllowed: false;
+    transportClaimAllowed: false;
+    propulsionClaimAllowed: false;
+  };
+};
+
+export type BuildNhm2TileSourceRoughnessPatchOperatingBudgetInput = {
+  generatedAt?: string | null;
+  forceGapLoadBudget?: Nhm2TileSourceForceGapLoadBudgetV1 | null;
+  forceGapLoadBudgetRef?: string | null;
+  roughnessPatchEvidence?: Nhm2TileSourceRoughnessPatchEvidenceV1 | null;
+};
+
+const ROUGHNESS_RMS_MAX_METERS = 1e-10;
+const ROUGHNESS_MAP_LATERAL_RESOLUTION_MAX_METERS = 5e-10;
+const ROUGHNESS_PATCH_MAP_SAMPLE_COUNT_MIN = 10000;
+const ASPERITY_TAIL_SAMPLE_COUNT_MIN = 1000;
+const PATCH_VOLTAGE_MAP_SAMPLE_COUNT_MIN = 10000;
+const ROUGHNESS_SCAN_AREA_FRACTION_MIN = 0.95;
+const ASPERITY_P99_MAX_METERS = 2e-9;
+const ASPERITY_P999_MAX_METERS = 3e-9;
+const ASPERITY_MAX_METERS = 4e-9;
+const PATCH_VOLTAGE_RMS_MAX_VOLTS = 0.01;
+const RESIDUAL_ELECTROSTATIC_FORCE_FRACTION_MAX = 0.05;
+const EPSILON_0_SI = 8.8541878128e-12;
+
+const round = (value: number, digits = 12): number => Number(value.toPrecision(digits));
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  value != null && typeof value === "object" && !Array.isArray(value);
+
+const finiteOrNull = (value: unknown): number | null =>
+  typeof value === "number" && Number.isFinite(value) ? value : null;
+
+const positiveIntegerOrNull = (value: unknown): number | null =>
+  typeof value === "number" && Number.isFinite(value) && Number.isInteger(value) && value > 0
+    ? value
+    : null;
+
+const isNumberOrNull = (value: unknown): value is number | null =>
+  value === null || (typeof value === "number" && Number.isFinite(value));
+
+const safeRatio = (numerator: number | null, denominator: number | null): number | null =>
+  numerator == null || denominator == null || denominator === 0
+    ? null
+    : round(numerator / denominator);
+
+const isPositiveFinite = (value: number | null | undefined): value is number =>
+  typeof value === "number" && Number.isFinite(value) && value > 0;
+
+const isNonNegativeFinite = (value: number | null | undefined): value is number =>
+  typeof value === "number" && Number.isFinite(value) && value >= 0;
+
+const isScanAreaFraction = (value: number | null | undefined): value is number =>
+  typeof value === "number" && Number.isFinite(value) && value > 0 && value <= 1;
+
+const reductionToLimit = (value: number | null | undefined, limit: number): number | null =>
+  value == null ? null : round(Math.max(0, value - limit));
+
+const countShortfall = (minimum: number, value: number | null | undefined): number | null =>
+  value == null ? null : Math.max(0, minimum - value);
+
+export const buildNhm2TileSourceRoughnessPatchOperatingBudget = (
+  input: BuildNhm2TileSourceRoughnessPatchOperatingBudgetInput = {},
+): Nhm2TileSourceRoughnessPatchOperatingBudgetV1 => {
+  const forceGapLoadBudget =
+    input.forceGapLoadBudget ??
+    buildNhm2TileSourceForceGapLoadBudget({ generatedAt: input.generatedAt });
+  if (!isNhm2TileSourceForceGapLoadBudget(forceGapLoadBudget)) {
+    throw new Error("force gap load budget must be nhm2_tile_source_force_gap_load_budget/v1");
+  }
+  const evidence = input.roughnessPatchEvidence ?? null;
+  const mapRefsAvailable =
+    evidence?.gapMetrologyRef != null &&
+    evidence.surfacePairingRef != null &&
+    evidence?.roughnessMapRef != null &&
+    evidence.asperityDistributionRef != null &&
+    evidence.asperityTailFitRef != null &&
+    evidence.patchVoltageMapRef != null &&
+    evidence.patchVoltageCalibrationRef != null &&
+    evidence.residualElectrostaticModelRef != null;
+  const mapProvenanceRefsAvailable = mapRefsAvailable;
+  const gapMeters = forceGapLoadBudget.frozenGeometry.gapMeters;
+  const residualElectrostaticForceMaxN = round(
+    Math.abs(forceGapLoadBudget.idealLoadBudget.forcePer447LayerStackN) *
+      RESIDUAL_ELECTROSTATIC_FORCE_FRACTION_MAX,
+  );
+  const residualElectrostaticForceN =
+    !isNonNegativeFinite(evidence?.residualElectrostaticForceFraction)
+      ? null
+      : round(
+          Math.abs(forceGapLoadBudget.idealLoadBudget.forcePer447LayerStackN) *
+            evidence.residualElectrostaticForceFraction,
+        );
+  const roughnessMapResolutionValid = isPositiveFinite(evidence?.mapLateralResolutionMeters);
+  const roughnessMapSampleCount = positiveIntegerOrNull(evidence?.roughnessMapSampleCount);
+  const asperityTailSampleCount = positiveIntegerOrNull(evidence?.asperityTailSampleCount);
+  const patchVoltageMapSampleCount = positiveIntegerOrNull(evidence?.patchVoltageMapSampleCount);
+  const scanAreaFractionValid = isScanAreaFraction(evidence?.scanAreaFraction);
+  const roughnessRmsValid = isNonNegativeFinite(evidence?.roughnessRmsMeters);
+  const asperityP99Valid = isPositiveFinite(evidence?.asperityP99Meters);
+  const asperityP999Valid = isPositiveFinite(evidence?.asperityP999Meters);
+  const asperityMaxValid = isPositiveFinite(evidence?.asperityMaxMeters);
+  const patchVoltageRmsValid = isNonNegativeFinite(evidence?.patchVoltageRmsVolts);
+  const patchVoltageCorrelationLengthValid = isPositiveFinite(
+    evidence?.patchVoltageCorrelationLengthMeters,
+  );
+  const residualElectrostaticForceFractionValid = isNonNegativeFinite(
+    evidence?.residualElectrostaticForceFraction,
+  );
+  const roughnessRmsMargin = safeRatio(
+    ROUGHNESS_RMS_MAX_METERS,
+    roughnessRmsValid ? evidence?.roughnessRmsMeters ?? null : null,
+  );
+  const roughnessMapResolutionMargin = safeRatio(
+    ROUGHNESS_MAP_LATERAL_RESOLUTION_MAX_METERS,
+    roughnessMapResolutionValid ? evidence?.mapLateralResolutionMeters ?? null : null,
+  );
+  const roughnessMapSampleCountMargin = safeRatio(
+    roughnessMapSampleCount,
+    ROUGHNESS_PATCH_MAP_SAMPLE_COUNT_MIN,
+  );
+  const asperityTailSampleCountMargin = safeRatio(
+    asperityTailSampleCount,
+    ASPERITY_TAIL_SAMPLE_COUNT_MIN,
+  );
+  const patchVoltageMapSampleCountMargin = safeRatio(
+    patchVoltageMapSampleCount,
+    PATCH_VOLTAGE_MAP_SAMPLE_COUNT_MIN,
+  );
+  const mapSamplingComplete =
+    roughnessMapSampleCountMargin != null &&
+    roughnessMapSampleCountMargin >= 1 &&
+    asperityTailSampleCountMargin != null &&
+    asperityTailSampleCountMargin >= 1 &&
+    patchVoltageMapSampleCountMargin != null &&
+    patchVoltageMapSampleCountMargin >= 1;
+  const scanAreaCoverageMargin =
+    !scanAreaFractionValid
+      ? null
+      : round(evidence.scanAreaFraction / ROUGHNESS_SCAN_AREA_FRACTION_MIN);
+  const asperityP99Margin = safeRatio(
+    ASPERITY_P99_MAX_METERS,
+    asperityP99Valid ? evidence?.asperityP99Meters ?? null : null,
+  );
+  const asperityP999Margin = safeRatio(
+    ASPERITY_P999_MAX_METERS,
+    asperityP999Valid ? evidence?.asperityP999Meters ?? null : null,
+  );
+  const asperityMaxMargin = safeRatio(
+    ASPERITY_MAX_METERS,
+    asperityMaxValid ? evidence?.asperityMaxMeters ?? null : null,
+  );
+  const patchVoltageMargin = safeRatio(
+    PATCH_VOLTAGE_RMS_MAX_VOLTS,
+    patchVoltageRmsValid ? evidence?.patchVoltageRmsVolts ?? null : null,
+  );
+  const idealCasimirPressureAbsPa = Math.abs(forceGapLoadBudget.idealLoadBudget.pressurePa);
+  const patchVoltageDerivedElectrostaticPressurePa =
+    !patchVoltageRmsValid
+      ? null
+      : round((0.5 * EPSILON_0_SI * evidence.patchVoltageRmsVolts ** 2) / gapMeters ** 2);
+  const patchVoltageDerivedElectrostaticForceFraction = safeRatio(
+    patchVoltageDerivedElectrostaticPressurePa,
+    idealCasimirPressureAbsPa,
+  );
+  const patchVoltageDerivedElectrostaticMargin = safeRatio(
+    RESIDUAL_ELECTROSTATIC_FORCE_FRACTION_MAX,
+    patchVoltageDerivedElectrostaticForceFraction,
+  );
+  const patchVoltageCorrelationLengthAvailable =
+    patchVoltageCorrelationLengthValid;
+  const residualElectrostaticMargin = safeRatio(
+    RESIDUAL_ELECTROSTATIC_FORCE_FRACTION_MAX,
+    residualElectrostaticForceFractionValid
+      ? evidence?.residualElectrostaticForceFraction ?? null
+      : null,
+  );
+  const minimumGapClearanceMeters =
+    !asperityMaxValid ? null : round(gapMeters - evidence.asperityMaxMeters);
+  const minimumGapClearanceRequiredMeters = gapMeters - ASPERITY_MAX_METERS;
+  const blockers = [
+    ...(evidence == null || evidence.evidenceTier === "missing"
+      ? ["roughness_patch_receipt_missing_for_operating_budget"]
+      : []),
+    ...(evidence?.evidenceTier !== "measured" &&
+    evidence?.evidenceTier !== "validated_simulation"
+      ? ["roughness_patch_operating_budget_tier_not_measured_or_validated"]
+      : []),
+    ...(evidence?.roughnessMapRef == null
+      ? ["roughness_map_ref_missing_for_operating_budget"]
+      : []),
+    ...(evidence?.gapMetrologyRef == null
+      ? ["roughness_gap_metrology_ref_missing_for_operating_budget"]
+      : []),
+    ...(evidence?.surfacePairingRef == null
+      ? ["roughness_surface_pairing_ref_missing_for_operating_budget"]
+      : []),
+    ...(evidence?.asperityDistributionRef == null
+      ? ["asperity_tail_distribution_ref_missing_for_operating_budget"]
+      : []),
+    ...(evidence?.asperityTailFitRef == null
+      ? ["asperity_tail_fit_ref_missing_for_operating_budget"]
+      : []),
+    ...(evidence?.patchVoltageMapRef == null
+      ? ["patch_voltage_map_ref_missing_for_operating_budget"]
+      : []),
+    ...(evidence?.patchVoltageCalibrationRef == null
+      ? ["patch_voltage_calibration_ref_missing_for_operating_budget"]
+      : []),
+    ...(evidence?.residualElectrostaticModelRef == null
+      ? ["residual_electrostatic_model_ref_missing_for_operating_budget"]
+      : []),
+    ...(evidence?.mapLateralResolutionMeters != null && !roughnessMapResolutionValid
+      ? ["roughness_map_lateral_resolution_invalid_for_operating_budget"]
+      : []),
+    ...(roughnessMapResolutionMargin == null
+      ? ["roughness_map_lateral_resolution_missing_for_operating_budget"]
+      : roughnessMapResolutionMargin < 1
+        ? ["roughness_map_lateral_resolution_above_0p5nm_operating_budget"]
+        : []),
+    ...(evidence?.roughnessMapSampleCount == null
+      ? ["roughness_map_sample_count_missing_for_operating_budget"]
+      : roughnessMapSampleCount == null
+        ? ["roughness_map_sample_count_invalid_for_operating_budget"]
+        : roughnessMapSampleCountMargin == null || roughnessMapSampleCountMargin < 1
+          ? ["roughness_map_sample_count_below_10000_for_operating_budget"]
+          : []),
+    ...(evidence?.asperityTailSampleCount == null
+      ? ["asperity_tail_sample_count_missing_for_operating_budget"]
+      : asperityTailSampleCount == null
+        ? ["asperity_tail_sample_count_invalid_for_operating_budget"]
+        : asperityTailSampleCountMargin == null || asperityTailSampleCountMargin < 1
+          ? ["asperity_tail_sample_count_below_1000_for_operating_budget"]
+          : []),
+    ...(evidence?.patchVoltageMapSampleCount == null
+      ? ["patch_voltage_map_sample_count_missing_for_operating_budget"]
+      : patchVoltageMapSampleCount == null
+        ? ["patch_voltage_map_sample_count_invalid_for_operating_budget"]
+        : patchVoltageMapSampleCountMargin == null ||
+            patchVoltageMapSampleCountMargin < 1
+          ? ["patch_voltage_map_sample_count_below_10000_for_operating_budget"]
+          : []),
+    ...(evidence?.scanAreaFraction != null && !scanAreaFractionValid
+      ? ["roughness_scan_area_fraction_invalid_for_operating_budget"]
+      : []),
+    ...(scanAreaCoverageMargin == null
+      ? ["roughness_scan_area_fraction_missing_for_operating_budget"]
+      : scanAreaCoverageMargin < 1
+        ? ["roughness_scan_area_fraction_below_0p95_operating_budget"]
+        : []),
+    ...(evidence?.roughnessRmsMeters != null && !roughnessRmsValid
+      ? ["roughness_rms_invalid_for_operating_budget"]
+      : []),
+    ...(roughnessRmsMargin == null
+      ? ["roughness_rms_missing_for_operating_budget"]
+      : roughnessRmsMargin < 1
+        ? ["roughness_rms_above_0p1nm_operating_budget"]
+        : []),
+    ...(evidence?.asperityP99Meters != null && !asperityP99Valid
+      ? ["asperity_p99_invalid_for_operating_budget"]
+      : []),
+    ...(asperityP99Margin == null
+      ? ["asperity_p99_missing_for_operating_budget"]
+      : asperityP99Margin < 1
+        ? ["asperity_p99_above_2nm_operating_budget"]
+        : []),
+    ...(evidence?.asperityP999Meters != null && !asperityP999Valid
+      ? ["asperity_p999_invalid_for_operating_budget"]
+      : []),
+    ...(asperityP999Margin == null
+      ? ["asperity_p999_missing_for_operating_budget"]
+      : asperityP999Margin < 1
+        ? ["asperity_p999_above_3nm_operating_budget"]
+        : []),
+    ...(evidence?.asperityMaxMeters != null && !asperityMaxValid
+      ? ["asperity_max_invalid_for_operating_budget"]
+      : []),
+    ...(asperityMaxMargin == null
+      ? ["asperity_max_missing_for_operating_budget"]
+      : asperityMaxMargin < 1
+        ? ["asperity_max_exceeds_half_gap_operating_budget"]
+        : []),
+    ...(minimumGapClearanceMeters != null && minimumGapClearanceMeters <= 0
+      ? ["asperity_tail_closes_8nm_gap"]
+      : []),
+    ...(patchVoltageMargin == null
+      ? ["patch_voltage_missing_for_operating_budget"]
+      : patchVoltageMargin < 1
+        ? ["patch_voltage_above_10mv_operating_budget"]
+        : []),
+    ...(evidence?.patchVoltageCorrelationLengthMeters != null &&
+    !patchVoltageCorrelationLengthValid
+      ? ["patch_voltage_correlation_length_invalid_for_operating_budget"]
+      : []),
+    ...(!patchVoltageCorrelationLengthAvailable
+      ? ["patch_voltage_correlation_length_missing_for_operating_budget"]
+      : []),
+    ...(evidence?.patchVoltageRmsVolts != null && !patchVoltageRmsValid
+      ? ["patch_voltage_invalid_for_operating_budget"]
+      : []),
+    ...(patchVoltageDerivedElectrostaticMargin == null
+      ? ["patch_voltage_derived_electrostatic_fraction_missing_for_operating_budget"]
+      : patchVoltageDerivedElectrostaticMargin < 1
+        ? ["patch_voltage_derived_electrostatic_fraction_above_5pct_operating_budget"]
+        : []),
+    ...(evidence?.residualElectrostaticForceFraction != null &&
+    !residualElectrostaticForceFractionValid
+      ? ["residual_electrostatic_force_fraction_invalid_for_operating_budget"]
+      : []),
+    ...(residualElectrostaticMargin == null
+      ? ["residual_electrostatic_force_missing_for_operating_budget"]
+      : residualElectrostaticMargin < 1
+        ? ["residual_electrostatic_force_above_5pct_operating_budget"]
+        : []),
+    ...(evidence?.correctionRef == null
+      ? ["roughness_patch_correction_ref_missing_for_operating_budget"]
+      : []),
+  ];
+  const falsifiesCurrentCandidate =
+    evidence?.evidenceTier === "measured" ||
+    evidence?.evidenceTier === "validated_simulation"
+      ? blockers.some((blocker) =>
+          [
+            "roughness_rms_invalid_for_operating_budget",
+            "roughness_rms_above_0p1nm_operating_budget",
+            "roughness_map_lateral_resolution_invalid_for_operating_budget",
+            "roughness_map_lateral_resolution_above_0p5nm_operating_budget",
+            "roughness_map_sample_count_invalid_for_operating_budget",
+            "roughness_map_sample_count_below_10000_for_operating_budget",
+            "asperity_tail_sample_count_invalid_for_operating_budget",
+            "asperity_tail_sample_count_below_1000_for_operating_budget",
+            "patch_voltage_map_sample_count_invalid_for_operating_budget",
+            "patch_voltage_map_sample_count_below_10000_for_operating_budget",
+            "roughness_scan_area_fraction_invalid_for_operating_budget",
+            "roughness_scan_area_fraction_below_0p95_operating_budget",
+            "asperity_p99_invalid_for_operating_budget",
+            "asperity_p99_above_2nm_operating_budget",
+            "asperity_p999_invalid_for_operating_budget",
+            "asperity_p999_above_3nm_operating_budget",
+            "asperity_max_invalid_for_operating_budget",
+            "asperity_max_exceeds_half_gap_operating_budget",
+            "asperity_tail_closes_8nm_gap",
+            "patch_voltage_invalid_for_operating_budget",
+            "patch_voltage_above_10mv_operating_budget",
+            "patch_voltage_correlation_length_invalid_for_operating_budget",
+            "patch_voltage_derived_electrostatic_fraction_above_5pct_operating_budget",
+            "residual_electrostatic_force_fraction_invalid_for_operating_budget",
+            "residual_electrostatic_force_above_5pct_operating_budget",
+          ].includes(blocker),
+        )
+      : false;
+  return {
+    contractVersion: NHM2_TILE_SOURCE_ROUGHNESS_PATCH_OPERATING_BUDGET_CONTRACT_VERSION,
+    generatedAt: forceGapLoadBudget.generatedAt,
+    laneId: "nhm2_shift_lapse",
+    selectedProfileId: forceGapLoadBudget.selectedProfileId,
+    frozenCandidateId: "nhm2_447_layer_topology_optimized_lattice_tin_v1",
+    sourceRefs: {
+      forceGapLoadBudgetRef: input.forceGapLoadBudgetRef ?? null,
+      roughnessPatchEvidenceRef: evidence?.evidenceRef ?? null,
+    },
+    operatingTargets: {
+      gapMeters: 8e-9,
+      idealCasimirPressureAbsPa,
+      roughnessRmsMaxMeters: ROUGHNESS_RMS_MAX_METERS,
+      roughnessMapLateralResolutionMaxMeters: ROUGHNESS_MAP_LATERAL_RESOLUTION_MAX_METERS,
+      roughnessMapSampleCountMin: ROUGHNESS_PATCH_MAP_SAMPLE_COUNT_MIN,
+      asperityTailSampleCountMin: ASPERITY_TAIL_SAMPLE_COUNT_MIN,
+      patchVoltageMapSampleCountMin: PATCH_VOLTAGE_MAP_SAMPLE_COUNT_MIN,
+      roughnessScanAreaFractionMin: ROUGHNESS_SCAN_AREA_FRACTION_MIN,
+      asperityP99MaxMeters: ASPERITY_P99_MAX_METERS,
+      asperityP999MaxMeters: ASPERITY_P999_MAX_METERS,
+      asperityMaxMeters: ASPERITY_MAX_METERS,
+      patchVoltageRmsMaxVolts: PATCH_VOLTAGE_RMS_MAX_VOLTS,
+      patchVoltageCorrelationLengthRequired: true,
+      patchVoltageDerivedElectrostaticFractionMax:
+        RESIDUAL_ELECTROSTATIC_FORCE_FRACTION_MAX,
+      residualElectrostaticForceFractionMax: RESIDUAL_ELECTROSTATIC_FORCE_FRACTION_MAX,
+      residualElectrostaticForceMaxN,
+    },
+    suppliedRoughnessPatchEvidence: {
+      evidenceTier: evidence?.evidenceTier ?? "missing",
+      gapMetrologyRef: evidence?.gapMetrologyRef ?? null,
+      surfacePairingRef: evidence?.surfacePairingRef ?? null,
+      roughnessMapRef: evidence?.roughnessMapRef ?? null,
+      asperityDistributionRef: evidence?.asperityDistributionRef ?? null,
+      asperityTailFitRef: evidence?.asperityTailFitRef ?? null,
+      patchVoltageMapRef: evidence?.patchVoltageMapRef ?? null,
+      patchVoltageCalibrationRef: evidence?.patchVoltageCalibrationRef ?? null,
+      residualElectrostaticModelRef: evidence?.residualElectrostaticModelRef ?? null,
+      mapLateralResolutionMeters: finiteOrNull(evidence?.mapLateralResolutionMeters),
+      roughnessMapSampleCount,
+      asperityTailSampleCount,
+      patchVoltageMapSampleCount,
+      scanAreaFraction: finiteOrNull(evidence?.scanAreaFraction),
+      roughnessRmsMeters: finiteOrNull(evidence?.roughnessRmsMeters),
+      asperityP99Meters: finiteOrNull(evidence?.asperityP99Meters),
+      asperityP999Meters: finiteOrNull(evidence?.asperityP999Meters),
+      asperityMaxMeters: finiteOrNull(evidence?.asperityMaxMeters),
+      patchVoltageRmsVolts: finiteOrNull(evidence?.patchVoltageRmsVolts),
+      patchVoltageCorrelationLengthMeters: finiteOrNull(
+        evidence?.patchVoltageCorrelationLengthMeters,
+      ),
+      residualElectrostaticForceFraction: finiteOrNull(evidence?.residualElectrostaticForceFraction),
+      correctionRef: evidence?.correctionRef ?? null,
+    },
+    derivedOperatingBudget: {
+      mapRefsAvailable,
+      mapProvenanceRefsAvailable,
+      roughnessMapResolutionMargin,
+      mapSamplingComplete,
+      roughnessMapSampleCountMargin,
+      asperityTailSampleCountMargin,
+      patchVoltageMapSampleCountMargin,
+      scanAreaCoverageMargin,
+      roughnessRmsMargin,
+      asperityP99Margin,
+      asperityP999Margin,
+      asperityMaxMargin,
+      minimumGapClearanceMeters,
+      patchVoltageMargin,
+      patchVoltageDerivedElectrostaticPressurePa,
+      patchVoltageDerivedElectrostaticForceFraction,
+      patchVoltageDerivedElectrostaticMargin,
+      residualElectrostaticForceN,
+      residualElectrostaticMargin,
+    },
+    requiredCorrections: {
+      roughnessRmsMaxMeters: ROUGHNESS_RMS_MAX_METERS,
+      roughnessMapLateralResolutionMaxMeters: ROUGHNESS_MAP_LATERAL_RESOLUTION_MAX_METERS,
+      roughnessMapResolutionReductionMeters: reductionToLimit(
+        evidence?.mapLateralResolutionMeters,
+        ROUGHNESS_MAP_LATERAL_RESOLUTION_MAX_METERS,
+      ),
+      roughnessMapSampleCountMin: ROUGHNESS_PATCH_MAP_SAMPLE_COUNT_MIN,
+      roughnessMapSampleCountShortfall: countShortfall(
+        ROUGHNESS_PATCH_MAP_SAMPLE_COUNT_MIN,
+        roughnessMapSampleCount,
+      ),
+      asperityTailSampleCountMin: ASPERITY_TAIL_SAMPLE_COUNT_MIN,
+      asperityTailSampleCountShortfall: countShortfall(
+        ASPERITY_TAIL_SAMPLE_COUNT_MIN,
+        asperityTailSampleCount,
+      ),
+      patchVoltageMapSampleCountMin: PATCH_VOLTAGE_MAP_SAMPLE_COUNT_MIN,
+      patchVoltageMapSampleCountShortfall: countShortfall(
+        PATCH_VOLTAGE_MAP_SAMPLE_COUNT_MIN,
+        patchVoltageMapSampleCount,
+      ),
+      roughnessScanAreaFractionMin: ROUGHNESS_SCAN_AREA_FRACTION_MIN,
+      roughnessScanAreaFractionShortfall:
+        evidence?.scanAreaFraction == null
+          ? null
+          : round(Math.max(0, ROUGHNESS_SCAN_AREA_FRACTION_MIN - evidence.scanAreaFraction)),
+      roughnessRmsReductionMeters: reductionToLimit(
+        evidence?.roughnessRmsMeters,
+        ROUGHNESS_RMS_MAX_METERS,
+      ),
+      asperityP99MaxMeters: ASPERITY_P99_MAX_METERS,
+      asperityP99ReductionMeters: reductionToLimit(
+        evidence?.asperityP99Meters,
+        ASPERITY_P99_MAX_METERS,
+      ),
+      asperityP999MaxMeters: ASPERITY_P999_MAX_METERS,
+      asperityP999ReductionMeters: reductionToLimit(
+        evidence?.asperityP999Meters,
+        ASPERITY_P999_MAX_METERS,
+      ),
+      asperityMaxMeters: ASPERITY_MAX_METERS,
+      asperityMaxReductionMeters: reductionToLimit(evidence?.asperityMaxMeters, ASPERITY_MAX_METERS),
+      minimumGapClearanceRequiredMeters,
+      gapClearanceShortfallMeters:
+        minimumGapClearanceMeters == null
+          ? null
+          : round(Math.max(0, minimumGapClearanceRequiredMeters - minimumGapClearanceMeters)),
+      patchVoltageRmsMaxVolts: PATCH_VOLTAGE_RMS_MAX_VOLTS,
+      patchVoltageReductionVolts: reductionToLimit(
+        evidence?.patchVoltageRmsVolts,
+        PATCH_VOLTAGE_RMS_MAX_VOLTS,
+      ),
+      patchVoltageCorrelationLengthRequired: true,
+      patchVoltageCorrelationLengthAvailable,
+      patchVoltageDerivedElectrostaticFractionMax:
+        RESIDUAL_ELECTROSTATIC_FORCE_FRACTION_MAX,
+      patchVoltageDerivedElectrostaticFractionReduction: reductionToLimit(
+        patchVoltageDerivedElectrostaticForceFraction,
+        RESIDUAL_ELECTROSTATIC_FORCE_FRACTION_MAX,
+      ),
+      residualElectrostaticForceFractionMax: RESIDUAL_ELECTROSTATIC_FORCE_FRACTION_MAX,
+      residualElectrostaticForceFractionReduction: reductionToLimit(
+        evidence?.residualElectrostaticForceFraction,
+        RESIDUAL_ELECTROSTATIC_FORCE_FRACTION_MAX,
+      ),
+      residualElectrostaticForceMaxN,
+      residualElectrostaticForceReductionN: reductionToLimit(
+        residualElectrostaticForceN,
+        residualElectrostaticForceMaxN,
+      ),
+    },
+    blockers,
+    summary: {
+      operatingBudgetComputed: true,
+      roughnessPatchEvidenceReady: blockers.length === 0,
+      falsifiesCurrentCandidate,
+      firstBlocker: blockers[0] ?? "none",
+      physicalViabilityClaimAllowed: false,
+      transportClaimAllowed: false,
+      propulsionClaimAllowed: false,
+    },
+    claimBoundary: {
+      diagnosticOnly: true,
+      operatingBudgetOnly: true,
+      roughnessPatchEvidenceDoesNotSupplyFullApparatusTensor: true,
+      patchElectrostaticTermsMustEnterFullTensor: true,
+      physicalViabilityClaimAllowed: false,
+      transportClaimAllowed: false,
+      propulsionClaimAllowed: false,
+    },
+  };
+};
+
+export const isNhm2TileSourceRoughnessPatchOperatingBudget = (
+  value: unknown,
+): value is Nhm2TileSourceRoughnessPatchOperatingBudgetV1 => {
+  if (!isRecord(value)) return false;
+  const targets = isRecord(value.operatingTargets) ? value.operatingTargets : null;
+  const supplied = isRecord(value.suppliedRoughnessPatchEvidence)
+    ? value.suppliedRoughnessPatchEvidence
+    : null;
+  const budget = isRecord(value.derivedOperatingBudget)
+    ? value.derivedOperatingBudget
+    : null;
+  const requiredCorrections = isRecord(value.requiredCorrections)
+    ? value.requiredCorrections
+    : null;
+  const summary = isRecord(value.summary) ? value.summary : null;
+  const boundary = isRecord(value.claimBoundary) ? value.claimBoundary : null;
+  return (
+    value.contractVersion === NHM2_TILE_SOURCE_ROUGHNESS_PATCH_OPERATING_BUDGET_CONTRACT_VERSION &&
+    typeof value.generatedAt === "string" &&
+    value.laneId === "nhm2_shift_lapse" &&
+    typeof value.selectedProfileId === "string" &&
+    value.frozenCandidateId === "nhm2_447_layer_topology_optimized_lattice_tin_v1" &&
+    isRecord(value.sourceRefs) &&
+    targets != null &&
+    targets.gapMeters === 8e-9 &&
+    typeof targets.idealCasimirPressureAbsPa === "number" &&
+    targets.roughnessRmsMaxMeters === 1e-10 &&
+    targets.roughnessMapLateralResolutionMaxMeters === 5e-10 &&
+    targets.roughnessMapSampleCountMin === 10000 &&
+    targets.asperityTailSampleCountMin === 1000 &&
+    targets.patchVoltageMapSampleCountMin === 10000 &&
+    targets.roughnessScanAreaFractionMin === 0.95 &&
+    targets.asperityP99MaxMeters === 2e-9 &&
+    targets.asperityP999MaxMeters === 3e-9 &&
+    targets.asperityMaxMeters === 4e-9 &&
+    targets.patchVoltageRmsMaxVolts === 0.01 &&
+    targets.patchVoltageCorrelationLengthRequired === true &&
+    targets.patchVoltageDerivedElectrostaticFractionMax === 0.05 &&
+    targets.residualElectrostaticForceFractionMax === 0.05 &&
+    typeof targets.residualElectrostaticForceMaxN === "number" &&
+    supplied != null &&
+    typeof supplied.evidenceTier === "string" &&
+    (supplied.roughnessMapRef === null || typeof supplied.roughnessMapRef === "string") &&
+    (supplied.gapMetrologyRef === null || typeof supplied.gapMetrologyRef === "string") &&
+    (supplied.surfacePairingRef === null ||
+      typeof supplied.surfacePairingRef === "string") &&
+    (supplied.asperityDistributionRef === null ||
+      typeof supplied.asperityDistributionRef === "string") &&
+    (supplied.asperityTailFitRef === null ||
+      typeof supplied.asperityTailFitRef === "string") &&
+    (supplied.patchVoltageMapRef === null || typeof supplied.patchVoltageMapRef === "string") &&
+    (supplied.patchVoltageCalibrationRef === null ||
+      typeof supplied.patchVoltageCalibrationRef === "string") &&
+    (supplied.residualElectrostaticModelRef === null ||
+      typeof supplied.residualElectrostaticModelRef === "string") &&
+    budget != null &&
+    typeof budget.mapRefsAvailable === "boolean" &&
+    typeof budget.mapProvenanceRefsAvailable === "boolean" &&
+    typeof budget.mapSamplingComplete === "boolean" &&
+    requiredCorrections != null &&
+    requiredCorrections.roughnessRmsMaxMeters === 1e-10 &&
+    requiredCorrections.roughnessMapLateralResolutionMaxMeters === 5e-10 &&
+    isNumberOrNull(requiredCorrections.roughnessMapResolutionReductionMeters) &&
+    requiredCorrections.roughnessMapSampleCountMin === 10000 &&
+    isNumberOrNull(requiredCorrections.roughnessMapSampleCountShortfall) &&
+    requiredCorrections.asperityTailSampleCountMin === 1000 &&
+    isNumberOrNull(requiredCorrections.asperityTailSampleCountShortfall) &&
+    requiredCorrections.patchVoltageMapSampleCountMin === 10000 &&
+    isNumberOrNull(requiredCorrections.patchVoltageMapSampleCountShortfall) &&
+    requiredCorrections.roughnessScanAreaFractionMin === 0.95 &&
+    isNumberOrNull(requiredCorrections.roughnessScanAreaFractionShortfall) &&
+    isNumberOrNull(requiredCorrections.roughnessRmsReductionMeters) &&
+    requiredCorrections.asperityP99MaxMeters === 2e-9 &&
+    isNumberOrNull(requiredCorrections.asperityP99ReductionMeters) &&
+    requiredCorrections.asperityP999MaxMeters === 3e-9 &&
+    isNumberOrNull(requiredCorrections.asperityP999ReductionMeters) &&
+    requiredCorrections.asperityMaxMeters === 4e-9 &&
+    isNumberOrNull(requiredCorrections.asperityMaxReductionMeters) &&
+    requiredCorrections.minimumGapClearanceRequiredMeters === 4e-9 &&
+    isNumberOrNull(requiredCorrections.gapClearanceShortfallMeters) &&
+    requiredCorrections.patchVoltageRmsMaxVolts === 0.01 &&
+    isNumberOrNull(requiredCorrections.patchVoltageReductionVolts) &&
+    requiredCorrections.patchVoltageCorrelationLengthRequired === true &&
+    typeof requiredCorrections.patchVoltageCorrelationLengthAvailable === "boolean" &&
+    requiredCorrections.patchVoltageDerivedElectrostaticFractionMax === 0.05 &&
+    isNumberOrNull(requiredCorrections.patchVoltageDerivedElectrostaticFractionReduction) &&
+    requiredCorrections.residualElectrostaticForceFractionMax === 0.05 &&
+    isNumberOrNull(requiredCorrections.residualElectrostaticForceFractionReduction) &&
+    typeof requiredCorrections.residualElectrostaticForceMaxN === "number" &&
+    isNumberOrNull(requiredCorrections.residualElectrostaticForceReductionN) &&
+    Array.isArray(value.blockers) &&
+    value.blockers.every((entry) => typeof entry === "string") &&
+    summary != null &&
+    summary.operatingBudgetComputed === true &&
+    typeof summary.roughnessPatchEvidenceReady === "boolean" &&
+    typeof summary.falsifiesCurrentCandidate === "boolean" &&
+    typeof summary.firstBlocker === "string" &&
+    summary.physicalViabilityClaimAllowed === false &&
+    summary.transportClaimAllowed === false &&
+    summary.propulsionClaimAllowed === false &&
+    boundary != null &&
+    boundary.diagnosticOnly === true &&
+    boundary.operatingBudgetOnly === true &&
+    boundary.roughnessPatchEvidenceDoesNotSupplyFullApparatusTensor === true &&
+    boundary.patchElectrostaticTermsMustEnterFullTensor === true &&
+    boundary.physicalViabilityClaimAllowed === false &&
+    boundary.transportClaimAllowed === false &&
+    boundary.propulsionClaimAllowed === false
+  );
+};

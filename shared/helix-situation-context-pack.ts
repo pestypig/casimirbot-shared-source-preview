@@ -1,0 +1,116 @@
+export const HELIX_SITUATION_CONTEXT_PACK_SCHEMA =
+  "helix.situation_context_pack.v1" as const;
+
+export type SituationContextPack = {
+  schema: typeof HELIX_SITUATION_CONTEXT_PACK_SCHEMA;
+  context_pack_id: string;
+  thread_id: string;
+  room_id: string;
+  session_id?: string | null;
+  mission_memory?: import("./helix-mission-memory").HelixMissionMemory | null;
+  live_situation_artifact?: {
+    artifact_id: string;
+    objective: string;
+    current_state_lines: import("./helix-live-situation-artifact").LiveSituationArtifact["current_state_lines"];
+    subgoals: import("./helix-live-situation-artifact").LiveSituationSubgoal[];
+    latest_evaluation?: import("./helix-live-situation-artifact").LiveSituationEvaluation | null;
+  } | null;
+  live_answer_environment?: {
+    environment_id: string;
+    objective: string;
+    lines: import("./helix-live-answer-environment").LiveAnswerLineState[];
+    subgoals?: import("./helix-live-answer-environment").LiveAnswerEnvironmentSubgoal[];
+    latest_evaluation?: import("./helix-live-answer-environment").LiveAnswerEvaluation | null;
+    source_status?: Array<{
+      source_id: string;
+      status: string;
+      kind: string;
+      last_tick_index?: number | null;
+      event_count?: number;
+      last_event_ts?: string | null;
+    }>;
+    window_summary?: Array<{
+      window_id: string;
+      source_id: string;
+      event_count: number;
+      policy: string;
+      from_ts: string;
+      to_ts: string;
+    }>;
+    latest_summary: string;
+    evidence_refs: string[];
+    updated_at: string;
+  } | null;
+  world_sources?: Array<{
+    room_id: string;
+    source_id: string;
+    world_id: string;
+    latest_actor_id?: string | null;
+    latest_actor_label?: string | null;
+    latest_event_type: string;
+    latest_ts: string;
+    event_count: number;
+    append_decision?: "appended" | "not_appended" | null;
+    append_reason?: string | null;
+    salience_class?: string | null;
+  }>;
+  active_categorization_jobs?: Array<{
+    job_id: string;
+    profile_id?: string | null;
+    room_id?: string | null;
+    source_family: import("./helix-continuous-categorization-job").ContinuousCategorizationSourceFamily;
+    source_ids: string[];
+    world_id?: string | null;
+    objective: string;
+    status: import("./helix-continuous-categorization-job").ContinuousCategorizationJobStatus;
+    policy: import("./helix-continuous-categorization-job").ContinuousCategorizationJobPolicy;
+    counters: import("./helix-continuous-categorization-job").ContinuousCategorizationJob["counters"];
+    latest_summary?: string | null;
+    latest_evidence_refs: string[];
+    last_event_ts?: string | null;
+    archive_id?: string | null;
+    raw_logs_included: false;
+    assistant_answer: false;
+    updated_at: string;
+  }>;
+  minecraft_spatial_episode?: import("./helix-minecraft-spatial-episode").HelixMinecraftSpatialEpisode | null;
+  minecraft_world_sense_context?: import("./helix-minecraft-world-sense").HelixMinecraftWorldSenseContext | null;
+  semantic_reference_hits?: import("./helix-game-semantic-dictionary").GameSemanticLookupReceipt[];
+  utility_hypotheses?: import("./helix-game-utility-hypothesis").GameUtilityHypothesis[];
+  missing_evidence_notes?: string[];
+  semantic_confidence_ladder?: string[];
+  objective?: string | null;
+  current_goal?: string | null;
+  latest_projection?: Record<string, unknown> | null;
+  recent_episodes: Array<{
+    episode_id: string;
+    summary: string;
+    narration?: string | null;
+    prediction?: string | null;
+    evidence_refs: string[];
+  }>;
+  active_predictions: Array<{
+    predicted_goal: string;
+    confidence: number;
+    status: string;
+    evidence_refs: string[];
+  }>;
+  recent_salience: Array<{
+    reason: string;
+    priority: string;
+    summary: string;
+    should_notify_helix: boolean;
+    evidence_refs: string[];
+  }>;
+  callouts: unknown[];
+  suppression_summary: Record<string, number>;
+  known_risks: string[];
+  known_unknowns: string[];
+  evidence_refs: string[];
+  created_at: string;
+  context_policy: "compact_context_pack_only";
+  raw_logs_included?: false;
+  raw_transcript_included: false;
+  raw_audio_included: false;
+  deterministic_content_role: "observation_not_assistant_answer";
+};

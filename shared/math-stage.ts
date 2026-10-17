@@ -1,0 +1,7932 @@
+export const MATH_STAGE_LEVELS = {
+  exploratory: 0,
+  "reduced-order": 1,
+  diagnostic: 2,
+  certified: 3,
+} as const;
+
+export type MathStage = keyof typeof MATH_STAGE_LEVELS;
+
+export type MathCheckType =
+  | "test"
+  | "policy"
+  | "certificate"
+  | "snapshot"
+  | "fixture"
+  | "doc"
+  | "residual"
+  | "stability";
+
+export type MathCheck = {
+  type: MathCheckType;
+  path: string;
+  note?: string;
+};
+
+export type UnitSignature = Record<string, string>;
+
+export type MathStageEntry = {
+  tag: string;
+  module: string;
+  stage: MathStage;
+  notes?: string;
+  motivation?: string;
+  conceptualWaypoints?: string[];
+  checks?: MathCheck[];
+  units?: UnitSignature;
+  residualsRequired?: boolean;
+};
+
+export const mathStageRegistry: MathStageEntry[] = [
+  {
+    tag: "GR_CORE",
+    module: "modules/gr/bssn-state.ts",
+    stage: "diagnostic",
+    notes: "Grid + BSSN state definitions.",
+    checks: [
+      { type: "residual", path: "tests/gr-constraint-network.spec.ts" },
+      { type: "stability", path: "tests/gr-constraint-network.spec.ts" },
+    ],
+    residualsRequired: false,
+    units: {
+      spacing: "L",
+      bounds: "L",
+      alpha: "1",
+      beta_x: "1",
+      beta_y: "1",
+      beta_z: "1",
+      gamma_xx: "1",
+      gamma_yy: "1",
+      gamma_zz: "1",
+    },
+  },
+  {
+    tag: "GR_CORE",
+    module: "modules/gr/bssn-evolve.ts",
+    stage: "diagnostic",
+    notes: "BSSN evolution + constraint fields.",
+    checks: [
+      { type: "residual", path: "tests/gr-constraint-gate.spec.ts" },
+      { type: "stability", path: "tests/gr-constraint-network.spec.ts" },
+    ],
+    units: {
+      dt: "T",
+      time_s: "T",
+      evolveDt_s: "T",
+      spacing: "L",
+      bounds: "L",
+      H: "1",
+      M: "1",
+      Mx: "1",
+      My: "1",
+      Mz: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      cfl: "1",
+      gap_nm: "L",
+      gap_m: "L",
+      tileArea_cm2: "L^2",
+      tileArea_m2: "L^2",
+      tileCount: "1",
+      dutyCycle: "1",
+      dutyEffectiveFR: "1",
+      dutyEff: "1",
+      gammaGeo: "1",
+      gammaVanDenBroeck: "1",
+      qSpoilingFactor: "1",
+      cavityQ: "1",
+      U_static_J: "M L^2 T^-2",
+      staticEnergy: "M L^2 T^-2",
+      boostedEnergy: "M L^2 T^-2",
+      cycleAverageEnergy: "M L^2 T^-2",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassSigma_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      massSigma_kg: "M",
+      exoticEnergyDensity: "M L^-1 T^-2",
+      P_avg_W: "M L^2 T^-3",
+      instantaneousPower: "M L^2 T^-3",
+      averagePower: "M L^2 T^-3",
+      modulationFreq_GHz: "T^-1",
+      burst_us: "T",
+      cycle_us: "T",
+      T00: "M L^-1 T^-2",
+      T11: "M L^-1 T^-2",
+      T22: "M L^-1 T^-2",
+      T33: "M L^-1 T^-2",
+      T00_avg: "M L^-1 T^-2",
+      T11_avg: "M L^-1 T^-2",
+      T22_avg: "M L^-1 T^-2",
+      T33_avg: "M L^-1 T^-2",
+      rho_avg: "M L^-1 T^-2",
+      rho_inst: "M L^-1 T^-2",
+      rho: "M L^-1 T^-2",
+      stressEnergyT00_inst: "M L^-1 T^-2",
+      beta_avg: "1",
+      sectorStrobingEfficiency: "1",
+      homogenizationRatio: "1",
+      metric: "1",
+    },
+  },
+  {
+    tag: "GR_CORE",
+    module: "server/gr/evolution/solver.ts",
+    stage: "diagnostic",
+    notes: "Runs BSSN evolution (diagnostic).",
+    checks: [
+      { type: "residual", path: "tests/gr-constraint-network.spec.ts" },
+      { type: "stability", path: "tests/gr-constraint-network.spec.ts" },
+    ],
+    units: {
+      dt: "T",
+      evolveDt_s: "T",
+      time_s: "T",
+      spacing: "L",
+      bounds: "L",
+      H: "1",
+      M: "1",
+      Mx: "1",
+      My: "1",
+      Mz: "1",
+      gap_nm: "L",
+      gap_m: "L",
+      tileArea_cm2: "L^2",
+      tileArea_m2: "L^2",
+      tileCount: "1",
+      dutyCycle: "1",
+      dutyEffectiveFR: "1",
+      dutyEff: "1",
+      gammaGeo: "1",
+      gammaVanDenBroeck: "1",
+      qSpoilingFactor: "1",
+      cavityQ: "1",
+      U_static_J: "M L^2 T^-2",
+      staticEnergy: "M L^2 T^-2",
+      boostedEnergy: "M L^2 T^-2",
+      cycleAverageEnergy: "M L^2 T^-2",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      exoticEnergyDensity: "M L^-1 T^-2",
+      T00: "M L^-1 T^-2",
+      T11: "M L^-1 T^-2",
+      T22: "M L^-1 T^-2",
+      T33: "M L^-1 T^-2",
+      T00_avg: "M L^-1 T^-2",
+      T11_avg: "M L^-1 T^-2",
+      T22_avg: "M L^-1 T^-2",
+      T33_avg: "M L^-1 T^-2",
+      rho_avg: "M L^-1 T^-2",
+      rho_inst: "M L^-1 T^-2",
+      rho: "M L^-1 T^-2",
+      stressEnergyT00_inst: "M L^-1 T^-2",
+      beta_avg: "1",
+      P_avg_W: "M L^2 T^-3",
+      instantaneousPower: "M L^2 T^-3",
+      averagePower: "M L^2 T^-3",
+      modulationFreq_GHz: "T^-1",
+      burst_us: "T",
+      cycle_us: "T",
+      sectorStrobingEfficiency: "1",
+      homogenizationRatio: "1",
+      metric: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      cfl: "1",
+    },
+  },
+  {
+    tag: "GR_CORE",
+    module: "server/gr-evolve-brick.ts",
+    stage: "diagnostic",
+    notes: "Builds GR diagnostics + residuals.",
+    checks: [
+      { type: "residual", path: "tests/gr-constraint-gate.spec.ts" },
+      { type: "stability", path: "tests/gr-constraint-network.spec.ts" },
+    ],
+    units: {
+      dt: "T",
+      time_s: "T",
+      evolveDt_s: "T",
+      spacing: "L",
+      bounds: "L",
+      H: "1",
+      M: "1",
+      Mx: "1",
+      My: "1",
+      Mz: "1",
+      gap_nm: "L",
+      gap_m: "L",
+      tileArea_cm2: "L^2",
+      tileArea_m2: "L^2",
+      tileCount: "1",
+      dutyCycle: "1",
+      dutyEffectiveFR: "1",
+      dutyEff: "1",
+      gammaGeo: "1",
+      gammaVanDenBroeck: "1",
+      qSpoilingFactor: "1",
+      cavityQ: "1",
+      U_static_J: "M L^2 T^-2",
+      staticEnergy: "M L^2 T^-2",
+      boostedEnergy: "M L^2 T^-2",
+      cycleAverageEnergy: "M L^2 T^-2",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      exoticEnergyDensity: "M L^-1 T^-2",
+      T00: "M L^-1 T^-2",
+      T11: "M L^-1 T^-2",
+      T22: "M L^-1 T^-2",
+      T33: "M L^-1 T^-2",
+      T00_avg: "M L^-1 T^-2",
+      T11_avg: "M L^-1 T^-2",
+      T22_avg: "M L^-1 T^-2",
+      T33_avg: "M L^-1 T^-2",
+      rho_avg: "M L^-1 T^-2",
+      rho_inst: "M L^-1 T^-2",
+      rho: "M L^-1 T^-2",
+      stressEnergyT00_inst: "M L^-1 T^-2",
+      beta_avg: "1",
+      P_avg_W: "M L^2 T^-3",
+      instantaneousPower: "M L^2 T^-3",
+      averagePower: "M L^2 T^-3",
+      modulationFreq_GHz: "T^-1",
+      burst_us: "T",
+      cycle_us: "T",
+      sectorStrobingEfficiency: "1",
+      homogenizationRatio: "1",
+      metric: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      cfl: "1",
+    },
+  },
+  {
+    tag: "GR_GATE",
+    module: "server/gr/constraint-evaluator.ts",
+    stage: "certified",
+    notes: "GR gate evaluation from diagnostics.",
+    motivation:
+      "Turn GR constraint diagnostics into policy-gated pass/fail so downstream layers do not over-claim viability.",
+    conceptualWaypoints: [
+      "Summarize BSSN constraint fields into RMS and max-abs metrics.",
+      "Apply policy thresholds with unknown-as-fail semantics.",
+      "Emit constraint entries plus gate status for downstream evaluation.",
+    ],
+    checks: [
+      { type: "test", path: "tests/gr-constraint-gate.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      dt: "T",
+      time_s: "T",
+      evolveDt_s: "T",
+      spacing: "L",
+      bounds: "L",
+      H: "1",
+      M: "1",
+      Mx: "1",
+      My: "1",
+      Mz: "1",
+      cfl: "1",
+      gap_nm: "L",
+      gap_m: "L",
+      tileArea_cm2: "L^2",
+      tileArea_m2: "L^2",
+      tileCount: "1",
+      dutyCycle: "1",
+      dutyEffectiveFR: "1",
+      dutyEff: "1",
+      gammaGeo: "1",
+      gammaVanDenBroeck: "1",
+      qSpoilingFactor: "1",
+      cavityQ: "1",
+      U_static_J: "M L^2 T^-2",
+      staticEnergy: "M L^2 T^-2",
+      boostedEnergy: "M L^2 T^-2",
+      cycleAverageEnergy: "M L^2 T^-2",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      exoticEnergyDensity: "M L^-1 T^-2",
+      P_avg_W: "M L^2 T^-3",
+      instantaneousPower: "M L^2 T^-3",
+      averagePower: "M L^2 T^-3",
+      modulationFreq_GHz: "T^-1",
+      burst_us: "T",
+      cycle_us: "T",
+      T00: "M L^-1 T^-2",
+      T11: "M L^-1 T^-2",
+      T22: "M L^-1 T^-2",
+      T33: "M L^-1 T^-2",
+      T00_avg: "M L^-1 T^-2",
+      T11_avg: "M L^-1 T^-2",
+      T22_avg: "M L^-1 T^-2",
+      T33_avg: "M L^-1 T^-2",
+      rho_avg: "M L^-1 T^-2",
+      rho_inst: "M L^-1 T^-2",
+      rho: "M L^-1 T^-2",
+      stressEnergyT00_inst: "M L^-1 T^-2",
+      beta_avg: "1",
+      sectorStrobingEfficiency: "1",
+      homogenizationRatio: "1",
+      metric: "1",
+    },
+  },
+  {
+    tag: "GR_GATE",
+    module: "server/gr/gr-evaluation.ts",
+    stage: "certified",
+    notes: "Gate + certificate checks (policy).",
+    motivation:
+      "Combine GR gate results with warp certificate status to decide if an attempt is policy-admissible.",
+    conceptualWaypoints: [
+      "Load threshold and certificate policy from warp agent config.",
+      "Evaluate the GR constraint gate from diagnostics.",
+      "Issue a warp viability certificate and verify integrity/status.",
+      "Pass only when gate, certificate presence, and status requirements are satisfied.",
+    ],
+    checks: [
+      { type: "test", path: "tests/gr-agent-loop.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      updatedAt: "T",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      cfl: "1",
+      pass: "1",
+    },
+  },
+  {
+    tag: "GR_LOOP",
+    module: "server/gr/gr-agent-loop.ts",
+    stage: "certified",
+    notes: "Orchestration + acceptance gate.",
+    motivation:
+      "Iterate the GR pipeline under budget until a gate- and certificate-clean attempt is found (or exhaustion is reported).",
+    conceptualWaypoints: [
+      "Generate proposals and run initial/evolve steps within timing budgets.",
+      "Compute diagnostics and evaluate gate + certificate each attempt.",
+      "Accept and commit the first passing attempt; otherwise record failures.",
+    ],
+    checks: [
+      { type: "test", path: "tests/gr-agent-loop.spec.ts" },
+      { type: "test", path: "tests/gr-agent-loop-baseline.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      evolveDt_s: "T",
+      dt: "T",
+      time_s: "T",
+      spacing: "L",
+      bounds: "L",
+      cfl: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      H: "1",
+      M: "1",
+      Mx: "1",
+      My: "1",
+      Mz: "1",
+      gap_nm: "L",
+      gap_m: "L",
+      tileArea_cm2: "L^2",
+      tileArea_m2: "L^2",
+      tileCount: "1",
+      dutyCycle: "1",
+      dutyEffectiveFR: "1",
+      dutyEff: "1",
+      gammaGeo: "1",
+      gammaVanDenBroeck: "1",
+      qSpoilingFactor: "1",
+      cavityQ: "1",
+      U_static_J: "M L^2 T^-2",
+      staticEnergy: "M L^2 T^-2",
+      boostedEnergy: "M L^2 T^-2",
+      cycleAverageEnergy: "M L^2 T^-2",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      exoticEnergyDensity: "M L^-1 T^-2",
+      T00: "M L^-1 T^-2",
+      T11: "M L^-1 T^-2",
+      T22: "M L^-1 T^-2",
+      T33: "M L^-1 T^-2",
+      T00_avg: "M L^-1 T^-2",
+      T11_avg: "M L^-1 T^-2",
+      T22_avg: "M L^-1 T^-2",
+      T33_avg: "M L^-1 T^-2",
+      rho_avg: "M L^-1 T^-2",
+      rho_inst: "M L^-1 T^-2",
+      rho: "M L^-1 T^-2",
+      stressEnergyT00_inst: "M L^-1 T^-2",
+      beta_avg: "1",
+      P_avg_W: "M L^2 T^-3",
+      instantaneousPower: "M L^2 T^-3",
+      averagePower: "M L^2 T^-3",
+      modulationFreq_GHz: "T^-1",
+      burst_us: "T",
+      cycle_us: "T",
+      sectorStrobingEfficiency: "1",
+      homogenizationRatio: "1",
+      metric: "1",
+    },
+  },
+  {
+    tag: "GR_CORE",
+    module: "modules/gr/rk4.ts",
+    stage: "diagnostic",
+    notes: "RK4 integrator for BSSN evolution.",
+    checks: [
+      { type: "residual", path: "tests/gr-constraint-network.spec.ts" },
+      { type: "stability", path: "tests/gr-constraint-network.spec.ts" },
+    ],
+    residualsRequired: false,
+    units: {
+      dt: "T",
+    },
+  },
+  {
+    tag: "GR_CORE",
+    module: "modules/gr/stencils.ts",
+    stage: "diagnostic",
+    notes: "Finite-difference stencils for BSSN evolution.",
+    checks: [
+      { type: "residual", path: "tests/gr-constraint-network.spec.ts" },
+      { type: "stability", path: "tests/gr-constraint-network.spec.ts" },
+    ],
+    residualsRequired: false,
+    units: {
+      spacing: "L",
+    },
+  },
+  {
+    tag: "STRESS_FIELDS",
+    module: "modules/gr/stress-energy.ts",
+    stage: "reduced-order",
+    notes: "Stress-energy field helpers (grid-aligned).",
+    checks: [{ type: "test", path: "tests/stress-energy-matter.spec.ts" }],
+    units: {
+      rho: "M L^-1 T^-2",
+      Sx: "M L^-1 T^-2",
+      Sy: "M L^-1 T^-2",
+      Sz: "M L^-1 T^-2",
+      S_xx: "M L^-1 T^-2",
+      S_yy: "M L^-1 T^-2",
+      S_zz: "M L^-1 T^-2",
+      S_xy: "M L^-1 T^-2",
+      S_xz: "M L^-1 T^-2",
+      S_yz: "M L^-1 T^-2",
+    },
+  },
+  {
+    tag: "STRESS_MAP",
+    module: "modules/gr/stress-energy-integrals.ts",
+    stage: "diagnostic",
+    notes: "Volume integrals for stress-energy totals + invariant mass.",
+    checks: [
+      { type: "test", path: "tests/stress-energy-matter.spec.ts" },
+      { type: "stability", path: "tests/stress-energy-matter.spec.ts" },
+    ],
+    units: {
+      rho: "M L^-1 T^-2",
+      Sx: "M L^-1 T^-2",
+      Sy: "M L^-1 T^-2",
+      Sz: "M L^-1 T^-2",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      cellVolume_m3: "L^3",
+      sampleCount: "1",
+    },
+  },
+  {
+    tag: "GR_CORE",
+    module: "server/gr-initial-brick.ts",
+    stage: "diagnostic",
+    notes: "Initial data brick assembly for GR evolution.",
+    checks: [
+      { type: "residual", path: "tests/gr-constraint-network.spec.ts" },
+      { type: "stability", path: "tests/gr-constraint-network.spec.ts" },
+    ],
+    residualsRequired: false,
+    units: {
+      bounds: "L",
+      voxelSize_m: "L",
+      time_s: "T",
+      dt_s: "T",
+      iterations: "1",
+      residual: "1",
+      tolerance: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+    },
+  },
+  {
+    tag: "GR_CORE",
+    module: "server/gr/evolution.ts",
+    stage: "diagnostic",
+    notes: "GR evolution driver (constraints + evolution).",
+    checks: [
+      { type: "residual", path: "tests/gr-constraint-network.spec.ts" },
+      { type: "stability", path: "tests/gr-constraint-network.spec.ts" },
+    ],
+    units: {
+      bounds: "L",
+      voxelSize_m: "L",
+      time_s: "T",
+      dt_s: "T",
+      steps: "1",
+      iterations: "1",
+      tolerance: "1",
+      cfl: "1",
+      H_rms: "1",
+      M_rms: "1",
+    },
+  },
+  {
+    tag: "GR_CORE",
+    module: "server/gr/evolution/brick.ts",
+    stage: "diagnostic",
+    notes: "GR evolution brick serialization helpers.",
+    checks: [
+      { type: "residual", path: "tests/gr-constraint-network.spec.ts" },
+      { type: "stability", path: "tests/gr-constraint-network.spec.ts" },
+    ],
+    residualsRequired: false,
+    units: {
+      bounds: "L",
+      voxelSize_m: "L",
+      time_s: "T",
+      dt_s: "T",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+    },
+  },
+  {
+    tag: "GR_CORE",
+    module: "server/gr/evolution/initial-data.ts",
+    stage: "diagnostic",
+    notes: "Initial data solve utilities.",
+    checks: [
+      { type: "residual", path: "tests/gr-constraint-network.spec.ts" },
+      { type: "stability", path: "tests/gr-constraint-network.spec.ts" },
+    ],
+    residualsRequired: false,
+    units: {
+      bounds: "L",
+      spacing: "L",
+      iterations: "1",
+      residual: "1",
+      tolerance: "1",
+      rho: "M L^-1 T^-2",
+    },
+  },
+  {
+    tag: "GR_CONSTRAINT",
+    module: "server/gr/gr-constraint-network.ts",
+    stage: "diagnostic",
+    notes: "Constraint network evaluation for GR runs.",
+    checks: [
+      { type: "residual", path: "tests/gr-constraint-network.spec.ts" },
+      { type: "stability", path: "tests/gr-constraint-network.spec.ts" },
+    ],
+    units: {
+      updatedAt: "T",
+      time_s: "T",
+      dt_s: "T",
+      steps: "1",
+      iterations: "1",
+      residual: "1",
+      tolerance: "1",
+      bounds: "L",
+      voxelSize_m: "L",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+    },
+  },
+  {
+    tag: "GR_POLICY",
+    module: "server/gr/gr-constraint-policy.ts",
+    stage: "reduced-order",
+    notes: "Constraint policy thresholds for GR gate.",
+    checks: [{ type: "test", path: "tests/gr-constraint-gate.spec.ts" }],
+    units: {
+      H_rms_max: "1",
+      M_rms_max: "1",
+      H_maxAbs_max: "1",
+      M_maxAbs_max: "1",
+    },
+  },
+  {
+    tag: "GR_LOOP",
+    module: "server/gr/gr-agent-loop-schema.ts",
+    stage: "reduced-order",
+    notes: "Schema for GR agent loop inputs/budgets.",
+    checks: [{ type: "test", path: "tests/gr-agent-loop.spec.ts" }],
+    units: {
+      maxIterations: "1",
+      maxTotalMs: "T",
+      maxAttemptMs: "T",
+      evolveDt_s: "T",
+      evolveSteps: "1",
+      evolveIterations: "1",
+      evolveTolerance: "1",
+      initialIterations: "1",
+      initialTolerance: "1",
+      dims: "1",
+      bounds: "L",
+      dutyDecay: "1",
+      gammaGeoDecay: "1",
+      gammaVdBDecay: "1",
+      qSpoilGrow: "1",
+    },
+  },
+  {
+    tag: "GR_WORKER",
+    module: "server/gr/gr-worker-client.ts",
+    stage: "exploratory",
+    notes: "Worker client for GR evolution execution.",
+    checks: [{ type: "doc", path: "docs/gr-solver-progress.md" }],
+    units: {
+      timeoutMs: "T",
+      pendingCount: "1",
+      enabled: "1",
+      id: "1",
+    },
+  },
+  {
+    tag: "GR_WORKER",
+    module: "server/gr/gr-worker-types.ts",
+    stage: "exploratory",
+    notes: "Worker message types for GR evolution.",
+    checks: [{ type: "doc", path: "docs/gr-solver-progress.md" }],
+    units: {
+      id: "1",
+      kind: "1",
+      ok: "1",
+      error: "1",
+      stack: "1",
+      dims: "1",
+      bounds: "L",
+      time_s: "T",
+      dt_s: "T",
+      steps: "1",
+      iterations: "1",
+      tolerance: "1",
+    },
+  },
+  {
+    tag: "GR_WORKER",
+    module: "server/gr/gr-worker.ts",
+    stage: "exploratory",
+    notes: "Worker runtime for GR evolution execution.",
+    checks: [{ type: "doc", path: "docs/gr-solver-progress.md" }],
+    units: {
+      id: "1",
+      kind: "1",
+      ok: "1",
+      error: "1",
+      stack: "1",
+      bufferCount: "1",
+    },
+  },
+  {
+    tag: "WARP_CORE",
+    module: "modules/warp/natario-warp.ts",
+    stage: "reduced-order",
+    notes: "Analytic warp proxy (not full GR).",
+    checks: [{ type: "test", path: "tests/theory-checks.spec.ts" }],
+    units: {
+      bowlRadius: "L",
+      sagDepth: "L",
+      gap: "L",
+      burstDuration: "T",
+      cycleDuration: "T",
+      shiftAmplitude: "1",
+      effectivePathLength: "L",
+      baselineEnergyDensity: "M L^-1 T^-2",
+      amplifiedEnergyDensity: "M L^-1 T^-2",
+      exoticMassPerTile: "M",
+      totalExoticMass: "M",
+      powerDraw: "M L^2 T^-3",
+      momentumFlux: "M L T^-2",
+      betaAvg: "1",
+    },
+  },
+  {
+    tag: "WARP_CORE",
+    module: "modules/warp/warp-module.ts",
+    stage: "reduced-order",
+    notes: "Warp module wrapper + diagnostics.",
+    checks: [{ type: "test", path: "tests/theory-checks.spec.ts" }],
+    units: {
+      dutyEffectiveFR: "1",
+      gammaGeo: "1",
+      gammaVanDenBroeck: "1",
+      qSpoilingFactor: "1",
+      tileArea_m2: "L^2",
+      tileCount: "1",
+      P_avg_W: "M L^2 T^-3",
+      exoticMassTarget_kg: "M",
+    },
+  },
+  {
+    tag: "WARP_CERT",
+    module: "tools/warpViabilityCertificate.ts",
+    stage: "certified",
+    notes: "Certificate issuance (policy-gated).",
+    motivation:
+      "Produce a deterministic, checkable certificate for warp viability based on the current pipeline evaluation.",
+    conceptualWaypoints: [
+      "Evaluate warp viability against constraints and capture snapshot data.",
+      "Build canonical payload and header for reproducible hashing.",
+      "Hash payload and certificate to provide integrity metadata.",
+    ],
+    checks: [
+      { type: "test", path: "tests/theory-checks.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      status: "1",
+      certificateHash: "1",
+      certificateId: "1",
+      issuedAt: "T",
+    },
+  },
+  {
+    tag: "WARP_CERT",
+    module: "tools/verifyCertificate.ts",
+    stage: "certified",
+    notes: "Certificate integrity verification.",
+    motivation:
+      "Recompute hashes to confirm certificate integrity and detect tampering.",
+    conceptualWaypoints: [
+      "Recreate the payload hash from canonical JSON.",
+      "Rebuild the certificate hash and compare to the stored hash.",
+      "Optionally re-evaluate and diff constraints/snapshot for drift checks.",
+    ],
+    checks: [
+      { type: "test", path: "tests/theory-checks.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      certificateHash: "1",
+      integrityOk: "1",
+    },
+  },
+  {
+    tag: "WARP_IO",
+    module: "server/skills/physics.warp.viability.ts",
+    stage: "certified",
+    notes: "Public viability tool endpoint.",
+    motivation:
+      "Expose warp viability evaluation to agents while enforcing policy gating and trace emission.",
+    conceptualWaypoints: [
+      "Validate tool input and build the warp config payload.",
+      "Issue the certificate, verify integrity, and assemble response fields.",
+      "Record training trace with constraint failures and certificate metadata.",
+    ],
+    checks: [
+      { type: "test", path: "tests/theory-checks.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      status: "1",
+      certificateHash: "1",
+      integrityOk: "1",
+    },
+  },
+  {
+    tag: "WARP_IO",
+    module: "server/routes/warp-viability.ts",
+    stage: "certified",
+    notes: "HTTP route for viability + trace emission.",
+    motivation:
+      "Provide an HTTP endpoint that issues warp viability certificates and emits traces for external consumers.",
+    conceptualWaypoints: [
+      "Parse the request into a warp config and issue a certificate.",
+      "Verify integrity and store results in the pipeline state.",
+      "Emit a training trace with pass/fail and certificate status.",
+    ],
+    checks: [
+      { type: "test", path: "tests/theory-checks.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      status: "1",
+      certificateHash: "1",
+      integrityOk: "1",
+    },
+  },
+  {
+    tag: "STRESS_MAP",
+    module: "server/stress-energy-brick.ts",
+    stage: "reduced-order",
+    notes: "Reduced-order stress-energy mapping.",
+    checks: [
+      { type: "test", path: "tests/stress-energy-brick.spec.ts" },
+      { type: "test", path: "tests/stress-energy-matter.spec.ts" },
+    ],
+    units: {
+      t00: "M L^-1 T^-2",
+      avgT00: "M L^-1 T^-2",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      gap_nm: "L",
+      gap_m: "L",
+      tileArea_cm2: "L^2",
+      tileArea_m2: "L^2",
+      tileCount: "1",
+      dutyCycle: "1",
+      dutyEffectiveFR: "1",
+      dutyEff: "1",
+      gammaGeo: "1",
+      gammaVdB: "1",
+      qSpoilingFactor: "1",
+      cavityQ: "1",
+      U_static_J: "M L^2 T^-2",
+      staticEnergy: "M L^2 T^-2",
+      boostedEnergy: "M L^2 T^-2",
+      cycleAverageEnergy: "M L^2 T^-2",
+      exoticEnergyDensity: "M L^-1 T^-2",
+      P_avg_W: "M L^2 T^-3",
+      instantaneousPower: "M L^2 T^-3",
+      averagePower: "M L^2 T^-3",
+      modulationFreq_GHz: "T^-1",
+      burst_us: "T",
+      cycle_us: "T",
+      T00: "M L^-1 T^-2",
+      T11: "M L^-1 T^-2",
+      T22: "M L^-1 T^-2",
+      T33: "M L^-1 T^-2",
+      T00_avg: "M L^-1 T^-2",
+      T11_avg: "M L^-1 T^-2",
+      T22_avg: "M L^-1 T^-2",
+      T33_avg: "M L^-1 T^-2",
+      rho_avg: "M L^-1 T^-2",
+      rho_inst: "M L^-1 T^-2",
+      rho: "M L^-1 T^-2",
+      stressEnergyT00_inst: "M L^-1 T^-2",
+      beta_avg: "1",
+      beta: "1",
+      sectorStrobingEfficiency: "1",
+      homogenizationRatio: "1",
+      metric: "1",
+      evolveDt_s: "T",
+      dt: "T",
+      time_s: "T",
+      spacing: "L",
+      bounds: "L",
+      cfl: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      H: "1",
+      M: "1",
+      Mx: "1",
+      My: "1",
+      Mz: "1",
+    },
+  },
+  {
+    tag: "STRESS_MAP",
+    module: "server/gr/evolution/stress-energy.ts",
+    stage: "reduced-order",
+    notes: "Pipeline -> stress-energy fields.",
+    checks: [
+      { type: "test", path: "tests/stress-energy-brick.spec.ts" },
+      { type: "test", path: "tests/stress-energy-matter.spec.ts" },
+    ],
+    units: {
+      rho: "M L^-1 T^-2",
+      dt: "T",
+      evolveDt_s: "T",
+      time_s: "T",
+      spacing: "L",
+      bounds: "L",
+      H: "1",
+      M: "1",
+      Mx: "1",
+      My: "1",
+      Mz: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      cfl: "1",
+      gap_nm: "L",
+      gap_m: "L",
+      tileArea_cm2: "L^2",
+      tileArea_m2: "L^2",
+      tileCount: "1",
+      dutyCycle: "1",
+      dutyEffectiveFR: "1",
+      dutyEff: "1",
+      gammaGeo: "1",
+      gammaVanDenBroeck: "1",
+      qSpoilingFactor: "1",
+      cavityQ: "1",
+      U_static_J: "M L^2 T^-2",
+      staticEnergy: "M L^2 T^-2",
+      boostedEnergy: "M L^2 T^-2",
+      cycleAverageEnergy: "M L^2 T^-2",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      exoticEnergyDensity: "M L^-1 T^-2",
+      P_avg_W: "M L^2 T^-3",
+      instantaneousPower: "M L^2 T^-3",
+      averagePower: "M L^2 T^-3",
+      modulationFreq_GHz: "T^-1",
+      burst_us: "T",
+      cycle_us: "T",
+      T00: "M L^-1 T^-2",
+      T11: "M L^-1 T^-2",
+      T22: "M L^-1 T^-2",
+      T33: "M L^-1 T^-2",
+      T00_avg: "M L^-1 T^-2",
+      T11_avg: "M L^-1 T^-2",
+      T22_avg: "M L^-1 T^-2",
+      T33_avg: "M L^-1 T^-2",
+      rho_avg: "M L^-1 T^-2",
+      rho_inst: "M L^-1 T^-2",
+      stressEnergyT00_inst: "M L^-1 T^-2",
+      beta_avg: "1",
+      sectorStrobingEfficiency: "1",
+      homogenizationRatio: "1",
+      metric: "1",
+    },
+  },
+  {
+    tag: "DYNAMIC",
+    module: "modules/dynamic/stress-energy-equations.ts",
+    stage: "reduced-order",
+    notes: "Dynamic stress-energy helpers for pipeline/warp mapping.",
+    checks: [
+      { type: "test", path: "tests/stress-energy-brick.spec.ts" },
+      { type: "test", path: "tests/stress-energy-matter.spec.ts" },
+    ],
+    units: {
+      gap_m: "L",
+      gap_nm: "L",
+      tileArea_cm2: "L^2",
+      tileArea_m2: "L^2",
+      tileCount: "1",
+      dutyCycle: "1",
+      dutyEffectiveFR: "1",
+      dutyEff: "1",
+      gammaGeo: "1",
+      gammaVdB: "1",
+      qSpoilingFactor: "1",
+      cavityQ: "1",
+      U_static_J: "M L^2 T^-2",
+      staticEnergy: "M L^2 T^-2",
+      boostedEnergy: "M L^2 T^-2",
+      cycleAverageEnergy: "M L^2 T^-2",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      exoticEnergyDensity: "M L^-1 T^-2",
+      P_avg_W: "M L^2 T^-3",
+      instantaneousPower: "M L^2 T^-3",
+      averagePower: "M L^2 T^-3",
+      modulationFreq_GHz: "T^-1",
+      burst_us: "T",
+      cycle_us: "T",
+      rho_avg: "M L^-1 T^-2",
+      rho_inst: "M L^-1 T^-2",
+      rho: "M L^-1 T^-2",
+      T00: "M L^-1 T^-2",
+      T11: "M L^-1 T^-2",
+      T22: "M L^-1 T^-2",
+      T33: "M L^-1 T^-2",
+      stressEnergyT00_inst: "M L^-1 T^-2",
+      beta_avg: "1",
+      beta: "1",
+      sectorStrobingEfficiency: "1",
+      homogenizationRatio: "1",
+      metric: "1",
+      evolveDt_s: "T",
+      dt: "T",
+      time_s: "T",
+      spacing: "L",
+      bounds: "L",
+      cfl: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      H: "1",
+      M: "1",
+      Mx: "1",
+      My: "1",
+      Mz: "1",
+    },
+  },
+  {
+    tag: "DYNAMIC",
+    module: "modules/dynamic/dynamic-casimir.ts",
+    stage: "reduced-order",
+    notes: "Dynamic Casimir sweep helpers (pipeline).",
+    checks: [{ type: "test", path: "tests/theory-checks.spec.ts" }],
+    units: {
+      staticEnergy: "M L^2 T^-2",
+      modulationFreqGHz: "T^-1",
+      burstLengthUs: "T",
+      cycleLengthUs: "T",
+      cavityQ: "1",
+      tileCount: "1",
+      boostedEnergy: "M L^2 T^-2",
+      cycleAverageEnergy: "M L^2 T^-2",
+      exoticEnergyDensity: "M L^-1 T^-2",
+      instantaneousPower: "M L^2 T^-3",
+      averagePower: "M L^2 T^-3",
+      gap_nm: "L",
+      gap_m: "L",
+      tileArea_cm2: "L^2",
+      tileArea_m2: "L^2",
+      dutyCycle: "1",
+      dutyEffectiveFR: "1",
+      dutyEff: "1",
+      gammaGeo: "1",
+      gammaVanDenBroeck: "1",
+      qSpoilingFactor: "1",
+      U_static_J: "M L^2 T^-2",
+      P_avg_W: "M L^2 T^-3",
+      T00: "M L^-1 T^-2",
+      T11: "M L^-1 T^-2",
+      T22: "M L^-1 T^-2",
+      T33: "M L^-1 T^-2",
+      T00_avg: "M L^-1 T^-2",
+      T11_avg: "M L^-1 T^-2",
+      T22_avg: "M L^-1 T^-2",
+      T33_avg: "M L^-1 T^-2",
+      rho_avg: "M L^-1 T^-2",
+      rho_inst: "M L^-1 T^-2",
+      rho: "M L^-1 T^-2",
+      stressEnergyT00_inst: "M L^-1 T^-2",
+      beta_avg: "1",
+      beta: "1",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      sectorStrobingEfficiency: "1",
+      homogenizationRatio: "1",
+      metric: "1",
+      evolveDt_s: "T",
+      dt: "T",
+      time_s: "T",
+      spacing: "L",
+      bounds: "L",
+      cfl: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      H: "1",
+      M: "1",
+      Mx: "1",
+      My: "1",
+      Mz: "1",
+    },
+  },
+  {
+    tag: "DYNAMIC",
+    module: "modules/dynamic/natario-metric.ts",
+    stage: "reduced-order",
+    notes: "Natario metric proxy helpers (pipeline).",
+    checks: [{ type: "test", path: "tests/theory-checks.spec.ts" }],
+    units: {
+      stressEnergyT00: "M L^-1 T^-2",
+      stressEnergyT11: "M L^-1 T^-2",
+      stressEnergyT00_inst: "M L^-1 T^-2",
+      natarioShiftAmplitude: "1",
+      sectorStrobingEfficiency: "1",
+      homogenizationRatio: "1",
+      metric: "1",
+      gap_nm: "L",
+      gap_m: "L",
+      tileArea_cm2: "L^2",
+      tileArea_m2: "L^2",
+      tileCount: "1",
+      dutyCycle: "1",
+      dutyEffectiveFR: "1",
+      dutyEff: "1",
+      gammaGeo: "1",
+      gammaVanDenBroeck: "1",
+      qSpoilingFactor: "1",
+      cavityQ: "1",
+      U_static_J: "M L^2 T^-2",
+      staticEnergy: "M L^2 T^-2",
+      boostedEnergy: "M L^2 T^-2",
+      cycleAverageEnergy: "M L^2 T^-2",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      exoticEnergyDensity: "M L^-1 T^-2",
+      P_avg_W: "M L^2 T^-3",
+      instantaneousPower: "M L^2 T^-3",
+      averagePower: "M L^2 T^-3",
+      modulationFreq_GHz: "T^-1",
+      burst_us: "T",
+      cycle_us: "T",
+      T00: "M L^-1 T^-2",
+      T11: "M L^-1 T^-2",
+      T22: "M L^-1 T^-2",
+      T33: "M L^-1 T^-2",
+      T00_avg: "M L^-1 T^-2",
+      T11_avg: "M L^-1 T^-2",
+      T22_avg: "M L^-1 T^-2",
+      T33_avg: "M L^-1 T^-2",
+      rho_avg: "M L^-1 T^-2",
+      rho_inst: "M L^-1 T^-2",
+      rho: "M L^-1 T^-2",
+      beta_avg: "1",
+      beta: "1",
+      evolveDt_s: "T",
+      dt: "T",
+      time_s: "T",
+      spacing: "L",
+      bounds: "L",
+      cfl: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      H: "1",
+      M: "1",
+      Mx: "1",
+      My: "1",
+      Mz: "1",
+    },
+  },
+  {
+    tag: "PIPELINE",
+    module: "server/energy-pipeline.ts",
+    stage: "reduced-order",
+    notes: "Energy pipeline core (mixed proxies + calibration).",
+    checks: [{ type: "test", path: "tests/pipeline-ts-qi-guard.spec.ts" }],
+    units: {
+      gap_nm: "L",
+      gap_m: "L",
+      tileArea_cm2: "L^2",
+      tileArea_m2: "L^2",
+      tileCount: "1",
+      dutyCycle: "1",
+      dutyEffectiveFR: "1",
+      dutyEff: "1",
+      gammaGeo: "1",
+      gammaVanDenBroeck: "1",
+      qSpoilingFactor: "1",
+      cavityQ: "1",
+      U_static_J: "M L^2 T^-2",
+      staticEnergy: "M L^2 T^-2",
+      boostedEnergy: "M L^2 T^-2",
+      cycleAverageEnergy: "M L^2 T^-2",
+      totalEnergy_J: "M L^2 T^-2",
+      totalMomentum_kg_m_s: "M L T^-1",
+      momentumMagnitude_kg_m_s: "M L T^-1",
+      invariantMass_kg: "M",
+      invariantMassEnergy_J: "M L^2 T^-2",
+      exoticEnergyDensity: "M L^-1 T^-2",
+      P_avg_W: "M L^2 T^-3",
+      instantaneousPower: "M L^2 T^-3",
+      averagePower: "M L^2 T^-3",
+      modulationFreq_GHz: "T^-1",
+      burst_us: "T",
+      cycle_us: "T",
+      T00: "M L^-1 T^-2",
+      T11: "M L^-1 T^-2",
+      T22: "M L^-1 T^-2",
+      T33: "M L^-1 T^-2",
+      T00_avg: "M L^-1 T^-2",
+      T11_avg: "M L^-1 T^-2",
+      T22_avg: "M L^-1 T^-2",
+      T33_avg: "M L^-1 T^-2",
+      rho_avg: "M L^-1 T^-2",
+      rho_inst: "M L^-1 T^-2",
+      rho: "M L^-1 T^-2",
+      stressEnergyT00_inst: "M L^-1 T^-2",
+      beta_avg: "1",
+      beta: "1",
+      sectorStrobingEfficiency: "1",
+      homogenizationRatio: "1",
+      metric: "1",
+      evolveDt_s: "T",
+      dt: "T",
+      time_s: "T",
+      spacing: "L",
+      bounds: "L",
+      cfl: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      H: "1",
+      M: "1",
+      Mx: "1",
+      My: "1",
+      Mz: "1",
+    },
+  },
+  {
+    tag: "WARP_EVAL",
+    module: "tools/warpViability.ts",
+    stage: "diagnostic",
+    notes: "Warp viability evaluation from pipeline + guardrails.",
+    checks: [
+      { type: "stability", path: "tools/__tests__/warpViability.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      status: "1",
+      pass: "1",
+      TS_ratio: "1",
+      thetaCal: "1",
+      gammaVdB: "1",
+      M_exotic: "M",
+      T00_avg: "M L^-1 T^-2",
+      bubbleRadius_m: "L",
+      wallThickness_m: "L",
+      sectorPeriod_ms: "T",
+      dwell_ms: "T",
+      burst_ms: "T",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-full-loop-audit.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Typed NHM2 full-loop audit contract for section-level readiness, blockers, and policy result reporting.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-full-loop-audit-contract.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      currentClaimTier: "1",
+      maximumClaimTier: "1",
+      highestPassingClaimTier: "1",
+      overallState: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+      residualRms: "1",
+      residualMax: "1",
+      coordinateTimeEstimateSeconds: "T",
+      properTimeEstimateSeconds: "T",
+      properMinusCoordinateSeconds: "T",
+      centerlineProperAcceleration_mps2: "L T^-2",
+      wallNormalSafetyMargin: "1",
+      blueshiftMax: "1",
+      meshConvergenceOrder: "1",
+      boundaryConditionSensitivity: "1",
+      smoothingKernelSensitivity: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-same-chart-full-tensor.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Typed NHM2 same-chart full tensor artifact for component coverage, ADM support statuses, provenance, and explicit missing/blocked tensor channels.",
+    checks: [
+      { type: "stability", path: "tests/nhm2-same-chart-full-tensor.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      alphaStatus: "1",
+      betaStatus: "1",
+      gammaStatus: "1",
+      extrinsicCurvatureStatus: "1",
+      T00: "M L^-1 T^-2",
+      T0i: "M L^-1 T^-2",
+      Tij: "M L^-1 T^-2",
+      fullTensorComplete: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-wall-source-closure.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Typed NHM2 wall-region source-closure artifact for metric-required wall T00, tile/material/proxy wall T00, wall residuals, blockers, and diagnostic-only claim boundary.",
+    checks: [
+      { type: "stability", path: "tests/nhm2-source-closure.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/nhm2-full-loop-audit-contract.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      T00_SI: "M L^-1 T^-2",
+      absolute: "M L^-1 T^-2",
+      relative: "1",
+      tolerance: "1",
+      pass: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/casimir-material-receipt.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Typed Casimir material receipt artifact for gap metrology, material response, correction factors, environment evidence, ideal-scalar boundaries, and material-source receipt status.",
+    checks: [
+      { type: "stability", path: "tests/casimir-material-receipt.spec.ts" },
+      { type: "stability", path: "tests/nhm2-source-closure.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      gapMeters: "L",
+      roughnessRmsMeters: "L",
+      temperatureK: "temperature",
+      correctionFactors: "1",
+      status: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-observer-robust-energy-conditions.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Typed NHM2 observer-family energy-condition artifact for Eulerian, algebraic Type I, bounded-grid, null-grid, and continuous-optimizer status reporting without promoting friendly-frame checks to observer-robust claims.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-observer-robust-energy-conditions.spec.ts",
+      },
+      { type: "stability", path: "tests/nhm2-observer-audit.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/nhm2-full-loop-audit-contract.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      eulerianOnly: "1",
+      robustCheckComplete: "1",
+      anyViolation: "1",
+      missedViolationRisk: "1",
+      worstCaseValue: "M L^-1 T^-2",
+      sampleCount: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-qei-worldline-dossier.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Typed NHM2 QEI worldline dossier for sampling functions, sampled density, bound provenance, tau consistency, wall-worldline coverage, regional margins, and scalar-margin claim boundaries.",
+    checks: [
+      { type: "stability", path: "tests/nhm2-qei-worldline-dossier.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/nhm2-full-loop-audit-contract.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      tauSeconds: "T",
+      sampledRho: "M L^-1 T^-2",
+      bound: "M L^-1 T^-2",
+      margin: "M L^-1 T^-2",
+      hasWallWorldline: "1",
+      allMarginsPass: "1",
+      anyProxy: "1",
+      dossierComplete: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-experiment-ready-theory-closure.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed NHM2 pre-experimental theory-closure meta-contract for run-bound full-apparatus source closure, semiclassical state realizability, continuous observer and worldline-QEI coverage, dynamics, realistic Casimir/material mechanics, independent replay, and frozen falsifiers while physical claims remain blocked.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-experiment-ready-theory-closure.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      status: "1",
+      gateStatus: "1",
+      passedGateCount: "1",
+      requiredEvidenceCount: "1",
+      suppliedEvidenceCount: "1",
+      metricValue: "1",
+      tolerance: "1",
+      physicalViabilityClaimAllowed: "1",
+      transportClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-experiment-ready-theory-candidate-manifest.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Immutable NHM2 candidate manifest for exact evidence roles, persisted runtime receipts, hashed units and normalization, frozen numeric policies, diagnostic observer/QEI sampling and dynamics-horizon sufficiency preregistration, supersession, and closed empirical claim authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-experiment-ready-theory-candidate-manifest.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      evidenceRoleCount: "1",
+      numericCheckCount: "1",
+      numericThreshold: "1",
+      diagnosticSampleThreshold: "1",
+      normalizedHorizonThreshold: "1",
+      preRunManifestReady: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-semiclassical-state-realizability.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed semiclassical state construction, admissibility, renormalized full tensor, Ward identity, same-state QEI, preparation switching, uncertainty, provenance, and self-consistent backreaction contract.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-state-realizability.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      fieldEquationResidualLInf: "1",
+      divergenceResidualLInf: "1",
+      minimumMarginSI: "M L^-1 T^-2",
+      einsteinResidualLInf: "1",
+      constraintResidualLInf: "1",
+      semiclassicalStateRealizabilityReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-semiclassical-state-realizability.v2.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed semiclassical state construction, admissibility, renormalized full tensor, Ward identity, same-state QEI, preparation switching, uncertainty, provenance, self-consistent backreaction, bilocal connected stress-noise kernel, and normalized/refined canonical constraint-algebra consistency contract; raw v2 content remains non-promotable until server replay is implemented.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-state-realizability-v2.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      fieldEquationResidualLInf: "1",
+      divergenceResidualLInf: "1",
+      minimumMarginSI: "M L^-1 T^-2",
+      einsteinResidualLInf: "1",
+      constraintResidualLInf: "1",
+      fluctuationToMeanRatioUpper95: "1",
+      normalizedConstraintBracketResidualUpper95: "1",
+      regulatorRemovalConvergenceOrder: "1",
+      semiclassicalStateRealizabilityReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-semiclassical-v2-raw-replay-manifest.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Version-2 pre-frozen semiclassical-v2 raw replay manifest for paired primary and independent runs. It binds the metric-demand tensor, strictly componentwise-positive deterministic demand-error bounds, a binding-only derivation receipt, state-derived non-lever provenance, the complete field/state/renormalization/constraint input closure, raw bilocal noise, mean-stress uncertainty, algebra operands, timing, hashes, freshness, isolated implementation identities, and immutable diagnostic-only claim locks. Executor provenance and interval-trace replay for the demand derivation remain explicit blockers; the manifest cannot declare replay success.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-v2-raw-replay-manifest.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      metricDemandFrobenius: "M L^-1 T^-2",
+      metricDemandAbsoluteErrorBound: "M L^-1 T^-2",
+      noiseKernel: "M^2 L^-2 T^-4",
+      meanRset: "M L^-1 T^-2",
+      meanRsetAbsoluteUncertainty95: "M L^-1 T^-2",
+      normalizedConstraintResidual: "1",
+      regulatorConvergenceOrder: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-semiclassical-v2-content-replay.ts",
+    stage: "diagnostic",
+    notes:
+      "Pure server-owned version-2 calculation kernel over already secured float64 snapshots. It independently recomputes finiteness, all-sample nondegeneracy from the demand lower norm ||D||_F-||e_D||_F, conservative pointwise mean-RSET closure from |mean-D|+u_mean+e_D, raw bilocal exchange symmetry, a weighted tolerance-PSD certificate, fluctuation ratio, bracket residuals, antisymmetry, Jacobi identity, and regulator convergence. The governed workload is exactly N=64. Demand derivation provenance/interval traces are not replayed here, and a single-run pass remains calculation-only pending semantic derivation replay and isolated independent agreement.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-content-replay.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      metricDemandFrobenius: "M L^-1 T^-2",
+      metricDemandSampleFraction: "1",
+      meanMetricDemandRelativeUpper95: "1",
+      exchangeResidualUpper95: "M^2 L^-2 T^-4",
+      psdFactorizationResidualInfinityNormUpper: "M^2 L^-2 T^-4",
+      fluctuationToMeanRatioUpper95: "1",
+      normalizedConstraintResidualUpper95: "1",
+      regulatorConvergenceOrder: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-semiclassical-v2-metric-demand-producer.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Integrity contract for one fixed 64-sample, geometry-only reduced-order metric-demand byte production. It binds the exact 4x4x4 sampling order, symmetric tensor component order and multiplicities, all-sample nondegeneracy floor, exclusive-create freshness, secure readback identity, execution interval, partial-provenance blockers, semantic limitations, and false promotion/physical claim locks. It does not establish lapse sensitivity, a full Einstein tensor, coordinate-covariant tensor authority, zero expansion, quantum-state use, complete run provenance, or source realization.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-metric-demand-producer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      metricDemandSampleCount: "1",
+      metricDemandComponentCount: "1",
+      metricDemandFrobenius: "M L^-1 T^-2",
+      requiredNondegenerateSampleFraction: "1",
+      durationMs: "T",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-semiclassical-v2-metric-demand-producer.ts",
+    stage: "diagnostic",
+    notes:
+      "Server calculation-only producer for one fixed reduced-order NHM2 shift probe. It evaluates 64 predeclared geometry points without accepting or reading source, lever, or quantum-state tensors; rejects mixed routes, non-finite values, point reordering, and any sample at or below the frozen demand floor; writes exactly 640 little-endian Float64 values into a new exclusive output; and securely rereads and hashes the file. Git SHA, command, and implementation/evaluator source hashes remain explicit provenance blockers, and every replay, lamp, theory, empirical, physical, propulsion, and transport claim stays false.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-metric-demand-producer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      metricDemand: "M L^-1 T^-2",
+      derivativeStep: "L",
+      elapsedTime: "T",
+      outputBytes: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-scalar-reference.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Frozen semantic-only conformally-flat needle scalar reference. It defines an exact compact conformal bump and derivatives, a pure-coordinate compact flow, global conformal vacuum, named Wald ambiguity basis, and 64 pulled-back normalized spacetime-smearing centers whose support satisfies s_max=0.8748. The pullback normalization identity, static spatial demand reduction, directed-rounding enclosure duty, componentwise demand-error output, and executor-observed derivation-receipt duties are exact, but unexecuted. The reference remains a surrogate rather than the current NHM2 shift-lapse geometry; the conservation-restoring term and full gravity-plus-matter constraint algebra remain blockers, and every replay, lamp, closure, empirical, physical, propulsion, and transport claim is false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-conformally-flat-needle-scalar-reference.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      conformalAmplitude: "1",
+      compactFlowSpeedFractionC: "1",
+      sampleCount: "1",
+      smearingHalfWidth: "L",
+      meanRset: "M L^-1 T^-2",
+      metricDemandAbsoluteErrorBound: "M L^-1 T^-2",
+      noiseKernel: "M^2 L^-2 T^-4",
+      fullConstraintAlgebraDerived: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-fixed-background-observables.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Blocked fixed-background observables preregistration for one frozen conformally-flat needle surrogate. It exact-binds the scalar reference, 64 samples, ten tetrad components, five raw Float64 output roles, no declared lever, and no constraint arrays. Mean-renormalization, connected-noise distribution, algorithms, executions, agreement, lamps, ADM closure, and every physical claim remain null or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-conformally-flat-needle-fixed-background-observables.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      sampleCount: "1",
+      tensorComponentCount: "1",
+      meanRset: "M L^-1 T^-2",
+      connectedNoiseKernel: "M^2 L^-2 T^-4",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "scripts/research/verify-nhm2-semiclassical-primary-source-byte-packet.ts",
+    stage: "diagnostic",
+    notes:
+      "Isolated source-identity and local-byte-integrity verifier for six exact versioned semiclassical e-print artifacts. It pins the LF manifest bytes, exact ordered source inventory, sizes, hashes, URLs, license boundary, blocker scope, and false authority locks; defaults to offline verification and requires explicit acquisition. The cache is operator-controlled rather than a secure launch/preseal root, and no consumer binding, source-origin, formula, execution, lamp, certificate, or physical authority is established.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-primary-source-byte-packet.spec.ts",
+      },
+      {
+        type: "snapshot",
+        path: "configs/research/nhm2-semiclassical-primary-source-byte-packet.v1.json",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      sourceArtifactCount: "1",
+      sourcePacketBytes: "B",
+      localContentIntegrityAuthority: "1",
+      formulaExecutionAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-connected-noise-distribution-convention.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Source-audited but execution-blocked convention for the connected symmetrized stress-noise distribution. It distinguishes ordinary multiplication from the star-algebra involution, admits only compact smooth smearings, records the project-to-Phillips-Hu normalization, forbids termwise principal-value/delta multiplication and Bates Eq. 2.11 as an execution recipe, and keeps source bytes, exact stress operator, Wightman/Hadamard normalization, numerical boundary-value representation, equivalence proof, mean convention, execution, lamps, ADM closure, and physical authority absent.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-conformally-flat-needle-connected-noise-distribution-convention.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      symmetrizationFactor: "1",
+      projectToPhillipsHuFactor: "1",
+      conformalScalingExponent: "1",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-mean-rset-renormalization-convention.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 semantic mean-RSET convention freezing the Moretti eta_4=1/3 conserved point-split operator, an independently crosschecked Decanini-Folacci anomaly/equivalence packet, a zero finite-Wald-counterterm choice at ell=1 m, and compact smearing/SI restoration. Source artifacts are remotely hash-audited but not locally vendored; formula, recurrence, coincidence, interval, runtime, independent-agreement, array, Ward, ADM, lamp, certificate, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-conformally-flat-needle-mean-rset-renormalization-convention.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      referenceLength: "L",
+      meanRset: "M L^-1 T^-2",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-mean-rset-anomaly-reduction.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Blocked local anomaly reduction for the frozen conformal-Minkowski vacuum. It fixes the conformal Ricci/scalar conventions, distinguishes conformalAnomalyK from the variational H3 tensor, freezes (K-H1/6)/(2880*pi^2), its trace and smearing/SI/parity identities, and exact algebra fixtures. Source-byte vendoring, symbolic/runtime/interval implementations, independent agreement, Ward and ADM closure, receipts, lamps, certificate, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-conformally-flat-needle-mean-rset-anomaly-reduction.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      curvature: "L^-2",
+      geometricMeanRset: "L^-4",
+      smearedMeanRset: "M L^-1 T^-2",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-conformally-flat-needle-mean-rset-diagnostic-kernel.ts",
+    stage: "diagnostic",
+    notes:
+      "Blocked binary64 pointwise-algebra diagnostic for the exact mean-RSET anomaly reduction. It evaluates three fixed algebra fixtures, including an independently generated non-axis conformal metric fixture, and checks K, H1, trace, constant-curvature, and SI identities under fixed work caps. Full 64x10 smearing, U95, enclosure, Ward proof, run evidence, independent runtime agreement, lamps, ADM closure, certificate, and physical authority remain null or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-mean-rset-diagnostic-kernel.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      curvature: "L^-2",
+      scalarHessian: "L^-4",
+      geometricMeanRset: "L^-4",
+      siMeanRset: "M L^-1 T^-2",
+      pointwiseFixtureCount: "1",
+      workCap: "1",
+      executionAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-connected-noise-numerical-representation.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Blocked additive numerical-design overlay for the exact connected-noise distribution. It freezes the 64x64x100 storage and exchange mapping, support-separation ledger, centered two-particle Gram plan, distinct four-dimensional spectral and six-dimensional mass-shell lineages, deterministic enclosure/U95 semantics, and full 640-dimensional joint-PSD duties. The mean binding, exact operator and formula, source-byte verification, equivalence proof, numerical policy, executors, evidence, run integration, lamps, ADM closure, certificate, and physical authority remain null or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-conformally-flat-needle-connected-noise-numerical-representation.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      sampleCount: "1",
+      covarianceDimension: "1",
+      connectedNoiseKernel: "M^2 L^-2 T^-4",
+      connectedNoiseAbsoluteUncertainty95: "M^2 L^-2 T^-4",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-connected-noise-numerical-representation-mean-binding.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Blocked additive exact-identity overlay binding the connected-noise numerical representation to the frozen mean-RSET renormalization convention. It resolves only the external mean-binding relation; source bytes, exact operator and two-particle symbol, normalization, on-shell measure, Fourier convention, equivalence proof, numerical limits, executors, run evidence, lamps, ADM closure, certificate, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-conformally-flat-needle-connected-noise-numerical-representation-mean-binding.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      resolvedMeanBindingCount: "1",
+      remainingBlockerCount: "1",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-connected-noise-two-particle-symbol.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Blocked exact two-particle stress-symbol convention for the fixed conformal scalar lane. It freezes the actual creation coefficient, Bose normalization, on-shell/Fourier conventions, equivalent future-cone and all-cone spectral tensors, a division-free null-boundary polynomial, conformal tetrad-smearing cancellation, and rational fixtures. Source-byte vendoring, executable distributional equivalence, certified tails, work/tolerance policy, PSD certification, independent executors, run evidence, lamps, ADM closure, certificate, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-conformally-flat-needle-connected-noise-two-particle-symbol.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      stressSymbol: "L^-2",
+      smearedStress: "L^-4",
+      spectralDensity: "L^-4",
+      connectedNoise: "L^-8",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-connected-noise-smearing-fourier.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Blocked analytic smearing/Fourier convention for the fixed connected-noise lane. It freezes the exact compact bump, spacetime half-widths, curved-normalization ownership, Q/S_p/C_p transform, sample phase and displacement mapping, and the non-unit flat zero-mode bounds. Certified Q0 and sample-normalization enclosures, derivative norms, cutoffs, work/tolerance policy, executors, run evidence, lamps, ADM closure, certificate, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-conformally-flat-needle-connected-noise-smearing-fourier.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      halfWidth: "L",
+      supportVolume: "L^4",
+      normalizationConstant: "L^-4",
+      oneDimensionalTransform: "1",
+      spatialNormalizer: "1",
+      smearingFourierTransform: "1",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-conformally-flat-needle-connected-noise-fourier-diagnostic.ts",
+    stage: "diagnostic",
+    notes:
+      "Non-authoritative binary64 diagnostic for the exact compact-smearing Fourier transform. It snapshots hostile inputs, uses fixed nested composite-Simpson policies with hard work caps, evaluates Q, S_p, C_p, phase, zero mode, and f-hat, and canonicalizes every numeric result. Refinement deltas are not enclosures; U95, run admission, execution, lamps, ADM closure, certificate, and physical authority remain null or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-connected-noise-fourier-diagnostic.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      momentum: "L^-1",
+      fourierArgument: "1",
+      oneDimensionalTransform: "1",
+      spatialNormalizer: "1",
+      smearingFourierTransform: "1",
+      maximumFunctionEvaluations: "1",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-conformally-flat-needle-connected-noise-spectral-block-diagnostic.ts",
+    stage: "diagnostic",
+    notes:
+      "Bounded binary64 single-momentum/single-sample-pair diagnostic for the exact future-cone connected-noise spectral tensor. It evaluates the division-free spin-two polynomial, rho-plus normalization, frozen 100-component order, Fourier pairing, and SI restoration under fixed hostile-input and work caps. Full 64x64x100 arrays, certified truncation/enclosure and U95, PSD proof, run evidence, independent agreement, lamps, ADM closure, certificate, and physical authority remain null or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-connected-noise-spectral-block-diagnostic.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      momentum: "L^-1",
+      spectralDensity: "L^-4",
+      spectralBlock: "M^2 L^-2 T^-4",
+      maximumFourierDiagnosticCalls: "1",
+      maximumPolynomialTensorEvaluations: "1",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-conformally-flat-needle-connected-noise-spectral-moment-map.ts",
+    stage: "diagnostic",
+    notes:
+      "Exact diagnostic integer-over-six map from the parity-projected division-free spin-two spectral polynomial to 22 inversion-even momentum moments. It freezes all 100 component-pair rows, 42 integrated parity zeros, 34 surviving upper-triangle pairs, reflection and y-z symmetries, and the bounded 64x64x100 scatter map. It performs no cubature or file emission; truncation, enclosure, U95, PSD proof, run evidence, independent agreement, lamps, ADM closure, certificate, and physical authority remain null or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-connected-noise-spectral-moment-map.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      spectralCoefficientDenominator: "1",
+      inversionEvenMomentCount: "1",
+      admittedUpperComponentPairCount: "1",
+      connectedNoiseArrayOrdinal: "1",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-connected-noise-diagnostic-cubature-policy.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Frozen binary64 diagnostic cubature policy for the full connected-noise central array. It exact-binds the 100x22 spectral moment map and compact smearing, freezes deterministic Sobol prefixes, Gauss-Legendre Q evaluation, inverse-CDF and K0 suffix-table construction, two truncation cutoffs, batching, memory, and work ceilings. Prefix and cutoff deltas are observations only; normalization, tail and compact-core enclosures, joint U95, PSD proof, run admission, independent agreement, lamps, ADM closure, certificate, and physical authority remain null or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-conformally-flat-needle-connected-noise-diagnostic-cubature-policy.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      dimensionlessMomentumCutoff: "1",
+      physicalMomentumCutoff: "L^-1",
+      sobolPointCount: "1",
+      maximumTransientBytes: "1",
+      maximumAccumulatorUpdates: "1",
+      executionAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-conformally-flat-needle-connected-noise-full-array-diagnostic.ts",
+    stage: "diagnostic",
+    notes:
+      "Current-host binary64 diagnostic emitter for three exact 64x64x100 connected-noise arrays: a central truncated estimate plus refinement and cutoff observations. It exact-pins the frozen cubature policy, 100x22 moment map, Python worker, CPython/NumPy/SciPy runtime versions, fixed 2^18 Sobol work, memory and stream ceilings, and records commit, command, timing, source identities, output hashes, and stdout freshness. Repeated output is byte deterministic and finite with canonical zero, parity, and exchange checks; the observations are not U95 or enclosures and cannot feed a run. PSD proof, independent agreement, lamps, constraints, certificate, viability, propulsion, and transport authority remain null or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-connected-noise-full-array-diagnostic.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      connectedNoiseArrayElements: "1",
+      connectedNoiseArrayBytes: "B",
+      connectedNoiseCentral: "M^2 L^-2 T^-4",
+      sobolPointCount: "1",
+      peakResidentBytes: "B",
+      executionAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-fixed-background-run.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Output-free fixed-background run preregistration binding one observables contract, the scalar reference, exact five-array inventory, three non-authoritative sidecars, and disjoint planned primary/independent lineages. All paths, hashes, executions, receipts, authority, lamps, ADM closure, and physical claims remain null or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-conformally-flat-needle-fixed-background-run.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      plannedArrayCount: "1",
+      plannedArrayBytes: "1",
+      plannedLineageCount: "1",
+      executionStarted: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-fixed-background-pair-agreement.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Preregistered fixed-background pair policy requiring exact shared science, distinct implementation lineages and roots, componentwise absolute-plus-relative-plus-two-uncertainty envelopes, inclusive interval overlap, bounded uncertainty-factor agreement, and no retuning. Every tolerance, run observation, agreement receipt, lamp, ADM, theory, certificate, and physical authority remains null or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-conformally-flat-needle-fixed-background-pair-agreement.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      comparedArrayRoleCount: "1",
+      uncertaintyFactorMaximum: "1",
+      independentAgreementEstablished: "1",
+      lampPromotionAllowed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-conformally-flat-needle-fixed-background-content-replay.ts",
+    stage: "diagnostic",
+    notes:
+      "Authority-neutral server calculation over exactly five bounded raw Float64 arrays. It uses intrinsic typed-array observations, rejects aliases, shared backing, non-finite values, negative zero, lever and constraint roles, verifies exact weights, replays mean and uncertainty-aware exchange diagnostics, and emits only reconstructible uncertainty-robust negative PSD witnesses. Full 640-dimensional PSD certification remains explicitly unattempted under an unfrozen work policy, the connected-noise convention is semantic-only, and provenance, execution, agreement, lamps, ADM closure, and physical claims remain blocked.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-fixed-background-content-replay.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      sampleCount: "1",
+      covarianceDimension: "1",
+      meanRset: "M L^-1 T^-2",
+      connectedNoiseKernel: "M^2 L^-2 T^-4",
+      replayReceiptAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-semiclassical-v2-metric-demand-derivation-replay-bridge.ts",
+    stage: "diagnostic",
+    notes:
+      "Opaque scoped capability boundary for a future independent metric-demand derivation replay. It accessor-free snapshots an exact v2 run scope and byte bindings, cannot be forged by copying data, and currently has no issuer. The existing conformal-needle adapter remains structurally blocked and cannot clear interval-trace, independent transcendental replay, candidate, lamp, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-metric-demand-derivation-verifier.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-content-replay.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      metricDemand: "M L^-1 T^-2",
+      metricDemandAbsoluteErrorBound: "M L^-1 T^-2",
+      capabilityIssued: "1",
+      independentDerivationComplete: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-semiclassical-v2-scientific-root-observer.ts",
+    stage: "diagnostic",
+    notes:
+      "Server diagnostic observer for one presealed 23-file semiclassical science root. It securely rereads the exact inventory twice, binds file and directory identities, rejects aliases and topology drift, samples Linux mount identity before and after observation, and exposes content integrity only. No opaque origin receipt or lane-mount authority exists; coordinator launch, lamps, theory closure, and every physical claim remain false.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-scientific-root-observer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      scientificInputCount: "1",
+      observedFileBytes: "1",
+      mountIdentityAuthority: "1",
+      coordinatorLaunchAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-metric-demand-interval-producer.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Diagnostic-only contract for the conformally-flat needle metric-demand enclosure campaign. It keeps the frozen v1 Darboux numerical failure distinct from the v2 midpoint-Hessian protocol, binds the exact 64x10 central and positive error arrays, interval trace, exclusive output inventory, terminal failed one-percent Frobenius gate, unauthenticated first observation, reproduction hashes, runtime observations, provenance blockers, and false candidate/lamp/physical claims. The completed v2 result is numerical-protocol failure evidence rather than an admissible scientific input.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-metric-demand-interval-producer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      metricDemand: "M L^-1 T^-2",
+      deterministicAbsoluteErrorBound: "M L^-1 T^-2",
+      relativeFrobeniusEnclosure: "1",
+      denominatorIntegralLowerBound: "1",
+      executionDuration: "T",
+      candidateInputAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-conformally-flat-needle-metric-demand-interval-producer.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned diagnostic producer for the frozen conformal metric-demand enclosure. It computes directed binary64 interval enclosures, preserves the terminal v1 and v2 numerical failures without retuning, securely binds a prior partial observation, requires bitwise reproduction before new output creation, records pre/post implementation stability, writes and securely rereads an exclusive five-file inventory, and emits an integrity receipt with candidate admission and every promotion claim false. Dirty-worktree, execution-driver, independent replay, and resource-envelope authority remain blocked.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-metric-demand-interval-producer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      metricDemand: "M L^-1 T^-2",
+      deterministicAbsoluteErrorBound: "M L^-1 T^-2",
+      traceBytes: "1",
+      processPeakRssBytes: "1",
+      wallTimeCeiling: "T",
+      candidateInputAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-metric-demand-derivation-verification.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed contract for a separate server-owned structural verification of the conformal metric-demand derivation. It exact-binds the terminal-failure reproduction, raw tensor/error/trace bytes, outward-squared one-percent gate replay, v1/v2 lineage separation, resource limitations, unauthenticated execution-driver and first-run provenance, and all false candidate/lamp/theory/physical locks. It cannot represent an admissible candidate or a successful independent transcendental replay.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-metric-demand-derivation-verifier.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      metricDemand: "M L^-1 T^-2",
+      deterministicAbsoluteErrorBound: "M L^-1 T^-2",
+      relativeFrobeniusEnclosure: "1",
+      minimumDenominatorLowerBound: "1",
+      positiveComponentBoundCount: "1",
+      candidateInputAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-conformally-flat-needle-metric-demand-derivation-verifier.ts",
+    stage: "diagnostic",
+    notes:
+      "Server structural replayer for bounded conformal metric-demand evidence. It securely parses canonical receipt, tensor, error, and trace bytes; recomputes exact hashes, interval coverage, positive denominators, cumulative intersections, bitwise terminal reproduction, and the outward-squared Frobenius failure gate. It rejects the real dirty-worktree capture before emitting a verification artifact and retains explicit blockers for independent transcendental replay, execution-driver identity, structural-replayer runtime provenance, and wall/heap/RSS authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-metric-demand-derivation-verifier.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      metricDemand: "M L^-1 T^-2",
+      deterministicAbsoluteErrorBound: "M L^-1 T^-2",
+      relativeFrobeniusEnclosure: "1",
+      traceBytes: "1",
+      replayCoverageFraction: "1",
+      candidateInputAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-conformally-flat-needle-scalar-candidate-pack-plan.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Exact output-free materialization plan for the conformally-flat scalar reference. It binds twenty-two ordered scientific-input slots, fourteen canonical JSON inputs, and eight explicit null-byte blockers including the metric-demand tensor, its deterministic error bound, its exact derivation receipt, the unresolved Wald conservation prescription, and the full gravity-plus-matter constraint definitions. Hidden, symbolic, accessor-backed, noncanonical, operational-path, declared-lever, and claim-promotion surfaces fail validation. Candidate-manifest and preseal bytes are structurally unavailable until a newly frozen complete science pack exists.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-scalar-candidate-pack-materializer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      plannedScientificInputCount: "1",
+      readyScientificInputCount: "1",
+      missingScientificInputCount: "1",
+      metricDemand: "M L^-1 T^-2",
+      metricDemandAbsoluteErrorBound: "M L^-1 T^-2",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-adm-regulated-scalar-hybrid-failure-reference.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Frozen, unexecuted negative-control reference for replacing canonical scalar constraints by fixed quantum-state expectation functionals outside the gravity symplectic phase space. It fixes the h^-3 lattice symplectic/covariance convention, exact D0 and seven-point operators, ADM geometry and matter product placement, 4^3/8^3/16^3 regulators, 64 compact probes, exact H-H/H-D/D-D targets/signs, one level-independent output-free normalization, separately evaluated antisymmetry/Jacobi terms, and strictly positive second-order discretization-error roles compatible with governed replay. It can test only a finite-grid frozen failure; continuum anomaly, Hadamard, covariant RSET/noise, NHM2/Casimir identity, lamps, theory closure, empirical validity, and every physical claim remain false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-adm-regulated-scalar-hybrid-failure-reference.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      regulatorGridPointCount: "1",
+      constraintProbeCount: "1",
+      normalizedConstraintResidual: "1",
+      finiteGridConstraintResidualUpper95: "1",
+      candidateFailureCompletesTheoryGoal: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-prolate-boson-star-coherent-candidate-plan.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Frozen plan-only selector for a fresh weak-field, nodeless (N,l,m)=(2,1,0) prolate Einstein-complex-scalar coherent-state benchmark. It preregisters the dimensionless coupling and amplitude, branch continuation rule, 64 spacetime-smearing centers, Hadamard/Wald renormalization conditions, self-consistent backreaction equation, connected-noise duty, barred total gravity-plus-state constraint probes, an asymptotically flat mode regulator, and two genuinely separate implementation lineages. The standalone per-family/per-level operand schema now exists, but its server decoder, arithmetic replay, v3 manifest/preseal/run/pair integration, and derivation authority do not. No branch solution, RSET, noise, constraint arrays, runtime provenance, candidate manifest, preseal, replay, pair receipt, lamp, NHM2/Casimir identity, experiment-ready closure, or physical claim exists; every authority lock remains false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-prolate-boson-star-coherent-candidate-plan.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      dimensionlessGravitationalCoupling: "1",
+      coherentPeakAmplitude: "1",
+      sampleCount: "1",
+      meanRset: "M L^-1 T^-2",
+      connectedNoiseKernel: "M^2 L^-2 T^-4",
+      scientificCandidateAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-semiclassical-v2-constraint-operand-replay.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Schema-only, fail-closed contract for three frozen regulator levels and all 63 raw [64,4] barred constraint operands across H-H, H-Hi, Hi-Hj, antisymmetry, and Jacobi families. It freezes exact file roles, representation, policy/preseal/provenance bindings, server residual formulas, conservative p_min=1 error propagation, per-family convergence, and schema-level pair distinctness. It performs no secure file read, byte decode, arithmetic replay, derivation replay, v3 lane integration, numerical pair comparison, candidate admission, lamp promotion, theory closure, or physical claim; every authority lock remains false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-v2-constraint-operand-replay.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      regulatorLevelCount: "1",
+      constraintFamilyCount: "1",
+      rawOperandArrayCount: "1",
+      normalizedConstraintResidual: "1",
+      minimumObservedOrder: "1",
+      integrationComplete: "1",
+      constraintAlgebraLampAllowed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-semiclassical-v2-constraint-operand-replayer.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned calculation-only v2 decoder and arithmetic replayer for all 63 manifest-bound constraint operand arrays. It snapshots distinct full byte views, rehashes and decodes finite little-endian Float64 values, rejects computed/target echo including signed-zero substitution, recomputes all five residual families, conservative interlevel uncertainty bounds, observed order, and final regulator error, and preserves frozen numerical failure precedence across later arithmetic blockers. Caller-supplied bytes, missing target and joint-U95 derivation replay, absent preseal authority, and every candidate, agreement, lamp, theory, empirical, and physical lock keep the overall result blocked.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-constraint-operand-replayer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      decodedConstraintArrayCount: "1",
+      normalizedConstraintResidual: "1",
+      conservativeObservedOrderLower95: "1",
+      finalRegulatorErrorUpper95: "1",
+      replayAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-semiclassical-v2-constraint-filesystem-replayer.ts",
+    stage: "diagnostic",
+    notes:
+      "Authority-neutral filesystem boundary for the v2 63-array constraint replay. It securely reads one caller-hash-bound manifest and an exact disjoint output inventory, enforces bounded fatal UTF-8 and JSON decoding, canonical descriptor paths, stable file identities, finite Float64 payloads, and detached full byte views before invoking the server arithmetic replayer. The roots are caller selected: root authorization, persisted-preseal origin, pre-execution freshness, target and joint-U95 derivation, agreement, both lamps, candidate admission, viability, propulsion, and transport authority remain false.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-constraint-filesystem-replayer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      manifestInventoryCount: "1",
+      constraintOperandArrayCount: "1",
+      constraintOperandBytes: "B",
+      currentReadObservationAuthority: "1",
+      replayAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-semiclassical-v3-replay-epoch.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Clean version-3 replay-epoch root for one future nondegenerate semiclassical candidate. It freezes 25 shared scientific inputs, three lane-specific implementation inputs, 68 numerical outputs, three derivation sidecars, 70 decoded Float64 arrays, 159 replay leaves, conservative per-family three-level constraint arithmetic, domain-separated role/policy hashes, and an exhaustive false claim-lock set. It defines no candidate, preseal persistence, solver output, replay authority, pair authority, diagnostic lamp, theory closure, or physical claim.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-v3-replay-epoch.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      scientificInputCount: "1",
+      implementationInputCount: "1",
+      outputArrayCount: "1",
+      decodedFloat64ArrayCount: "1",
+      replayMetricLeafCount: "1",
+      replayAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-semiclassical-v3-constraint-operand-manifest.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Schema-only version-3 manifest for exactly 63 raw [64,4] constraint arrays. It separates the identical 25-input scientific closure shared by both solvers from each lane's frozen 28-input complete run closure, binds exact epoch/arithmetic hashes and canonical paths, and rejects v1/v2 identities and legacy aggregate regulator aliases. Validation snapshots caller data once but performs no filesystem read, freshness authentication, preseal persistence check, arithmetic replay, candidate admission, lamp promotion, or physical claim.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-v3-constraint-operand-manifest.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      scientificInputCount: "1",
+      completeRunInputCount: "1",
+      constraintOperandArrayCount: "1",
+      constraintOperandValueCount: "1",
+      schemaAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-semiclassical-v3-constraint-operand-replayer.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned calculation-only version-3 decoder for the 63 manifest-bound constraint arrays. From caller-supplied secure-reader observations it rehashes distinct full buffers, decodes finite little-endian Float64 values, recomputes all five residual families, producer mismatch, conservative interlevel lower/upper bounds, order lower bound, and p_min=1 error rails. Frozen numerical violations fail; missing joint uncertainty or target-derivation authority blocks. It performs no filesystem read and grants no candidate, pair, lamp, theory, empirical, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v3-constraint-operand-replayer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      decodedConstraintArrayCount: "1",
+      normalizedConstraintResidual: "1",
+      conservativeObservedOrderLower95: "1",
+      finalRegulatorErrorUpper95: "1",
+      replayAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-semiclassical-v3-pair-numeric-agreement-policy.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Domain-separated preregistration policy for future primary/independent version-3 numerical agreement. It maps all 68 roles to exact dimensional absolute/relative rails and uncertainty companions, requires every scalar to pass a symmetric envelope, separately bounds uncertainty-estimator disagreement, requires server-replayed joint >=97.5% coverage per run, keeps scientific inputs byte-identical while implementation inputs and lineages remain distinct, and forbids post-observation retuning. The scalar helper is calculation-only; no pair comparator, independent agreement, lamp, theory closure, or physical authority exists.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-v3-pair-numeric-agreement-policy.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      pairOutputRoleCount: "1",
+      perRunJointCoverageMinimum: "1",
+      pairJointCoverageMinimum: "1",
+      normalizedPairMargin: "1",
+      pairAgreementAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-prolate-boson-star-coherent-candidate-plan.v2.ts",
+    stage: "diagnostic",
+    notes:
+      "Preregistration-only version-2 plan for a future weak-field nodeless prolate Einstein-complex-scalar coherent-state benchmark. It preserves the frozen v1 scientific choices while binding the self-contained semiclassical-v3 replay epoch, 25-science-plus-three-implementation input topology, 68 numerical outputs, three derivation sidecars, 70 decoded Float64 arrays, 159 replay leaves, conservative constraint arithmetic, and the domain-separated pair numerical-agreement policy. No branch solve, candidate manifest, scientific preseal, numerical output, replay receipt, pair receipt, diagnostic lamp, theory closure, or physical authority exists; all claim locks remain false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-prolate-boson-star-coherent-candidate-plan-v2.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      scientificInputCount: "1",
+      implementationInputCount: "1",
+      numericalOutputArrayCount: "1",
+      decodedFloat64ArrayCount: "1",
+      replayMetricLeafCount: "1",
+      perRunJointCoverageMinimum: "1",
+      scientificCandidateAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-1s-v3-tolerance-policy.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 candidate-specific tolerance preregistration for the distinct spherical nodeless 1s semiclassical-v3 control. It freezes the self-consistency, smearing, exchange, PSD, fluctuation, metric-demand, bracket, antisymmetry, Jacobi, regulator, recomputation, simultaneous-coverage, and pair-agreement limits before execution and exact-binds the current v3 replay, arithmetic, and pair policies. The metric-demand receipt, preseal, execution, replay, pair agreement, both diagnostic lamps, certificate, and physical authority remain null or false; any observed-limit failure terminates the candidate without retuning.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-1s-v3-tolerance-policy.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      selfConsistencyRelativeLInf: "1",
+      metricDemandFrobeniusFloor: "M L^-1 T^-2",
+      perRunJointCoverageMinimum: "1",
+      pairJointCoverageMinimum: "1",
+      diagnosticPass: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-coherent-candidate-plan.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 preregistration of the genuinely distinct (N,l,m)=(1,0,0) spherical, nodeless, even-parity Einstein-complex-scalar coherent-state control for the semiclassical-v3 lane. It freezes the model, isotropic chart, coherent Hadamard state, renormalization choices, 64 sample/smear geometry, uncompressed 25+3 input and 68-output duties, all 63 constraint operands, independent-implementation separation, and no-retune disposition. The branch, nondegeneracy lower bound, scientific preseal, raw arrays, replay, independent agreement, lamps, certificate, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-coherent-candidate-plan-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      scientificInputCount: "1",
+      implementationInputCount: "1",
+      numericalOutputArrayCount: "1",
+      constraintOperandArrayCount: "1",
+      sampleCount: "1",
+      scientificCandidateAdmissible: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-spherical-boson-star-branch-bvp.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 preregistration of the radial isotropic Einstein-complex-scalar BVP for the frozen spherical 1s control. It exact-binds the candidate and tolerance artifacts and freezes the (-+++) dimensionless chart, cancellation-free mixed Einstein/stress/Klein-Gordon rows, residual normalizations, origin and infinity conditions, regular-series and tail-series duties, and nodeless, strictly decreasing, vacuum-connected no-fold branch gates. Solver, grid, continuation, proof receipts, execution, result, preseal, replay, lamps, certificate, and physical authority remain null or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-branch-bvp-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      dimensionlessRadius: "1",
+      dimensionlessFrequency: "1",
+      dimensionlessField: "1",
+      normalizedEinsteinResidual: "1",
+      normalizedKleinGordonResidual: "1",
+      branchSolved: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-spherical-boson-star-newtonian-seed.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 preexecution semantic freeze for the distinct spherical 1s Newtonian seed. It exact-binds the spherical candidate, tolerance, and radial BVP; freezes the radial Schrodinger-Poisson eigenproblem, u0(0)=1 gauge, exact lambda=2^-5 target scaling, origin recurrence, finite-core authority, formal Coulomb/exponential exterior duties, per-level byte roles, scalar metadata duties, convergence meanings, and seed-to-BVP initializer map. The deterministic solver, finite tail representative, interval proof budgets, output descriptor, source/toolchain/runtime closure, execution, replay, branch, nondegeneracy, lamps, certificate, and physical authority remain absent, null, or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-newtonian-seed-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      dimensionlessRadius: "1",
+      dimensionlessField: "1",
+      dimensionlessEigenvalue: "1",
+      radialNodeCount: "1",
+      normalizedResidual: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-newtonian-seed-operation-policy.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 incomplete prepolicy for the distinct spherical 1s Newtonian seed. It exact-binds the semantic seed and freezes only the primary core/tail candidate-map structure, square-system counts, C1 tail lifts, scaled tail equations, full-mass consistency row, no-retune disposition, and intended output inventory. Quadrature bytes, complete primary operation graphs, directed proof operators, exact proof/interchange schemas, implementations, manifests, runtime, preseal, execution, acceptance, lamps, certificate, and physical authority remain explicitly incomplete, absent, null, or false; this entry authorizes no candidate run.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-newtonian-seed-operation-policy-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      radialNodeCount: "1",
+      tailCoefficientCount: "1",
+      proofBoxBudget: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-newtonian-seed-directed-proof.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 directed-proof architecture for the distinct spherical 1s Newtonian seed, canonical binding c8832ae77d1279d400f1fffbc587e413659c111ae90283cb34a016fb7e08ea99 over 42,778 canonical bytes. It freezes checked tail algebra, coefficient-space conventions, projected fixed-point structure, proof-duty inventory, work ceilings, fail-without-retuning disposition, and forbidden lever/tile admission. Exact origin and infinite-tail operators, Z0/Z1 and truncation formulas, closed receipt schemas, final primary-to-verifier ABI, implementations, runtime, preseal, execution, acceptance, lamps, certificate, and physical authority remain explicitly incomplete, absent, null, or false; this entry authorizes no candidate run or proof claim.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-newtonian-seed-directed-proof-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      coefficientNorm: "1",
+      proofRadius: "1",
+      proofRecordCount: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "configs/research/nhm2-spherical-gl256-mpfr256-manifest.v1.json",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 deterministic Gauss-Legendre-256 prerequisite for the spherical seed. The manifest binds 256 MPFR256/RNDN node-and-weight records, their generator and independent interval/root/weight/moment checks, and exact raw hashes. It is a numerical fixture only: candidate data, execution authority, proof acceptance, lamps, certificate, and physical authority remain false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-gl256-mpfr256-fixture.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      quadraturePointCount: "1",
+      endpointPrecisionBits: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-newtonian-seed-primary-numerics.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 primary numerical operation freeze for the spherical 1s seed, canonical binding a4ee03e387f9e3e0a9d1f117f6671aa6ac0ca3f97508706c0f52e811d15372a4 over 80,055 canonical bytes. It closes the finite core/tail candidate map, MPFR and binary64 operation schedules, deterministic Newton/LU chronology, fixed quadrature fixture, materialization graph, arenas, and no-retune failures. No bound implementation, native MPFR bridge, toolchain/runtime, preseal, execution, accepted seed, lamp, certificate, or physical authority exists.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-newtonian-seed-primary-numerics-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      radialNodeCount: "1",
+      tailCoefficientCount: "1",
+      quadraturePointCount: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-newtonian-seed-directed-proof-operator.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 directed-proof operator freeze exact-bound to the spherical seed stack and replacement primary numerics, canonical binding 511609501b01560c7e8a15f99a5b94176b51fb0e9add9bf5aa1045ef51d2342b over 34,695 canonical bytes. It closes the origin recurrence/envelope operators, whole-X exterior ball, projected radii-polynomial bounds, Hessian and mass routing, truncation compilers, work limits, and six raw-mode separation. Implementations, receipts, runtime, preseal, execution, proof acceptance, seed acceptance, lamps, certificate, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-newtonian-seed-directed-proof-operator-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      coefficientNorm: "1",
+      proofRadius: "1",
+      proofDutyCount: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-newtonian-seed-interchange.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 closed primary-to-independent-verifier byte and proof-record grammar for the spherical seed, canonical binding 827eb79c27137dd1649b35884c945c2d6809483acf25c7fd68d2a3ed80936f95 over 67,853 canonical bytes. It fixes five untrusted primary payloads, sixteen typed proof duties, canonical directed endpoints, record/route/summary/aggregate hashes, provenance and preseal shapes, hostile-input ceilings, forbidden lever/tile rejection, source-lineage agreement, and atomic publication. This is schema completeness only; implementations, runtime, preseal instance, execution, acceptance, lamps, certificate, and physical authority remain false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-newtonian-seed-interchange-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      primaryPayloadCount: "1",
+      primaryPayloadElementCount: "1",
+      proofDutyRecordCount: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-v2-candidate-freeze.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 no-retune freeze for the distinct spherical nodeless 1s candidate in the server-owned semiclassical-v2 replay lane, canonical binding 628092507b7dc1be76722f06a7b591efc59d1799bed0d4b7d1999d852d92f28f over 55,997 canonical bytes. It binds the approved v2 tolerance authority, thirteen ready and nine missing scientific inputs, the minimum thirty-two raw noise/mean/constraint/regulator output arrays, exact provenance/freshness duties, independent replay/agreement prerequisites, and forbidden lever/tile roles. It emits no arrays and authorizes no manifest, preseal, execution, nondegeneracy, replay, lamps, physical viability, propulsion, or transport claim.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-v2-candidate-freeze-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      scientificInputCount: "1",
+      readyScientificInputCount: "1",
+      missingScientificInputCount: "1",
+      minimumOutputArrayCount: "1",
+      executionAuthorized: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-v2-classical-structure-functions.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 candidate-specific freeze of the three classical ADM structure-function targets required by the spherical semiclassical-v2 replay lane, canonical binding d6f12f0703f5b756c8c08c424f3af8c06990b59005f404691b5b20f6e71ce700 over 8,870 canonical bytes. It fixes family/component ordering, [64,4] normalization, approved derivation dependencies, and the prohibition on computed or residual operands as target inputs. Probe evaluation, raw arrays, replay, execution, lamps, certificate, physical viability, propulsion, and transport authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-v2-classical-structure-functions-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      classicalTargetFamilyCount: "1",
+      sampleCount: "1",
+      componentCount: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-v2-regulator-definition.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 candidate-specific regulator and complete raw-operand inventory freeze for the spherical semiclassical-v2 lane, canonical binding d3b42d5483abde3db51b2755bbf58e0b35f78abd4980da56a750963362d46ade over 62,592 canonical bytes. It requires five nonconstraint files plus all sixty-three primitive constraint operands across three levels, aliases the historical central twenty-one roles to level_2 without duplicate files, and preserves server recomputation and no-retune rules. The legacy aggregate manifest is explicitly incompatible; successor schema integration, implementations, preseal, execution, replay, agreement, lamps, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-v2-regulator-definition-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      nonconstraintArrayCount: "1",
+      constraintOperandArrayCount: "1",
+      totalPhysicalFileCount: "1",
+      regulatorLevelCount: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-v2-constraint-formulation.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 candidate-specific total ADM constraint and probe-semantics freeze for the spherical semiclassical-v2 lane, canonical binding 736ce86009ef09e4e7222bebc12638b8889f7129db6443160b1856585aae45ff over 11,571 canonical bytes. It fixes the gravity-plus-state phase space, external probe family, bracket and identity ordering, structural-zero channels, classical targets, and server residual chronology. The base derivation DAG's missing computed-side geometry/chart/sampling edges are recorded as an exact unapproved overlay; a successor authority, implementations, preseal, execution, replay, agreement, lamps, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-v2-constraint-formulation-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      sampleCount: "1",
+      constraintComponentCount: "1",
+      requiredDagOverlayEdgeCount: "1",
+      derivationAuthorityComplete: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-v2-renormalization-prescription.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 candidate-specific Hadamard renormalization prescription for the spherical semiclassical-v2 lane, canonical binding 0c9e38c5dec82db015ccb8eeac23c55257b3fd667c774a34f68cf5ee0fc8ae89 over 10,670 canonical bytes. It fixes the two-real normalization of the complex field, K_C subtraction, the symmetric Moretti eta=1/3 point-split operator, the exclusive Decanini-Folacci crosscheck, order-three subtraction duty, and centered-noise c-number cancellation. Source derivation packets, recurrence and noise implementations, preseal, execution, replay, agreement, lamps, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-v2-renormalization-prescription-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      canonicalRealScalarCount: "1",
+      pointSplitEta: "1",
+      subtractionOrder: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-v2-renormalization-counterterms.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 candidate-specific finite renormalization counterterm basis for the spherical semiclassical-v2 lane, canonical binding ce189a901d951d839cba823e32b8b5e56b532bc7cad5b5ae5b1ad372d76afcfa over 10,182 canonical bytes. It fixes the cosmological, Einstein, H1, and H2 basis, the four-dimensional Gauss-Bonnet relation, the massive-Minkowski-zero cLambda coefficient, and zero cG/c1/c2 at ell=mu^-1 while preserving one-way prescription dependency and centered-noise cancellation. Derivation packets, implementation, preseal, execution, replay, agreement, lamps, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-v2-renormalization-counterterms-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      finiteCountertermBasisCount: "1",
+      complexScalarMultiplicity: "1",
+      cLambdaBinary64Bits: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-spherical-boson-star-v2-initializer-bridge.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 source-v3-to-target-v2 initializer semantics bridge, canonical binding c5c4c45755e0dc682694f8a107c31780d85d860b2a71be567a2cfe0d06300631 over 7,715 canonical bytes. It binds the five source seed payloads and directed-proof conclusion to a domain-separated target-v2 initializer identity, preserves the v2 replay policy as sole tolerance authority, requires the relativistic branch to resolve frequency again, and forbids automatic identity or authority inheritance. No initializer instance, branch execution, nondegeneracy, replay, lamps, certificate, or physical authority exists.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-spherical-boson-star-v2-initializer-bridge-v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      sourcePayloadCount: "1",
+      sourceTargetIdentitySeparation: "1",
+      maximumAttempts: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-spherical-boson-star-seed/verifier/f64le_inventory.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 source-disjoint verifier primitive for the spherical seed's exact five-payload binary64 boundary. It enforces path/order/count/size, little-endian finite values, negative-zero rejection, immutable byte capture, and domain-separated payload hashes without importing producer code. It is not the complete independent verifier and grants no proof, seed, replay, agreement, lamp, certificate, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-spherical-boson-star-seed/verifier/test_f64le_inventory.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      primaryPayloadCount: "1",
+      decodedElementCount: "1",
+      decodedByteCount: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-spherical-boson-star-seed/verifier/dyadic_interval.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 source-disjoint exact parser for the interchange's canonical MPFR256 directed-endpoint JSON-array ABI. It validates normalized dyadics as exact fractions, RNDD/RNDU orientation, and lower-upper ordering without binary floating conversion. It is a boundary primitive only and grants no directed-proof, seed, replay, agreement, lamp, certificate, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-spherical-boson-star-seed/verifier/test_dyadic_interval.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      endpointPrecisionBits: "1",
+      directedIntervalAuthority: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-spherical-boson-star-seed/verifier/canonical_json.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 source-disjoint bounded canonical-JSON boundary for persisted spherical seed descriptors and proof records. It rejects duplicate keys, invalid Unicode, noncanonical bytes, forbidden numeric forms, unsafe integers, excessive depth/nodes/width/strings, and freezes the accepted tree and plain hash. It performs no schema-duty replay and grants no proof, seed, replay, agreement, lamp, certificate, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-spherical-boson-star-seed/verifier/test_canonical_json.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      maximumDocumentBytes: "1",
+      maximumTokenCount: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-spherical-boson-star-seed/verifier/hash_graph.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 source-disjoint implementation of only the spherical seed interchange hash recipes that are already closed: primary payload binding, descriptor, five-payload input binding, manifest aggregate, and output-root identity. Command, static-input, freshness, dirty-tree, implementation, runtime, execution, replay, agreement, lamps, certificate, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-spherical-boson-star-seed/verifier/test_hash_graph.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      hashOctets: "1",
+      pathUtf8Bytes: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-spherical-boson-star-seed/verifier/forbidden_roles.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 source-disjoint admission scan over the already bounded canonical-JSON tree. It rejects every frozen declared lever/tile key or role-bearing identifier before numeric payload open, while granting no execution, candidate, replay, agreement, lamp, certificate, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-spherical-boson-star-seed/verifier/test_forbidden_roles.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      visitedJsonNodes: "1",
+      numericPayloadOpened: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-spherical-boson-star-seed/verifier/descriptor.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 source-disjoint structural validator for the frozen spherical seed primary descriptor. It enforces the v3 source-candidate identity, exact policy and five-payload bindings, bounded provenance/freshness shapes, forbidden-role rejection, and closed descriptor/input hash recipes. The distinct v2 candidate mapping, complete provenance profile, payload decoding, proof replay, execution, agreement, lamps, certificate, and physical authority remain absent or false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-spherical-boson-star-seed/verifier/test_descriptor.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      primaryPayloadCount: "1",
+      freshnessObservationCount: "1",
+      provenanceAuthoritative: "1",
+      v2CandidateBindingPresent: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-spherical-boson-star-seed/verifier/primary_bundle.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 source-disjoint composition of the frozen source descriptor with its exact five raw primary payloads. Admission orders descriptor and forbidden-role validation before numeric open, then checks every path/shape/hash before the global nonfinite and negative-zero passes. It retains the v3 source identity and grants no v2 bridge, provenance, proof-duty, seed, replay, agreement, lamp, certificate, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-spherical-boson-star-seed/verifier/test_primary_bundle.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      primaryPayloadCount: "1",
+      primaryPayloadByteCount: "1",
+      v2CandidateBindingPresent: "1",
+      proofDutiesReplayed: "1",
+      executionAuthorized: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-spherical-boson-star-branch/radial_residual.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 bounded pointwise implementation of the exact spherical-isotropic EKG reduction frozen by the spherical branch-BVP contract. It evaluates three solved rows and the unused radial Einstein constraint from one finite strict-interior radial jet, canonicalizes numerical zero, and is independently compared with the established two-dimensional coordinate-regular evaluator. It performs no grid assembly, solve, continuation, output, preseal, replay, lamp, certificate, or physical claim; all authority locks remain false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-spherical-boson-star-branch/test_radial_residual.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      dimensionlessRadius: "1",
+      dimensionlessFrequency: "1",
+      dimensionlessField: "1",
+      normalizedEinsteinResidual: "1",
+      normalizedKleinGordonResidual: "1",
+      branchSolved: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-prolate-boson-star-branch-bvp.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Frozen diagnostic-only four-field diagonal quasi-isotropic Einstein-complex-scalar branch-BVP preregistration for the weak-field nodeless (N,l,m)=(2,1,0) prolate branch. Its unknown fields are F0, F1, F2, and varphi, with eigenvalue w and auxiliary rhoPeak. It freezes the covariant solved rows Ebar^t_t, Ebar^r_r+Ebar^theta_theta, Ebar^phi_phi, and KGbar, with Ebar^r_theta and Ebar^r_r-Ebar^theta_theta retained as independent constraint gates; deTurckSystemUsed is explicitly false. Its domain-separated canonical binding is 4c6d460b8dc83719c590cc24caed9f8e8ad91474528efaacb334226a391c6747 over 17,355 canonical UTF-8 bytes. The Newtonian seed artifact, complete hash-bound nonlinear solver policy, runtime/resource closure, origin and branch-identity replay, execution, evaluated residuals, and outputs are absent; it grants no solved-branch, candidate, empirical, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-prolate-boson-star-branch-bvp.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      continuationAmplitude: "1",
+      frequencyRatio: "1",
+      einsteinResidualLInf: "1",
+      kleinGordonResidualLInf: "1",
+      offSystemEinsteinResidualLInf: "1",
+      classicalBranchSolved: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-boson-star-branch/covariant_residual.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 pointwise diagnostic implementation of the exact dimensionless covariant Einstein-complex-scalar equations frozen by the prolate branch-BVP contract. It evaluates the four solved rows and two unused Einstein constraints from one strict-interior field jet, with the frozen mixed-index ordering and residual normalizations. Independent symbolic differential-geometry replay agrees at binary64 roundoff. It does not assemble boundary or tau rows, solve the branch, establish a peak, nodelessness, branch identity, convergence, candidate admissibility, or any empirical or physical claim; all authority locks remain false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-boson-star-branch/test_covariant_residual.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      dimensionlessRadius: "1",
+      dimensionlessFrequency: "1",
+      dimensionlessField: "1",
+      einsteinResidual: "1",
+      kleinGordonResidual: "1",
+      branchSolved: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-boson-star-branch/regular_residual.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 coordinate-regular pointwise EKG diagnostic derived symbolically from the frozen prolate metric. It evaluates the same four solved rows and two unused Einstein constraints as the generic covariant reference after exact cancellation of spherical-coordinate background terms. Flat and constant-rescaled-flat data return exact positive zero at every strict-interior node on all three frozen grids; independent symbolic identities and randomized well-conditioned comparisons are green. It remains pointwise-only and grants no boundary assembly, solve, branch, candidate, lamp, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-boson-star-branch/test_regular_residual.py",
+      },
+      {
+        type: "fixture",
+        path: "tools/nhm2-boson-star-branch/derive_regular_residual.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      dimensionlessRadius: "1",
+      dimensionlessFrequency: "1",
+      dimensionlessField: "1",
+      normalizedEinsteinResidual: "1",
+      normalizedKleinGordonResidual: "1",
+      branchSolved: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-boson-star-branch/collocation_residual.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 structured collocation diagnostic over the frozen 16x12, 32x24, and 64x48 prolate grids. It constructs exact mapped-node derivatives and compactified jets, evaluates the coordinate-regular EKG rows, applies all four boundary families with literal radial corner precedence, and reports two separate continuous-peak equations plus the computable rail subset. It deliberately exposes no flattened Newton/JFNK ABI, solver step, continuation, oversampled/global-maximum/branch replay, output artifact, lamp, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-boson-star-branch/test_collocation_residual.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      dimensionlessRadius: "1",
+      dimensionlessFrequency: "1",
+      continuationAmplitude: "1",
+      normalizedPdeResidual: "1",
+      normalizedUnusedConstraintResidual: "1",
+      branchSolved: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2-boson-star-seed/producer/spectral.py",
+    stage: "diagnostic",
+    notes:
+      "Stage-2 binary64 spectral primitive implementation used by the current Newtonian seed and branch-collocation diagnostics: frozen mapped Lobatto nodes, barycentric differentiation/interpolation, parity Legendre projection/reconstruction, nonlinear products, and radial multipole Laplacians. It is not the sealed v3 MPFR operation graph, carries no runtime or proof-kernel authority, and cannot establish a seed artifact, branch solution, candidate, or physical claim.",
+    checks: [
+      {
+        type: "stability",
+        path: "tools/nhm2-boson-star-seed/producer/selftest.py",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      compactRadius: "1",
+      polarAngle: "1",
+      scalarMultipole: "1",
+      potentialMultipole: "1",
+      executionAuthority: "1",
+      physicalAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-prolate-boson-star-newtonian-seed.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Frozen initializer-only two-dimensional Schrodinger-Poisson seed contract for the weak-field (N,l,m)=(2,1,0) dipole branch, with fixed amplitudes and grids, deterministic piecewise continuum reconstruction, continuous nodeless/unique-axis-peak and numerical origin-series gates, exact output inventory, and an explicit seed-to-BVP initialization map. Its domain-separated canonical binding is e839a670e57fad1a445d61d88d2ebc49796af33f78fb752103bded74bbd121ea over 50,226 canonical UTF-8 bytes. Solver/runtime/resource closure, execution, server-replayed proof receipts, and an output artifact remain absent; initializer_only cannot clear boson_star_branch_not_solved, candidate admissibility, or any empirical or physical claim.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-prolate-boson-star-newtonian-seed.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      seedAmplitude: "1",
+      newtonianEigenvalue: "1",
+      poissonResidualLInf: "1",
+      schrodingerResidualLInf: "1",
+      virialDefect: "1",
+      outputArrayCount: "1",
+      relativisticBranchSolved: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-prolate-boson-star-newtonian-seed-run-plan.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Sealed nonexecuting three-stage producer/verifier/assembler run-plan preregistration for the Newtonian initializer, with exact 8/40/42 input-ledger closure, static quota and seccomp policies, CLOCK_MONOTONIC_RAW chronology, independent replay, and final descriptor/container projection grammars. The run-plan binding is 3facc28fc62c9515a4c751f47ac9b6d90ab1179216d3d7c29c2a37b48e7e8f41 over 261,169 canonical UTF-8 bytes; the replay schema is e9e2742d6e3fa1c2549a7bbeee0e917bba311920732078040de10e3d6995fa78 over 5,492 bytes; and the evidence registry is b048a86ef1932cc06bd2d1c829011aa1df8341621ded24e4be13c8fdc4c54c9e over 120,618 bytes. OCI images, closed ledgers, typed interpreter, capabilities, loaded-filter/quota/deadline/enforcement receipts, launch APIs, execution, and output are absent or null; all artifact and claim locks remain false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-prolate-boson-star-newtonian-seed-run-plan.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      executionStageCount: "1",
+      producerInputFileCount: "1",
+      verifierInputFileCount: "1",
+      assemblerInputFileCount: "1",
+      outputArrayCount: "1",
+      executionAuthorized: "1",
+      outputArtifactPresent: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-prolate-boson-star-newtonian-seed-run-plan.v2.ts",
+    stage: "diagnostic",
+    notes:
+      "Additive sealed nonexecuting successor preregistration that exact-pins run-plan v1 and adds trusted-broker read-only runtime-evidence channels for the verifier and assembler while preserving the predecessor input-ledger surfaces. The v2 plan binding is c2483042ce046e2226e83ef9a3e90b381fe583483c0810ebd99d0af643c52f3f over 128,964 canonical UTF-8 bytes; the runtime-channel schema registry binding is 3aae03da02aca1ec23210eeba24536bca6cca880241c18778bf335fad78df284 over 52,841 bytes. All 45 predecessor claim locks remain false, and all 10 successor claim locks are false. Source, capability, typed-interpreter, runtime-provider, execution, and artifact authority remain absent, null, or false; this preregistration records no execution and produces no output artifact.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-prolate-boson-star-newtonian-seed-run-plan.v2.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      successorStageCount: "1",
+      runtimeChannelSchemaBindingCount: "1",
+      predecessorClaimLockCount: "1",
+      successorClaimLockCount: "1",
+      executionAuthorized: "1",
+      outputArtifactPresent: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-conformally-flat-needle-scalar-candidate-pack-materializer.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned deterministic in-memory reader for the blocked conformally-flat scalar candidate-pack plan. It accepts no timestamps, filesystem roots, output locations, tensor overrides, or producer-authored promotion claims; returns fresh hash-checked buffers only for the fourteen admitted inputs; rejects all eight unresolved inputs; and has no candidate-manifest success branch.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-conformally-flat-needle-scalar-candidate-pack-materializer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      readyScientificInputCount: "1",
+      missingScientificInputCount: "1",
+      emittedCandidateManifestBytes: "1",
+      replayAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-semiclassical-v2-science-derivation-authority.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed pre-execution science-derivation preflight. It exact-binds eighteen versioned semantic inputs plus frozen normalization and server policy, a fixed acyclic derivation DAG, Hadamard-state evidence, mean/noise/bracket/uncertainty witnesses, anomaly evidence with counterterm binding, and the mandatory mean-demand closure identity. Hashes and witness identities are bindings rather than proof: server byte-derivation replay and genuinely independent agreement remain explicit blockers, and every replay, lamp, closure, empirical, physical, propulsion, and transport claim is false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-v2-science-derivation-authority.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      semanticInputCount: "1",
+      derivationDagEdgeCount: "1",
+      uncertaintyOutputRoleCount: "1",
+      meanMetricDemandClosureAuthority: "1",
+      independentAgreementEstablished: "1",
+      theoryGraphLampPromotionAllowed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-semiclassical-v2-scientific-candidate-manifest.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Science-only, output-free semiclassical-v2 candidate freeze over exactly twenty-two non-self scientific inputs. Canonical external bytes become the twenty-third preseal entry. The version-2 server policy, state-derived non-lever provenance, N=64 metric demand, componentwise deterministic error bound, binding-only derivation receipt, lower-bound nondegeneracy criterion, and false claim locks are exact. The candidate contract grants no persistence, derivation replay, independence, lamp, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-v2-scientific-candidate-manifest.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      scientificInputCount: "1",
+      metricDemandSampleCount: "1",
+      metricDemandFrobeniusFloor: "M L^-1 T^-2",
+      metricDemandAbsoluteErrorBound: "M L^-1 T^-2",
+      requiredNondegenerateSampleFraction: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-semiclassical-v2-scientific-preseal.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-only scientific-preseal contract binding canonical candidate bytes plus the exact ordered twenty-two scientific inputs, version-2 policy, staged-root identity, freeze-before-seal chronology, all-64 demand-lower coverage, the central/error/derivation-receipt cross-binding, two private run plans, deterministic reseal exclusion, and false claim locks. Demand executor provenance and interval-trace authority, exclusive persistence time, and isolation remain external receipt obligations.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-v2-scientific-preseal.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      sealedScientificInputCount: "1",
+      finiteMetricDemandValueCount: "1",
+      observedNondegenerateSampleFraction: "1",
+      minimumObservedSampleFrobenius: "M L^-1 T^-2",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-semiclassical-v2-scientific-presealer.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned pre-execution staging boundary for the canonical twenty-three-file semiclassical-v2 science inventory. It securely reopens source bytes, verifies the version-2 policy, recomputes all-64 demand-lower coverage from central and strictly positive error-bound arrays, cross-binds the binding-only derivation receipt, creates a non-overwriting sealed root, securely rereads it, exclusively persists one deterministic preseal, and emits a persistence-readback receipt. Interval-trace/executor derivation replay, root authorization, OS isolation, independence, lamps, theory closure, and all physical claims remain locked.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-scientific-presealer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      stagedScientificInputCount: "1",
+      metricDemandSampleCount: "1",
+      metricDemandValueCount: "1",
+      persistenceObservedAt: "T",
+      independentAgreementEstablished: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-semiclassical-v2-run-replayer.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned calculation over bounded exact-inventory filesystem snapshots for one semiclassical-v2 run. It securely reopens the canonical raw manifest, scientific/toolchain inputs, and created-or-modified float64 outputs; verifies hashes, sizes, object identities, topology, encodings, and run timing; reconstructs the immutable server policy; and invokes the deeply immutable content replay over unique byte-decoded buffers. It does not claim a globally current snapshot, server-authorized roots, absent-file prestate, same-user mutation exclusion, pre-execution sealing, isolation, independence, lamp promotion, theory closure, empirical validation, viability, propulsion, or transport.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-run-replayer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      inputFileCount: "1",
+      outputFileCount: "1",
+      fileSizeBytes: "1",
+      processDuration: "T",
+      metricDemandSampleFraction: "1",
+      contentReplayCalculationCompleted: "1",
+      theoryGraphLampPromotionAllowed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-semiclassical-v2-pair-agreement.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed version-2 two-run agreement contract over exactly 32 raw array roles and 108 indexed replay-metric leaves, including mean uncertainty, demand lower/error summaries, and conservative pointwise mean-demand closure summaries. It separately binds the hardened scientific-preseal persistence receipt, persisted preseal content, launch persistence, server-authorized disjoint roots, output prestates, OS-isolation attestations, distinct lineages, run provenance, and pair-receipt integrity. Schema/self-hash checks do not authenticate server origin, and every lamp, theory-closure, empirical, physical, propulsion, and transport claim remains false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-semiclassical-v2-pair-agreement.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      rawArrayRoleCount: "1",
+      replayMetricLeafCount: "1",
+      presealPersistenceObservedAt: "T",
+      launchSealPersistenceObservedAt: "T",
+      independentAgreementEstablished: "1",
+      theoryGraphLampPromotionAllowed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-semiclassical-v2-pair-comparator.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned version-2 calculation-only comparator for two completed semiclassical-v2 snapshots. It rehashes canonical manifest and raw output bytes, validates exact manifest and run-replay bindings, compares all 32 descriptors and byte arrays, and exhaustively compares the frozen 108-leaf replay surface plus the complete replay envelope. It preserves exact agreement on a frozen candidate failure without authorizing retuning, but does not itself establish implementation independence, terminal receipt authority, lamp promotion, theory closure, empirical validation, physical viability, propulsion, or transport.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-pair-comparator.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      rawArrayRoleCount: "1",
+      replayMetricLeafCount: "1",
+      maximumAbsoluteDelta: "1",
+      maximumRelativeDelta: "1",
+      agreementProjectionAuthority: "1",
+      theoryGraphLampPromotionAllowed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-semiclassical-v2-pair-execution-catalog.ts",
+    stage: "diagnostic",
+    notes:
+      "Opaque server-only enrollment boundary for a future primary/independent semiclassical-v2 pair. Public requests cannot author paths, commands, policies, receipts, attestations, or snapshots. The default production catalog is intentionally empty, test catalogs are permanently non-authoritative, and no lifecycle callback can run without a server-installed audited production capability. No production isolated pair enrollment currently exists.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-pair-execution-catalog.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      enrollmentCount: "1",
+      authorizedRootLeaseCount: "1",
+      isolatedExecutionDomainCount: "1",
+      productionLifecycleEnabled: "1",
+      theoryGraphLampPromotionAllowed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-semiclassical-v2-pair-coordinator.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed server coordinator admission boundary for one presealed semiclassical-v2 pair. It accepts only opaque catalog, candidate, and preseal receipt identifiers; securely rereads and cross-binds the persisted scientific preseal; and refuses at root-and-lineage admission because no server observation yet binds realpath/filesystem identity, the exact twenty-three-file sealed inventory, and each read-only lane mount into a launch seal. It does not invoke prestate, sandbox, solver, replayer, comparator, or receipt callbacks and cannot emit pair, lamp, theory, empirical, physical, propulsion, or transport authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-semiclassical-v2-pair-coordinator.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      opaquePublicIdentifierCount: "1",
+      presealArtifactSizeBytes: "1",
+      lifecycleTransitionCount: "1",
+      productionPairReceiptCreated: "1",
+      theoryGraphLampPromotionAllowed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-prediction-falsifier-freeze.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Immutable pre-data NHM2 prediction, covariance, null-control, blinding, decision, falsifier, analysis-environment, registration-receipt, and supersession contract with empirical claim locks.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-prediction-falsifier-freeze.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      frozenAt: "T",
+      dataCollectionOpensAt: "T",
+      coverageProbability: "1",
+      familywiseAlpha: "1",
+      blockerCount: "1",
+      predictionFreezeReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-numerical-observable-prediction.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Exact pre-data numerical-observable prediction contract requiring finite ordered distributions, explicit sign/phase and scaling, run/source/uncertainty derivation hashes, and theory-only claim locks; null diagnostic seeds cannot satisfy it.",
+    checks: [
+      {
+        type: "stability",
+        path: "shared/contracts/__tests__/nhm2-numerical-observable-prediction.v1.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      generatedAt: "T",
+      frozenAt: "T",
+      coverageProbability: "1",
+      empiricalDataUsed: "1",
+      diagnosticSeed: "1",
+      physicalPredictionAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-tile-cycle-energy-ledger.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed one-cycle NHM2 energy ledger with declared system boundary and reservoirs, mutually exclusive import/export channels, signed stored-energy change, uncertainty-aware first-law closure, input-exergy attribution, and permanent source/viability/propulsion/transport claim locks; plain TypeScript evidence remains unauthenticated.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-tile-cycle-energy-ledger.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      cyclePeriodSeconds: "T",
+      declaredCycleFrequencyHz: "T^-1",
+      totalImportedEnergyJ: "M L^2 T^-2",
+      totalExportedEnergyJ: "M L^2 T^-2",
+      storedEnergyDeltaJ: "M L^2 T^-2",
+      firstLawResidualJ: "M L^2 T^-2",
+      usefulPowerW: "M L^2 T^-3",
+      exergyEfficiency: "1",
+      diagnosticCycleComputationComplete: "1",
+      cycleEnergyLedgerReceiptReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/nhm2-casimir-cycle-work.ts",
+    stage: "diagnostic",
+    notes:
+      "Bounded two-state Casimir force-loop work integrator for a fixed 96 nm coupon campaign, with exact shared-grid admission, propagated force uncertainty, explicit operating-energy and input-exergy accounting, a gap-only null control, thermal Carnot bound, reservoir blockers, and permanent vacuum-extraction/viability/propulsion/transport locks.",
+    checks: [
+      { type: "stability", path: "tests/nhm2-casimir-cycle-work.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      couponTargetGapMeters: "L",
+      forceNewtons: "M L T^-2",
+      grossMechanicalWorkByFieldJ: "M L^2 T^-2",
+      integratedForceUncertaintyJ: "M L^2 T^-2",
+      totalKnownOperatingInputJ: "M L^2 T^-2",
+      identifiedInputExergyJ: "M L^2 T^-2",
+      exergyEfficiency: "1",
+      carnotEfficiencyLimit: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-full-apparatus-source-tensor.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Run-bound same-chart full-apparatus T_mu_nu contract with all ten components, supports, controls, material and return terms, source-provenance DAG, non-echo audit, convergence, and uncertainty-aware residuals.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-full-apparatus-source-tensor.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      metricSignalNormSI: "M L^-1 T^-2",
+      relativeResidualUpper95: "1",
+      observedConvergenceOrder: "1",
+      spatialSampleCount: "1",
+      fullApparatusSourceTensorReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-covariant-conservation.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Run-bound covariant conservation contract for the exact full-apparatus source tensor, including four-divergence components, discrete global balance, cycle energy ledger, convergence, and uncertainty propagation.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-covariant-conservation.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      divergenceResidualSI: "M L^-2 T^-2",
+      globalBalancePower: "M L^2 T^-3",
+      cycleEnergyResidual: "1",
+      observedConvergenceOrder: "1",
+      covariantConservationReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-dynamic-backreaction-stability-causality.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Nontrivial time-domain BSSN contract with candidate-frozen minimum samples and normalized switching/light-crossing/control-cycle horizons, semiclassical backreaction, stability, characteristic, ray, particle, causality, convergence, and exact source bindings.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-dynamic-backreaction-stability-causality.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      timestep: "T",
+      duration: "T",
+      switchingPeriod: "T",
+      lightCrossingTime: "T",
+      controlCyclePeriod: "T",
+      normalizedHorizon: "1",
+      evolutionSampleCount: "1",
+      constraintResidual: "1",
+      backreactionResidual: "1",
+      perturbationGrowth: "T^-1",
+      dynamicBackreactionStabilityCausalityReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-continuous-observer-optimizer.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Continuous timelike/null observer-manifold optimization contract with exact full-source binding, candidate-frozen spatial/null-direction sample minima and convergence order, globality evidence, uncertainty, contradiction handling, and complete admitted-domain coverage.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-continuous-observer-optimizer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      coverageFraction: "1",
+      globalityGap: "1",
+      objectiveValue: "M L^-1 T^-2",
+      spatialSampleCount: "1",
+      nullDirectionCount: "1",
+      observedConvergenceOrder: "1",
+      continuousObserverOptimizerReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-worldline-qei-coverage.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Same-state worldline-QEI contract for explicit timelike trajectories with candidate-frozen family density, per-worldline sample and convergence minima, observer kinematics, curvature invariants, normalized sampling, theorem applicability, regional coverage, and uncertainty-aware margins.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-worldline-qei-coverage.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      fourVelocityNormalizationError: "1",
+      samplingIntegralError: "1",
+      combinedNumericalErrorRelative: "1",
+      samplingFunctionFamilyCount: "1",
+      worldlinesPerRegionFamily: "1",
+      samplesPerWorldline: "1",
+      observedConvergenceOrder: "1",
+      minimumMarginSI: "M L^-1 T^-2",
+      worldlineQeiCoverageReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/casimir-finite-temperature-finite-geometry-maxwell-stress.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Finite-temperature Lifshitz and finite-CAD Maxwell-stress contract with measured dielectric response, Matsubara and mesh convergence, nonlocal disposition, force-gap gradients, realistic uncertainty, and independent cross-checks.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/casimir-finite-temperature-finite-geometry-maxwell-stress.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      targetGap: "L",
+      pressure: "M L^-1 T^-2",
+      integratedForce: "M L T^-2",
+      forceGradient: "M T^-2",
+      relativeUncertainty: "1",
+      finiteTemperatureFiniteGeometryMaxwellStressReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-mechanical-support-control-margin.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Realistic force-gradient, nonlinear FEA, support-retention overlap, instability, structural, fabrication, active-control, cycle-energy, and apparatus stress-energy return contract.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-mechanical-support-control-margin.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      forceGradient: "M T^-2",
+      supportRetentionOverlap: "1",
+      structuralMargin: "1",
+      controlEnergy: "M L^2 T^-2",
+      cycleEnergyResidual: "1",
+      mechanicalSupportControlMarginReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-independent-numerical-replication.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Independent cold-run numerical replay contract with distinct implementation and independence group, exact pre-run invocation, frozen inputs and environments, raw field-level comparisons, uncertainty disposition, and reproducibility pins. Producer-declared comparison metadata is now permanently non-promoting; readiness requires a future server-owned nine-field float64 readback and recomputation receipt bound to both strict manifests.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-independent-numerical-replication.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      maximumFieldDifference: "1",
+      fieldComparisonTolerance: "1",
+      uncertaintyConfidenceLevel: "1",
+      comparedFieldCount: "1",
+      independentNumericalReplicationReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-independent-numerical-execution-descriptor.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Administrative-only external execution descriptor for the independent lane. It pins a distinct implementation source closure, approved server policy, executable, toolchain, target, environment, and primary-lineage anti-alias bindings while granting neither launch nor scientific authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-independent-numerical-execution-descriptor.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      sourceClosureEntryCount: "1",
+      sourceClosureAggregateBytes: "1",
+      toolchainEntryCount: "1",
+      executableSizeBytes: "1",
+      independentNumericalReplicationReady: "1",
+      physicalViabilityEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-independent-field-array-manifest.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Strict nine-field independent comparison-array manifest with exact component order and units, ordered sample-domain identity, float64 encoding, convergence and uncertainty derivations, a frozen relative-L-infinity policy, and complete run/candidate/primary-projection bindings. External sidecar admission remains explicitly pending.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-independent-field-array-manifest.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      requiredFieldCount: "1",
+      sampleCount: "1",
+      domainCoverageFraction: "1",
+      observedConvergenceOrder: "1",
+      maximumRelativeLInf: "1",
+      physicalViabilityEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "shared/contracts/nhm2-server-owned-nine-field-float64-replay-receipt.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Strict schema for a future server-owned nine-field float64 replay receipt. It binds the primary projection/operator replay, independent field manifest, exact 50-component metric ledger, readback inventory, and prerequisite declarations while explicitly denying schema-derived claim authority and every physical or empirical claim.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-server-owned-nine-field-float64-replay-receipt.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      requiredFieldCount: "1",
+      requiredComponentCount: "1",
+      sampleCount: "1",
+      maximumRelativeLInf: "1",
+      readbackDuration: "T",
+      claimAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-secure-run-output-reader.ts",
+    stage: "diagnostic",
+    notes:
+      "Authority-neutral bounded run-output reader with exact inventory, portable-path and realpath containment, link and identity rejection, resource caps, handle-based exact reads, double replay, SHA-256 binding, and finite little-endian float64 decoding. Filesystem readback alone grants no scientific authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-secure-run-output-reader.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      outputFileCount: "1",
+      outputSizeBytes: "1",
+      aggregateSizeBytes: "1",
+      float64ElementCount: "1",
+      scientificSemanticsAssessed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-nine-field-float64-metric-kernel.ts",
+    stage: "diagnostic",
+    notes:
+      "Deterministic authority-neutral kernel for the exact nine-field, 50-component little-endian float64 comparison. It uses a non-tunable minimum-positive technical zero guard, componentwise primary-reference relative L-infinity reduction, strict finite arithmetic, and deterministic argmax selection while keeping theory and physical claims false.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-nine-field-float64-metric-kernel.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      requiredFieldCount: "1",
+      requiredComponentCount: "1",
+      sampleCount: "1",
+      maximumRelativeLInf: "1",
+      comparisonTolerance: "1",
+      claimAuthority: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-independent-numerical-replication-content-assessor.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed independent-output content assessor. It reopens the current opaque external observation and enumerates the exact nine field/domain/uncertainty comparisons, but remains not_evaluable until the executor inventory admits and the server replays the typed field-array sidecar closure.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-independent-numerical-replication-content-assessor.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      requiredComparisonCount: "1",
+      recomputedComparisonCount: "1",
+      relativeLInfTolerance: "1",
+      outputByteCount: "1",
+      independentNumericalReplicationReady: "1",
+      theoryClosureEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-independent-numerical-replication-executor.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned independent external-process observer requiring an immutable installed toolchain policy, a pre-primary hash-addressed candidate-input-only preseal, verified primary receipt retained exclusively for post-run comparison, exact source/toolchain/environment identities, and fresh closed output inventory. Primary output paths, hashes, and bytes are forbidden from the child ledger; production remains fail-closed until the pre-primary store and OS-level output isolation are configured. Process observation alone cannot establish implementation independence or scientific agreement.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-independent-numerical-replication-executor.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      frozenCandidateInputCount: "1",
+      executableSizeBytes: "1",
+      processDuration: "T",
+      outputInventorySha256: "1",
+      theoryClosureClaimAllowed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-independent-runtime-plan-admission.ts",
+    stage: "diagnostic",
+    notes:
+      "No-launch production admission boundary for the independent lane. Its public API accepts only project root and candidate path, resolves policy solely through the server, and currently returns typed not_configured before reading candidate, descriptor, receipt, preseal, or process state.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-independent-runtime-plan-admission.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      manifestReadAttempted: "1",
+      presealPersistenceAttempted: "1",
+      processLaunchAttempted: "1",
+      runtimePlanAdmitted: "1",
+      independentNumericalReplicationReady: "1",
+      physicalViabilityEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-formal-kernel-replay-manifest.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Legacy self-consistency manifest for a claimed Lean-kernel replay. It verifies its referenced-byte and transcript structure without invoking or independently observing Lean, so it is superseded for formal authority by the outer-observation v2 adapter and cannot establish execution or proof authority on its own.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-formal-kernel-replay-manifest.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-formal-kernel-replay-filesystem-verifier.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      preRunSourceCount: "1",
+      replayedTheoremCount: "1",
+      usedAxiomCount: "1",
+      usedAssumptionCount: "1",
+      kernelExitCode: "1",
+      physicalViabilityClaimAllowed: "1",
+      transportClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-primary-raw-output-manifest.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Raw-only primary-output protocol with a hash-bound nonvacuous role policy, exact frozen input and family closure, typed finite arrays, canonical record schemas, closed claim authority, and an outer filesystem verifier that recomputes hashes and freshness without accepting producer-authored scientific dispositions.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-primary-raw-output-manifest.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-primary-raw-output-filesystem-verifier.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      rawFamilyCount: "1",
+      rawFileCount: "1",
+      rawSampleCount: "1",
+      float64ByteCount: "1",
+      inputClosureSha256: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-primary-raw-solver-suite-enrollment.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Administrative-only enrollment contract for a genuine primary raw solver suite. It binds the canonical nine-family, 107-role DAG and policy hash to pinned external/formal kernels, the producer bundle, manifest-last closed inventory, and server-only governed-root publication while keeping execution and every scientific claim false.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-primary-raw-solver-suite-enrollment.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      familyCount: "1",
+      roleCount: "1",
+      kernelEnrollmentCount: "1",
+      sourceClosureAggregateBytes: "1",
+      executionAuthorized: "1",
+      physicalViabilityEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-primary-comparison-projection.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Frozen server-owned comparison policy for exactly nine primary arrays derived only from primitive raw roles. It fixes component order and units, minimum sample counts, ordered-domain identity, projection and uncertainty derivations, float64 encoding, and pre-independent-spawn freeze semantics.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-primary-comparison-projection-assessor.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      projectionFieldCount: "1",
+      minimumSampleCount: "1",
+      tensorComponentCount: "1",
+      uncertaintyConfidenceLevel: "1",
+      projectionReplayPerformed: "1",
+      physicalViabilityEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-primary-comparison-projection-assessor.ts",
+    stage: "diagnostic",
+    notes:
+      "Strict assessment of a primary comparison projection against verified raw inputs and a server-owned freeze admission. Metadata conformance is explicitly not array readback or operator replay, and any absent binding leaves all nine fields not_ready.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-primary-comparison-projection-assessor.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      assessedFieldCount: "1",
+      outputFilesystemReadbackPerformed: "1",
+      orderedDomainFilesystemReadbackPerformed: "1",
+      serverOwnedProjectionReplayPerformed: "1",
+      primaryComparisonProjectionReady: "1",
+      theoryClosureEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-primary-comparison-projection-finalizer.ts",
+    stage: "diagnostic",
+    notes:
+      "P0 server-owned finalizer that publishes one immutable assessment sidecar after raw-package verification. It records exact raw manifest, input-closure, and file-inventory hashes, emits no projected arrays, and forces the projection gate to not_ready until a real server replay exists.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-primary-comparison-projection-finalizer.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      supplementaryRootCount: "1",
+      assessmentSizeBytes: "1",
+      rawFilesystemVerificationObserved: "1",
+      serverOwnedProjectionReplayPerformed: "1",
+      primaryComparisonProjectionReady: "1",
+      physicalViabilityEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-primary-raw-gr-content-replay.ts",
+    stage: "diagnostic",
+    notes:
+      "Outer-owned GR replay that requires the complete field/material/support/control/return source-term set with non-target hashed input bindings, recomputes same-chart apparatus sums, tensor residuals, all four covariant-conservation components, observer objectives, sparse worldline tensor/metric pullbacks, and QEI inputs from filesystem-verified primitives while retaining independent non-echo, global-observer, and theorem-binding blockers.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-primary-raw-gr-content-replay.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      spatialSampleCount: "1",
+      tensorComponentCount: "1",
+      relativeResidual: "1",
+      energyDensity: "M L^-1 T^-2",
+      qeiMargin: "M L^-1 T^-2",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-primary-raw-material-dynamics-content-replay.ts",
+    stage: "diagnostic",
+    notes:
+      "Outer-owned post-processing replay for semiclassical bookkeeping, Maxwell stress and force gradients, mechanical residual/support/control arithmetic, dynamics diagnostics, and numerical observables. Foundational Hadamard/RSET, Green-operator, nonlinear-FEA, receipt-content, feedback, and BSSN kernels remain explicit blockers.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-primary-raw-material-dynamics-content-replay.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      sampleCount: "1",
+      energyDensity: "M L^-1 T^-2",
+      force: "M L T^-2",
+      forceGradient: "M T^-2",
+      cycleEnergy: "M L^2 T^-2",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-primary-raw-experiment-ready-evidence-compiler.ts",
+    stage: "diagnostic",
+    notes:
+      "Production outer compiler that reopens run-specific raw filesystem evidence, constructs independent GR and material/dynamics replays, rehashes canonical primitives, maps all eight primary evidence families, rejects caller-forged dispositions, and preserves every unresolved scientific-kernel and empirical claim lock.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-primary-raw-experiment-ready-evidence-compiler.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      evidenceFamilyCount: "1",
+      rawFileCount: "1",
+      replayIntegrity: "1",
+      unresolvedKernelBlockerCount: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-external-numerical-kernel-executor.ts",
+    stage: "diagnostic",
+    notes:
+      "Sealed external-binary execution observer for governed warpax, SCUFF-EM, CalculiX, and Einstein Toolkit lanes. It copies the exact sealed toolchain from identity-checked handles into a fresh run-owned closure, launches the staged executable, replays staged/source ledgers and fresh outputs, and records timing, cleanup, and the residual same-user OS-immutability blocker; no scientific or physical authority is granted before independent content replay.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-external-numerical-kernel-executor.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      toolchainByteCount: "1",
+      inputByteCount: "1",
+      outputByteCount: "1",
+      processDuration: "T",
+      outputInventorySha256: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-warpax-frame-free-external-plan.ts",
+    stage: "diagnostic",
+    notes:
+      "Pinned warpax v1.3 frame-free sampled-observer lane over same-chart covariant T_ab and g_ab arrays. It binds the official package and critical source hashes, independently replays Type-I margins, forbids BFGS substitution for non-Type-I samples, and retains explicit sampled-to-continuum, global-interval, scientific-replay, and upstream tolerance-forwarding blockers.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-warpax-frame-free-external-plan.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      sampledSpacetimePointCount: "1",
+      requestedTolerance: "1",
+      stressEnergy: "L^-2",
+      metric: "1",
+      typeIMargin: "L^-2",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-scuff-em-force-sweep-external-plan.ts",
+    stage: "diagnostic",
+    notes:
+      "Pinned SCUFF-EM scuff-cas3D equilibrium-Matsubara compact-geometry energy/z-force sweep plan. It seals exact source, executable, geometry, mesh, material-model, metrology, and transform bytes while retaining SI-conversion, force-gradient uncertainty, mesh convergence, material correspondence, and local Maxwell-stress traction blockers.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-scuff-em-force-sweep-external-plan.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      temperatureKelvin: "Theta",
+      baseGapMeters: "L",
+      separationMeters: "L",
+      relativeTolerance: "1",
+      rawScuffEnergy: "unresolved",
+      rawScuffForce: "unresolved",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-scuff-em-executor-receipt-admission.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned immutable SCUFF executor-receipt admission. Public replay accepts only an opaque receipt ID; admission securely reopens the persisted v2 observation, exact plan, complete source/build/toolchain provenance, and closed claim boundary, then rechecks receipt identity after content replay. Missing or invalid authority returns typed not-ready rather than execution evidence.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-scuff-em-force-sweep-partial-content-replay.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      receiptByteCount: "1",
+      sourceLedgerByteCount: "1",
+      toolchainLedgerByteCount: "1",
+      buildReceiptSha256: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-scuff-em-force-sweep-partial-content-replay.ts",
+    stage: "diagnostic",
+    notes:
+      "Receipt-admitted, byte-reopened partial scientific replay of one pinned SCUFF-EM scuff-cas3D run. It verifies the persisted v2 staged-toolchain observation, complete source/build binding, exact fresh three-file output, declared energy/z-force and Matsubara tables, print-precision Matsubara sequence, and raw central differences while retaining OS-hermeticity, SI, local-traction, mesh, material, convergence, and independent-replay blockers.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-scuff-em-force-sweep-partial-content-replay.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      separationMeters: "L",
+      temperatureKelvin: "Theta",
+      rawScuffEnergy: "unresolved",
+      rawScuffForce: "unresolved",
+      rawScuffForceGradient: "unresolved/L",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-calculix-mechanics-support-control-external-plan.ts",
+    stage: "diagnostic",
+    notes:
+      "Pinned CalculiX 2.23 full-apparatus mechanics/support/control plan binding the CAD/FEM deck closure, mesh, material coupons, SCUFF traction transfer, support, actuation, thermal, fatigue, contact, pull-in, nonlinear steps, and complete toolchain/input ledgers. Stock ccx is intentionally not admitted because its job-prefix and auxiliary-output behavior cannot yet satisfy the immutable separated-root exact-inventory executor contract.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-calculix-mechanics-support-control-external-plan.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      displacement: "L",
+      force: "M L T^-2",
+      stress: "M L^-1 T^-2",
+      temperature: "Theta",
+      time: "T",
+      supportRetentionOverlapRatio: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-prediction-bootstrap-freeze.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Acyclic two-run prediction bootstrap requiring a fresh generation receipt, six byte-reopened numerical predictions and provenance artifacts, deterministic content replay, and a distinct superseding reproduction candidate frozen before its run; empirical and physical authority remain closed.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-prediction-bootstrap-freeze.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-prediction-bootstrap-filesystem-verifier.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      frozenPredictionCount: "1",
+      predictionSetSha256: "1",
+      generationDuration: "T",
+      targetFreezeTime: "T",
+      physicalViabilityClaimAllowed: "1",
+      empiricalReceiptsRequired: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-prediction-run1-bootstrap.v2.ts",
+    stage: "diagnostic",
+    notes:
+      "Superseding six-observable run-1 bootstrap and compiler contract. It resolves a create-only digest-addressed runtime receipt through a server capability, replays filesystem freshness, reopens every run-bound source byte, composes a hashed governed unit-dimension registry across normalization/conversion/operator/uncertainty, recomputes the predictions, and reserves a distinct future target run with every theory, empirical, physical, and transport claim closed.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-prediction-run1-bootstrap-compiler.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      frozenPredictionCount: "1",
+      sourceComponent: "varies",
+      conversionScale: "varies",
+      interval95: "varies",
+      targetReceiptPresent: "1",
+      theoryClosureEstablished: "1",
+      physicalViabilityEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-formal-kernel-executor.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned exact-binary formal execution primitive that verifies sealed source, toolchain, and input ledgers before and after two cold Lean replays, requires the exact pre-experimental claim-lock theorem and empty axiom report, and records only outer-observed process/output evidence.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-formal-kernel-executor.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "formal/lean/NHM2Formal/ExperimentReadyClaimLocks.lean",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      coldReplayCount: "1",
+      theoremCount: "1",
+      usedAxiomCount: "1",
+      processDuration: "T",
+      sourceLedgerSha256: "1",
+      toolchainLedgerSha256: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-formal-approved-toolchain-policy.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned immutable diagnostic toolchain allowlist contract pinning Lean 4.31.0, its release commit, Lake's Lean binding, the repository lean-toolchain file, platform/architecture target, exact Lean/Lake binaries, full sorted root-independent dependency ledger, and environment. It approves only a replay toolchain identity and grants no formal-proof, theory, empirical, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-formal-approved-toolchain-policy-verifier.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      toolchainEntryCount: "1",
+      toolchainAggregateBytes: "1",
+      toolchainLedgerSha256: "1",
+      releaseCommitSha: "1",
+      theoryClosureClaimAllowed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-formal-approved-toolchain-policy-verifier.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed comparison of a presealed formal run against the server-owned toolchain policy. It exact-matches host target, repository toolchain file, complete ledger, executable roles and hashes, and environment while refusing caller version labels as authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-formal-approved-toolchain-policy-verifier.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      verifiedToolchainEntryCount: "1",
+      verifiedAggregateBytes: "1",
+      executableRoleCount: "1",
+      approvedEnvironmentEntryCount: "1",
+      callerReleaseLabelsAuthoritative: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2/enroll-formal-approved-toolchain-policy.ts",
+    stage: "diagnostic",
+    notes:
+      "Offline administrative enrollment of the immutable Lean/Lake policy. It scans and rehashes the complete toolchain tree, rejects aliases and linked files, directly observes exact version output under an empty environment, verifies the repository lean-toolchain bytes, and publishes a no-overwrite policy whose paths cannot be supplied by a runtime caller.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-enroll-formal-approved-toolchain-policy.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      toolchainEntryCount: "1",
+      toolchainAggregateBytes: "1",
+      executableRoleCount: "1",
+      policySemanticSha256: "1",
+      runtimeCallerPathAuthority: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2/preseal-experiment-ready-theory-formal-run.ts",
+    stage: "diagnostic",
+    notes:
+      "Run-specific direct-Lean preseal that stages exact candidate inputs, standalone formal sources, and the complete selected toolchain; rejects aliases, links, proof holes, imports, resource overflow, and non-plan staging paths; and emits a canonical closed-claim two-cold-replay spec. Caller-selected trusted roots remain developer-diagnostic inputs until production admission resolves them from an approved server-owned toolchain policy.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-preseal-experiment-ready-theory-formal-run.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      stagedInputFileCount: "1",
+      stagedSourceFileCount: "1",
+      stagedToolchainFileCount: "1",
+      timeout: "T",
+      capturedOutputByteCount: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-formal-outer-observation-evidence-adapter.ts",
+    stage: "diagnostic",
+    notes:
+      "Superseding formal-manifest certificate v2 derived only from an outer-observed direct-Lean execution artifact. It exact-binds the frozen candidate, formal plan and run spec, two distinct cold replays, native theorem/no-axiom transcripts, stable sealed ledgers, and fresh identical output inventories while granting no numerical, theory-closure, empirical, physical, transport, propulsion, ETA, or speed authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-formal-outer-observation-evidence-adapter.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      coldReplayCount: "1",
+      theoremCount: "1",
+      usedAxiomCount: "1",
+      transcriptSha256: "1",
+      outputInventorySha256: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2/run-experiment-ready-theory-formal-candidate.ts",
+    stage: "diagnostic",
+    notes:
+      "Top-level formal candidate producer that invokes the sealed two-cold-run wrapper, securely reopens bounded candidate/spec/outer artifacts, requires the plan-derived run-spec path, deterministically re-derives formal v2 evidence, and no-overwrite publishes only the formal certificate. Its child output still requires independent server-side replay and an approved toolchain policy before production authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-run-experiment-ready-theory-formal-candidate.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      coldReplayCount: "1",
+      inputByteLimit: "1",
+      evidenceByteCount: "1",
+      executionDuration: "T",
+      evidenceSha256: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-formal-producer-bundle.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Lane-distinct deterministic standalone ESM bundle contract for the formal outer producer. It freezes the complete bundled source/metafile closure, admits only external Node built-ins, requires no runtime node_modules, and remains host-specific diagnostic launch evidence rather than formal, numerical, or physical authority.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-prepare-experiment-ready-theory-candidate.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      bundledSourceFileCount: "1",
+      bundleByteCount: "1",
+      sourceSnapshotSha256: "1",
+      runtimeNodeModulesRequired: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-formal-producer-bundle-admission.ts",
+    stage: "diagnostic",
+    notes:
+      "Dedicated formal-lane bundle admission component that reopens bounded single-link files, exact-matches candidate and solver refs, replays the esbuild metafile/source closure, hashes the actual host Node binary, and rejects primary-lane substitution. It establishes only a reproducible outer launcher; formal, theory, empirical, and physical authority remain closed.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-prepare-experiment-ready-theory-candidate.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      bundledSourceFileCount: "1",
+      aggregateSourceByteCount: "1",
+      bundleByteCount: "1",
+      hostRuntimeByteCount: "1",
+      theoryClosureEstablished: "1",
+      physicalViabilityEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-formal-runtime-plan-admission.ts",
+    stage: "diagnostic",
+    notes:
+      "Server-owned formal-plan admission accepting only candidateManifestPath. It recomputes run identities and the exact v2 evidence/output route, admits the formal-only standalone bundle, invokes preseal, verifies the complete approved toolchain policy, and defaults to typed not_configured when no server resolver is installed.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-formal-runtime-lane.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      approvedToolchainEntryCount: "1",
+      approvedToolchainAggregateBytes: "1",
+      expectedFormalOutputCount: "1",
+      formalAdmissionOnly: "1",
+      theoryClosureEstablished: "1",
+      physicalViabilityEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-formal-runtime-executor.ts",
+    stage: "diagnostic",
+    notes:
+      "Single-launch formal runtime that binds actual NUL-delimited Git porcelain digests and exact authorized runtime deltas, rehashes every admitted input and launcher before/after the host-Node producer, accepts exactly four fresh outputs, independently re-derives v2 formal evidence, and persists an immutable external receipt. Unauthorized source-state or child/evidence failure is not-ready diagnostic evidence, never physical falsification.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-formal-runtime-lane.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      executionDuration: "T",
+      exactFormalOutputCount: "1",
+      approvedToolchainEntryCount: "1",
+      outputInventorySha256: "1",
+      theoryClosureEstablished: "1",
+      physicalViabilityEstablished: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "shared/contracts/nhm2-formal-manifest-certificate.v1.ts",
+    stage: "diagnostic",
+    notes:
+      "Legacy formal-certificate structure for candidate commitment, theorem scope, typed assumptions, and closed physical/transport/propulsion/ETA/speed claim locks. Its replay claims are self-authored and therefore superseded for formal authority by the outer-observation v2 adapter.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-formal-manifest-certificate.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      merkleLeafCount: "1",
+      sourceMismatchCount: "1",
+      replayedTheoremCount: "1",
+      unscopedAssumptionCount: "1",
+      formalManifestCertificateReady: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/nhm2-experiment-ready-theory-closure-evaluator.ts",
+    stage: "diagnostic",
+    notes:
+      "Independent filesystem replay authority for pre-run candidate commitments, persisted receipts, fresh hashed evidence, exact raw-domain adapters, cross-artifact source bindings, frozen numeric policies, and fail-closed theory-closure status.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-experiment-ready-theory-closure-evaluator.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      gateStatus: "1",
+      filesystemVerified: "1",
+      candidateManifestValidated: "1",
+      evidenceAdapterCoverageComplete: "1",
+      blockerCount: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2/prepare-experiment-ready-theory-candidate.ts",
+    stage: "diagnostic",
+    notes:
+      "Immutable pre-run NHM2 candidate packager with governed historical-seed isolation, committed descriptor hashes, cycle-safe frozen prediction semantics, and closed empirical claim authority. Production publication now fails before filesystem mutation until both the primary raw solver-suite producer and independent external execution enrollment exist; only a path-restricted temporary contract-test fixture may inspect the unexecutable draft.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-prepare-experiment-ready-theory-candidate.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      executionPlanCount: "1",
+      expectedEvidenceCount: "1",
+      pinnedInputCount: "1",
+      manifestFrozenAt: "T",
+      predictionSemanticDigestBound: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "tools/nhm2/run-experiment-ready-theory-primary.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed primary child boundary. Production exits before touching the run tree until a genuine solver-suite producer can emit the canonical 107-role primitive raw package; the former nine governed-wrapper builder is restricted to path-guarded temporary contract tests because only the server may publish governed evidence roots.",
+    checks: [
+      {
+        type: "stability",
+        path: "tests/nhm2-run-experiment-ready-theory-primary.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      requiredRawRoleCount: "1",
+      childGovernedEvidenceAuthority: "1",
+      producerDuration: "T",
+      theoryClosureStatus: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-theory-candidate-plan-admission.ts",
+    stage: "diagnostic",
+    notes:
+      "Pre-spawn NHM2 plan admission requiring exact Git source, a clean tree, immutable descriptor/reference closure, exact server-owned invocation and environment, resolved manifest digest, and an empty confined output directory.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-theory-candidate-plan-admission.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      admittedEvidenceCount: "1",
+      pinnedInputCount: "1",
+      sourceTreeClean: "1",
+      frozenBeforeExecution: "1",
+      manifestDigestResolved: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-evidence-nested-reference-verifier.ts",
+    stage: "diagnostic",
+    notes:
+      "Filesystem verifier for nested evidence references requiring exact containment, non-symlink files, SHA-256 and receipt-manifest agreement, fresh output status, and float64 shape/byte-length consistency.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-evidence-nested-reference-verifier.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      referenceCount: "1",
+      sizeBytes: "1",
+      expectedFloat64Bytes: "1",
+      verified: "1",
+      blockerCount: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module: "server/services/theory/nhm2-theory-candidate-primary-executor.ts",
+    stage: "diagnostic",
+    notes:
+      "Dedicated manifest-admitted NHM2 primary executor that binds a clean stable Git source, pre-spawn freshness commitment, exact nine-artifact output inventory, process interval, persisted receipt, and terminal request status while theory closure and physical claim promotion remain blocked.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-theory-candidate-primary-executor.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      expectedEvidenceCount: "1",
+      freshEvidenceCount: "1",
+      executionDuration: "T",
+      sourceTreeStable: "1",
+      artifactFreshnessVerified: "1",
+      theoryClosureStatus: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_AUDIT",
+    module:
+      "server/services/theory/runtime-jobs/nhm2-primary-runtime-dispatch.ts",
+    stage: "diagnostic",
+    notes:
+      "Production NHM2 primary launch handler with server-owned admission, executor-exclusive request creation, shared in-flight poll ownership, immutable receipt projection, terminal recovery, explicit legacy-runner exclusion, and unchanged physical claim locks.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/services/theory/__tests__/nhm2-primary-runtime-dispatch.spec.ts",
+      },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      inFlightOwnership: "1",
+      requestIdentityStable: "1",
+      immutableReceiptProjected: "1",
+      terminalStatus: "1",
+      legacyExecutionAllowed: "1",
+      physicalViabilityClaimAllowed: "1",
+    },
+  },
+  {
+    tag: "WARP_POLICY",
+    module: "modules/physics/warpAgents.ts",
+    stage: "reduced-order",
+    notes: "Warp guardrail definitions (policy registry).",
+    checks: [
+      { type: "test", path: "tests/theory-checks.spec.ts" },
+      { type: "policy", path: "WARP_AGENTS.md" },
+    ],
+    units: {
+      H_rms_max: "1",
+      M_rms_max: "1",
+      H_maxAbs_max: "1",
+      M_maxAbs_max: "1",
+      maxSamples: "1",
+      concurrency: "1",
+      topK: "1",
+    },
+  },
+  {
+    tag: "TRACE",
+    module: "server/services/observability/training-trace-store.ts",
+    stage: "diagnostic",
+    notes: "Training trace storage and export (audit/data flywheel).",
+    checks: [
+      { type: "stability", path: "server/__tests__/training-trace.test.ts" },
+    ],
+    units: {
+      seq: "1",
+      ts: "T",
+      pass: "1",
+    },
+  },
+  {
+    tag: "TRACE",
+    module: "server/routes/training-trace.ts",
+    stage: "diagnostic",
+    notes: "Training trace API routes (ingest/list/export).",
+    checks: [
+      { type: "stability", path: "server/__tests__/training-trace.test.ts" },
+    ],
+    units: {
+      limit: "1",
+      ts: "T",
+      pass: "1",
+    },
+  },
+  {
+    tag: "GR_AUDIT",
+    module: "server/services/observability/gr-agent-loop-store.ts",
+    stage: "diagnostic",
+    notes: "GR agent loop audit log storage.",
+    checks: [
+      { type: "residual", path: "tests/gr-agent-loop.spec.ts" },
+      { type: "stability", path: "tests/gr-agent-loop.spec.ts" },
+    ],
+    units: {
+      duration_ms: "T",
+      attempts: "1",
+      accepted: "1",
+      H_rms: "1",
+      M_rms: "1",
+      H_maxAbs: "1",
+      M_maxAbs: "1",
+    },
+  },
+  {
+    tag: "LOG_STORE",
+    module: "server/services/observability/tool-log-store.ts",
+    stage: "exploratory",
+    notes: "Tool log store (non-math telemetry).",
+    checks: [{ type: "doc", path: "docs/TRACE-API.md" }],
+    units: {
+      durationMs: "T",
+      ts: "T",
+      seq: "1",
+      limit: "1",
+      bufferSize: "1",
+      ok: "1",
+    },
+  },
+  {
+    tag: "ADAPTER",
+    module: "server/routes/agi.adapter.ts",
+    stage: "diagnostic",
+    notes: "Adapter API (actions -> verdict + trace).",
+    checks: [
+      { type: "stability", path: "server/__tests__/agi.adapter.test.ts" },
+    ],
+    units: {
+      duration_ms: "T",
+      maxIterations: "1",
+      maxTotalMs: "T",
+      maxAttemptMs: "T",
+      delta: "1",
+    },
+  },
+  {
+    tag: "AGI_PLAN",
+    module: "server/routes/agi.plan.ts",
+    stage: "reduced-order",
+    notes: "Plan/execute route (non-math runtime).",
+    checks: [{ type: "test", path: "tests/agi-plan.spec.ts" }],
+    units: {
+      duration_ms: "T",
+      limit: "1",
+      topK: "1",
+    },
+  },
+  {
+    tag: "AGI_EVAL",
+    module: "server/routes/agi.eval.ts",
+    stage: "reduced-order",
+    notes: "Eval route for agent runs.",
+    checks: [{ type: "test", path: "tests/eval-endpoint.spec.ts" }],
+    units: {
+      duration_ms: "T",
+      limit: "1",
+    },
+  },
+  {
+    tag: "AGI_MEMORY",
+    module: "server/routes/agi.memory.ts",
+    stage: "reduced-order",
+    notes: "Memory CRUD routes.",
+    checks: [{ type: "test", path: "tests/agi-memory.spec.ts" }],
+    units: {
+      limit: "1",
+      count: "1",
+    },
+  },
+  {
+    tag: "AGI_TRACE",
+    module: "server/routes/agi.memory.trace.ts",
+    stage: "reduced-order",
+    notes: "Memory trace streaming route.",
+    checks: [{ type: "test", path: "tests/trace-api.spec.ts" }],
+    units: {
+      limit: "1",
+      count: "1",
+    },
+  },
+  {
+    tag: "AGI_PERSONA",
+    module: "server/routes/agi.persona.ts",
+    stage: "reduced-order",
+    notes: "Persona route wiring.",
+    checks: [{ type: "test", path: "tests/persona-policy.spec.ts" }],
+    units: {
+      count: "1",
+    },
+  },
+  {
+    tag: "AGI_PROFILE",
+    module: "server/routes/agi.profile.ts",
+    stage: "reduced-order",
+    notes: "Profile summarizer endpoints.",
+    checks: [{ type: "test", path: "tests/essence-dal.spec.ts" }],
+    units: {
+      count: "1",
+    },
+  },
+  {
+    tag: "AGI_SPECIALISTS",
+    module: "server/routes/agi.specialists.ts",
+    stage: "reduced-order",
+    notes: "Specialists routing and controls.",
+    checks: [{ type: "test", path: "tests/specialists.math.spec.ts" }],
+    units: {
+      count: "1",
+    },
+  },
+  {
+    tag: "AGI_STAR",
+    module: "server/routes/agi.star.ts",
+    stage: "reduced-order",
+    notes: "Star telemetry route.",
+    checks: [{ type: "test", path: "tests/solar-energy-adapter.spec.ts" }],
+    units: {
+      duration_ms: "T",
+      count: "1",
+    },
+  },
+  {
+    tag: "NEURO",
+    module: "shared/neuro-config.ts",
+    stage: "exploratory",
+    notes: "Neuro coherence defaults (gamma band + equilibrium thresholds).",
+    checks: [
+      { type: "doc", path: "docs/stellar-consciousness-orch-or-review.md" },
+    ],
+    units: {
+      gamma_band_low_hz: "T^-1",
+      gamma_band_high_hz: "T^-1",
+      equilibrium_r_star: "1",
+      equilibrium_dispersion_max: "1",
+      equilibrium_hold_ms: "T",
+    },
+  },
+  {
+    tag: "AGI_TRACE",
+    module: "server/routes/agi.trace.ts",
+    stage: "reduced-order",
+    notes: "Trace/log streaming routes.",
+    checks: [{ type: "test", path: "tests/trace-api.spec.ts" }],
+    units: {
+      limit: "1",
+      count: "1",
+    },
+  },
+  {
+    tag: "AGI_DEBATE",
+    module: "server/routes/agi.debate.ts",
+    stage: "reduced-order",
+    notes: "Debate routing + orchestration.",
+    checks: [{ type: "test", path: "tests/debate-orchestrator.spec.ts" }],
+    units: {
+      duration_ms: "T",
+      count: "1",
+    },
+  },
+  {
+    tag: "PACKS",
+    module: "server/services/observability/constraint-pack-evaluator.ts",
+    stage: "diagnostic",
+    notes: "Constraint-pack evaluators for telemetry.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/__tests__/constraint-packs.evaluate.test.ts",
+      },
+    ],
+    units: {
+      time_to_green_ms: "T",
+      durationMs: "T",
+      runtime_ms: "T",
+      cost_usd: "1",
+      tests_failed: "1",
+      tests_total: "1",
+      steps_used: "1",
+      ops_forbidden: "1",
+    },
+  },
+  {
+    tag: "PACKS",
+    module: "server/services/observability/constraint-pack-normalizer.ts",
+    stage: "diagnostic",
+    notes: "Normalizer -> training trace records.",
+    checks: [
+      {
+        type: "stability",
+        path: "server/__tests__/constraint-packs.evaluate.test.ts",
+      },
+    ],
+    units: {
+      pass: "1",
+      certificateHash: "1",
+      ts: "T",
+    },
+  },
+  {
+    tag: "PACKS",
+    module: "server/services/observability/constraint-pack-telemetry.ts",
+    stage: "diagnostic",
+    notes: "Telemetry ingestion helpers (env -> pack inputs).",
+    checks: [
+      {
+        type: "stability",
+        path: "server/__tests__/constraint-packs.evaluate.test.ts",
+      },
+    ],
+    units: {
+      durationMs: "T",
+      time_to_green_ms: "T",
+      runtime_ms: "T",
+      tests_failed: "1",
+      tests_total: "1",
+      cost_usd: "1",
+    },
+  },
+  {
+    tag: "PACKS",
+    module: "server/routes/agi.constraint-packs.ts",
+    stage: "diagnostic",
+    notes: "Constraint-pack API routes (list/evaluate/policy).",
+    checks: [
+      {
+        type: "stability",
+        path: "server/__tests__/constraint-packs.evaluate.test.ts",
+      },
+    ],
+    units: {
+      pass: "1",
+      limit: "1",
+      count: "1",
+    },
+  },
+  {
+    tag: "PACKS",
+    module: "server/services/constraint-packs/constraint-pack-policy.ts",
+    stage: "reduced-order",
+    notes: "Policy override application and ladder enforcement.",
+    checks: [
+      {
+        type: "test",
+        path: "server/__tests__/constraint-packs.evaluate.test.ts",
+      },
+    ],
+    units: {
+      limit: "1",
+      min: "1",
+      max: "1",
+    },
+  },
+  {
+    tag: "PACKS",
+    module: "server/services/constraint-packs/constraint-pack-policy-store.ts",
+    stage: "reduced-order",
+    notes: "Policy profile persistence (JSONL store).",
+    checks: [
+      {
+        type: "test",
+        path: "server/__tests__/constraint-packs.evaluate.test.ts",
+      },
+    ],
+    units: {
+      version: "1",
+      createdAt: "T",
+      updatedAt: "T",
+      limit: "1",
+    },
+  },
+  {
+    tag: "ANALYSIS",
+    module: "modules/analysis/constraint-loop.ts",
+    stage: "exploratory",
+    notes: "Generic constraint loop runner (prototype).",
+    checks: [{ type: "doc", path: "modules/analysis/README.md" }],
+    units: {
+      iteration: "1",
+      maxIterations: "1",
+      accepted: "1",
+      acceptedIteration: "1",
+      residual: "1",
+      status: "1",
+    },
+  },
+  {
+    tag: "ANALYSIS",
+    module: "modules/analysis/noise-field-loop.ts",
+    stage: "exploratory",
+    notes: "Noise field loop (prototype).",
+    checks: [{ type: "doc", path: "modules/analysis/README.md" }],
+    units: {
+      width: "1",
+      height: "1",
+      seed: "1",
+      maxIterations: "1",
+      stepSize: "1",
+      laplacianRms: "1",
+      laplacianMaxAbs: "1",
+    },
+  },
+  {
+    tag: "ANALYSIS",
+    module: "modules/analysis/diffusion-loop.ts",
+    stage: "exploratory",
+    notes: "Diffusion loop stub (prototype).",
+    checks: [{ type: "doc", path: "modules/analysis/README.md" }],
+    units: {
+      width: "1",
+      height: "1",
+      channels: "1",
+      seed: "1",
+      maxIterations: "1",
+      stepSize: "1",
+      scoreWeight: "1",
+      smoothWeight: "1",
+      scoreRms: "1",
+      scoreMaxAbs: "1",
+      fidelityRms: "1",
+    },
+  },
+  {
+    tag: "ANALYSIS",
+    module: "modules/analysis/belief-graph-loop.ts",
+    stage: "exploratory",
+    notes: "Belief graph loop (prototype).",
+    checks: [{ type: "doc", path: "modules/analysis/README.md" }],
+    units: {
+      maxIterations: "1",
+      stepSize: "1",
+      violationCount: "1",
+      violationWeight: "1",
+      axiomViolations: "1",
+      impliesViolations: "1",
+      excludesViolations: "1",
+      maxAbsPressure: "1",
+    },
+  },
+  {
+    tag: "ANALYSIS",
+    module: "server/routes/analysis-loops.ts",
+    stage: "exploratory",
+    notes: "Analysis loop API endpoints.",
+    checks: [{ type: "doc", path: "modules/analysis/README.md" }],
+    units: {
+      width: "1",
+      height: "1",
+      channels: "1",
+      seed: "1",
+      maxIterations: "1",
+      stepSize: "1",
+      iterations: "1",
+      min: "1",
+      max: "1",
+      mean: "1",
+    },
+  },
+  {
+    tag: "OBS",
+    module: "server/services/observability/otel-tracing.ts",
+    stage: "exploratory",
+    notes: "OTEL span helpers (instrumentation).",
+    checks: [{ type: "doc", path: "docs/ENVIRONMENT.md" }],
+    units: {
+      durationMs: "T",
+      startTimeUnixNano: "T",
+      endTimeUnixNano: "T",
+      traceId: "1",
+      spanId: "1",
+      status: "1",
+    },
+  },
+  {
+    tag: "OBS",
+    module: "server/services/observability/otel-middleware.ts",
+    stage: "exploratory",
+    notes: "OTEL middleware (instrumentation).",
+    checks: [{ type: "doc", path: "docs/ENVIRONMENT.md" }],
+    units: {
+      status_code: "1",
+      durationMs: "T",
+    },
+  },
+  {
+    tag: "OBS",
+    module: "server/services/observability/otel-span-store.ts",
+    stage: "exploratory",
+    notes: "In-memory OTEL span store (debug tooling).",
+    checks: [{ type: "doc", path: "docs/ENVIRONMENT.md" }],
+    units: {
+      durationMs: "T",
+      startTimeUnixNano: "T",
+      endTimeUnixNano: "T",
+      ts: "T",
+      seq: "1",
+      limit: "1",
+    },
+  },
+  {
+    tag: "QST_PROXY",
+    module: "shared/quantum-spacetime-congruence.ts",
+    stage: "exploratory",
+    notes:
+      "Quantum-spacetime congruence proxy contract for entropy stretch, holographic area proxy, and vacuum-channel gating.",
+    motivation:
+      "Keep Big Bang expansion, ER=EPR, and entropy-stretch ideas in a diagnostic proxy lane that cannot bypass metric, stress-energy, or QI gates.",
+    conceptualWaypoints: [
+      "Separate entropy stretch from cosmological area/volume stretch.",
+      "Encode holographic area as erDensityProxy, not wormhole inventory.",
+      "Block Hubble-rate-only dynamic Casimir photon-production links.",
+    ],
+    checks: [
+      { type: "test", path: "tests/quantum-spacetime-congruence.spec.ts" },
+      { type: "policy", path: "docs/warp-tree-dag-congruence-policy.md" },
+    ],
+    units: {
+      deltaS_nats: "1",
+      lambda: "1",
+      hbarEffectiveRatio: "1",
+      quantumVisibility: "1",
+      H0_sInv: "T^-1",
+      scaleFactorRatio: "1",
+      areaStretch: "1",
+      volumeStretch: "1",
+      entanglementEntropy_nats: "1",
+      rtAreaProxy_m2: "L^2",
+      erDensityProxy: "1",
+      localDriveFrequency_Hz: "T^-1",
+      expansionFrequency_Hz: "T^-1",
+    },
+  },
+  {
+    tag: "ER_EPR_STAGE1_SIM",
+    module: "shared/er-epr-simulation.ts",
+    stage: "reduced-order",
+    notes:
+      "Stage 1 ER=EPR simulation verdict contract for controlled holographic toy models, QST entropy-stretch demotion, and StarSim structure-prior boundaries.",
+    motivation:
+      "Test whether a controlled entangled model produces ER=EPR-like geometry observables while ordinary controls fail, without promoting the result into metric, stress-energy, or real-universe wormhole evidence.",
+    conceptualWaypoints: [
+      "Require holographic/toy-dual model family, two-sided entangled state, and correct-sign double-trace coupling.",
+      "Require ordinary teleportation, shuffled-Hamiltonian, disentangled, and wrong-sign controls to fail.",
+      "Require size-winding, scrambling, thermalization, causal-order, delay, and entropy/area tracking diagnostics.",
+      "Use QST entropy stretch to demote quantum visibility instead of redefining hbar.",
+      "Treat StarSim astrometry only as a cosmological structure prior, never direct ER=EPR evidence.",
+      "Force spacetimeCL proxy_only and mayPromoteToCL4 false for every verdict.",
+    ],
+    checks: [
+      { type: "test", path: "tests/er-epr-simulation.spec.ts" },
+      { type: "doc", path: "docs/research/er-epr-stage1-simulation.md" },
+      { type: "policy", path: "docs/warp-tree-dag-congruence-policy.md" },
+    ],
+    units: {
+      nQubitsOrModes: "1",
+      probeInsertionTime: "T",
+      measurementWindow: "T",
+      mutualInformation: "1",
+      entanglementEntropy_nats: "1",
+      rtAreaProxy_m2: "L^2",
+      teleportationFidelity: "1",
+      causalOrderingScore: "1",
+      timeDelayScore: "1",
+      operatorSizeWindingScore: "1",
+      scramblingScore: "1",
+      thermalizationScore: "1",
+      entropyAreaProxyTrackingScore: "1",
+      controlLeakage: "1",
+      entropyVisibility: "1",
+      visibilityAdjustedSignal: "1",
+      clusteringEntropy_nats: "1",
+      localDensityContrast: "1",
+      velocityDispersion_km_s: "L T^-1",
+    },
+  },
+  {
+    tag: "ER_EPR_STAGE1_RUNNER",
+    module: "shared/er-epr-stage1-runner.ts",
+    stage: "reduced-order",
+    notes:
+      "Reproducible ER=EPR Stage 1 fixture/null-control runner and batch report contract.",
+    motivation:
+      "Make ER=EPR Stage 1 simulated-experiment claims replayable, control-paired, citation-bound, and explicitly fixture/simulation/reproduction scoped.",
+    conceptualWaypoints: [
+      "Consume normalized observables rather than pretending to solve SYK/JT dynamics.",
+      "Require paired candidate and null-control evaluations before allowing model-internal support.",
+      "Demote batch verdicts when controls carry signal or required controls are missing.",
+      "Emit claim IDs, citations, source roles, uncertainty notes, caveats, and reproducibility status.",
+      "Keep reports as generated evidence, not primary math source.",
+    ],
+    checks: [
+      { type: "test", path: "tests/er-epr-stage1-runner.spec.ts" },
+      { type: "test", path: "tests/er-epr-stage1-report.spec.ts" },
+      {
+        type: "fixture",
+        path: "tests/fixtures/er-epr-stage1/plan.fixture.json",
+      },
+    ],
+    units: {
+      signalMin: "1",
+      controlMax: "1",
+      diagnosticMin: "1",
+      entropyAreaTrackingMin: "1",
+      entropyVisibilityMin: "1",
+      strongSupportMin: "1",
+      signalComposite: "1",
+      controlLeakage: "1",
+      entropyWashoutObserved: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_STAGE1_RUNNER",
+    module: "shared/er-epr-safe-language.ts",
+    stage: "reduced-order",
+    notes:
+      "Claim-safe ER=EPR Stage 1 report language renderer and forbidden-phrase validator.",
+    checks: [{ type: "test", path: "tests/er-epr-safe-language.spec.ts" }],
+    units: {
+      forbiddenPhraseCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_STAGE1_SOLVER_ADAPTER_V1",
+    module: "shared/er-epr-raw-observables.ts",
+    stage: "diagnostic",
+    notes:
+      "Raw ER=EPR solver telemetry contract for declared toy-dual and control backends before interpretation.",
+    motivation:
+      "Prevent normalized-only scores from being mistaken for solver evidence by preserving backend, Hamiltonian, seed, correlator, operator-size, and provenance telemetry.",
+    conceptualWaypoints: [
+      "Declare backend family and model parameters.",
+      "Preserve raw fidelity, correlator, time-delay, and operator-size telemetry.",
+      "Require provenance, claim IDs, citations, and caveats.",
+    ],
+    checks: [
+      { type: "test", path: "tests/er-epr-raw-observables.spec.ts" },
+      { type: "stability", path: "tests/er-epr-raw-observables.spec.ts" },
+      {
+        type: "fixture",
+        path: "tests/fixtures/er-epr-solver/two-sided-syk-raw.fixture.json",
+      },
+      { type: "doc", path: "docs/research/er-epr-stage1-solver-adapter-v1.md" },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/er-epr-solver-adapter.claims.json",
+      },
+    ],
+    units: {
+      nQubitsOrModes: "1",
+      beta: "1",
+      injectionTime: "T",
+      couplingTime: "T",
+      extractionTime: "T",
+      teleportationFidelityRaw: "1",
+      leftRightMutualInformation: "1",
+      entanglementEntropy_nats: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_STAGE1_SOLVER_ADAPTER_V1",
+    module: "shared/er-epr-observable-normalizer.ts",
+    stage: "diagnostic",
+    notes:
+      "Normalizes raw solver telemetry into the existing ER_EPR_STAGE1_SIM observable contract.",
+    checks: [
+      { type: "test", path: "tests/er-epr-observable-normalizer.spec.ts" },
+      { type: "stability", path: "tests/er-epr-observable-normalizer.spec.ts" },
+    ],
+    units: {
+      teleportationFidelity: "1",
+      causalOrderingScore: "1",
+      timeDelayScore: "1",
+      operatorSizeWindingScore: "1",
+      scramblingScore: "1",
+      thermalizationScore: "1",
+      entropyAreaProxyTrackingScore: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_STAGE1_SOLVER_ADAPTER_V1",
+    module: "shared/er-epr-solver-adapter.ts",
+    stage: "diagnostic",
+    notes:
+      "Solver adapter connecting raw declared toy-dual telemetry to ER_EPR_STAGE1_SIM evaluations with provenance gates.",
+    checks: [
+      { type: "test", path: "tests/er-epr-solver-adapter.spec.ts" },
+      { type: "stability", path: "tests/er-epr-solver-adapter.spec.ts" },
+      {
+        type: "fixture",
+        path: "tests/fixtures/er-epr-solver/high-entropy-washout-raw.fixture.json",
+      },
+      { type: "doc", path: "docs/research/er-epr-stage1-solver-adapter-v1.md" },
+    ],
+    units: {
+      signalComposite: "1",
+      controlLeakage: "1",
+      entropyVisibility: "1",
+      visibilityAdjustedSignal: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_STAGE1_SOLVER_ADAPTER_V1",
+    module: "shared/er-epr-solver-safe-language.ts",
+    stage: "diagnostic",
+    notes:
+      "Safe-language renderer blocking real-universe, wormhole, NHM2 propulsion, stress-energy, and CL4 claims from solver telemetry.",
+    checks: [
+      { type: "test", path: "tests/er-epr-solver-safe-language.spec.ts" },
+      { type: "test", path: "tests/er-epr-solver-artifact.spec.ts" },
+      { type: "stability", path: "tests/er-epr-solver-safe-language.spec.ts" },
+    ],
+    units: {
+      forbiddenPhraseCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+      uncertaintyNoteCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_MICROPHYSICS_STAGE1",
+    module: "shared/starsim-fusion-microphysics.ts",
+    stage: "reduced-order",
+    notes:
+      "Stage 1 StarSim stellar fusion microphysics prior for fusion-channel, fusion-zone, hSpectralFit, compact-object, and star-map graph diagnostics.",
+    motivation:
+      "Add astrophysical microphysics and population priors to StarSim/QST experiments while blocking direct ER=EPR, wormhole, propulsion, stress-energy, and CL0-CL4 claims.",
+    conceptualWaypoints: [
+      "Separate surface effective temperature from core temperature.",
+      "Classify PP-chain, CNO, red-giant shell burning, inactive brown dwarfs, and compact objects.",
+      "Define fusion-zone volume by cumulative nuclear luminosity radii rather than whole-star volume.",
+      "Treat hSpectralFit as calibration only because h is exact in SI.",
+      "Use StarMap graph structure as an astrophysical population prior, not direct quantum-gravity evidence.",
+      "Force spacetimeCL proxy_only and mayPromoteToCL4 false for every evaluation.",
+    ],
+    checks: [
+      { type: "test", path: "tests/starsim-fusion-microphysics.spec.ts" },
+      { type: "test", path: "tests/starsim-fusion-artifact.spec.ts" },
+      {
+        type: "doc",
+        path: "docs/research/starsim-fusion-microphysics-stage1.md",
+      },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/starsim-fusion-microphysics.claims.json",
+      },
+    ],
+    units: {
+      luminosity_Lsun: "1",
+      radius_Rsun: "1",
+      effectiveTemperature_K: "Theta",
+      mass_Msun: "1",
+      metallicity_feh: "1",
+      logg_cgs: "L T^-2",
+      parallax_mas: "1",
+      properMotionRa_masyr: "1 T^-1",
+      properMotionDec_masyr: "1 T^-1",
+      radialVelocity_kms: "L T^-1",
+      estimatedCoreTemperature_K: "Theta",
+      estimatedCoreDensity_g_cm3: "M L^-3",
+      r10_Rstar: "1",
+      r50_Rstar: "1",
+      r90_Rstar: "1",
+      activeVolumeFraction: "1",
+      quantumProcessIndex: "1",
+      entropyVisibilityProxy: "1",
+      fittedH_Js: "M L^2 T^-1",
+      exactH_Js: "M L^2 T^-1",
+      position_pc: "L",
+      velocity_km_s: "L T^-1",
+      distance_pc: "L",
+      relativeVelocity_km_s: "L T^-1",
+      structureWeight: "1",
+      fusionContrastWeight: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_MICROPHYSICS_STAGE1",
+    module: "shared/starsim-fusion-artifact.ts",
+    stage: "reduced-order",
+    notes:
+      "Artifact contract for StarSim fusion microphysics evaluations with claim IDs, citations, caveats, and reproducibility status.",
+    checks: [{ type: "test", path: "tests/starsim-fusion-artifact.spec.ts" }],
+    units: {
+      claimIdCount: "1",
+      citationCount: "1",
+      caveatCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_SAFE_LANGUAGE",
+    module: "shared/starsim-fusion-safe-language.ts",
+    stage: "reduced-order",
+    notes:
+      "Claim-safe StarSim fusion report renderer and forbidden-language validator with source roles, uncertainty notes, and validity domains.",
+    motivation:
+      "Prevent reduced-order stellar microphysics priors from being rendered as direct ER=EPR, wormhole, propulsion, stress-energy, metric, or Planck-constant claims.",
+    conceptualWaypoints: [
+      "Render claim IDs, citations, source roles, uncertainty notes, validity domains, and caveats together.",
+      "Block predictive overclaims while allowing explicit negative boundary language.",
+      "Treat the renderer as reporting and policy support, not primary physics evidence.",
+    ],
+    checks: [
+      { type: "test", path: "tests/starsim-fusion-safe-language.spec.ts" },
+      { type: "test", path: "tests/starsim-fusion-claims.spec.ts" },
+      {
+        type: "doc",
+        path: "docs/research/starsim-fusion-microphysics-stage1.md",
+      },
+    ],
+    units: {
+      forbiddenPhraseCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+      uncertaintyNoteCount: "1",
+      validityDomainCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_PROFILE_IMPORT_STAGE2_PREP",
+    module: "shared/starsim-fusion-profile-import.ts",
+    stage: "reduced-order",
+    notes:
+      "MESA-compatible StarSim fusion profile import schema for fixture, MESA, external, reduced-order, and compact-object profiles.",
+    motivation:
+      "Prepare the StarSim fusion lane for Stage 2 review by grounding reduced-order estimates in imported shell profiles without promoting QST or ER=EPR claims.",
+    conceptualWaypoints: [
+      "Validate shell profile provenance, reproducibility status, and integration basis.",
+      "Require claim IDs, citations, and caveats for imported profiles.",
+      "Keep profile import as Stage 1-to-Stage 2 preparation, not certified stellar evolution.",
+    ],
+    checks: [
+      { type: "test", path: "tests/starsim-fusion-profile-import.spec.ts" },
+      {
+        type: "fixture",
+        path: "tests/fixtures/starsim-fusion-profiles/solar-mesa-profile.fixture.json",
+      },
+      {
+        type: "doc",
+        path: "docs/research/starsim-fusion-profile-import-stage2-prep.md",
+      },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/starsim-fusion-profile-import.claims.json",
+      },
+    ],
+    units: {
+      radius_Rstar: "1",
+      radius_cm: "L",
+      massCoordinate_Msun: "1",
+      enclosedMass_Msun: "1",
+      shellMass_g: "M",
+      temperature_K: "Theta",
+      density_g_cm3: "M L^-3",
+      pressure_dyn_cm2: "M L^-1 T^-2",
+      luminosity_Lsun: "1",
+      epsNuc_erg_g_s: "L^2 T^-3",
+      epsPp_erg_g_s: "L^2 T^-3",
+      epsCno_erg_g_s: "L^2 T^-3",
+      epsTripleAlpha_erg_g_s: "L^2 T^-3",
+      hydrogenMassFraction: "1",
+      heliumMassFraction: "1",
+      metallicityMassFraction: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_PROFILE_IMPORT_STAGE2_PREP",
+    module: "shared/starsim-fusion-profile-validation.ts",
+    stage: "reduced-order",
+    notes:
+      "Profile validator for shell-integrated nuclear luminosity, channel fractions, fusion-zone radii, closure warnings, and Stage 1 proxy comparison.",
+    checks: [
+      { type: "test", path: "tests/starsim-fusion-profile-validation.spec.ts" },
+    ],
+    units: {
+      integratedNucLuminosity_Lsun: "1",
+      surfaceLuminosity_Lsun: "1",
+      luminosityClosureRelErr: "1",
+      ppFraction: "1",
+      cnoFraction: "1",
+      tripleAlphaFraction: "1",
+      r10_Rstar: "1",
+      r50_Rstar: "1",
+      r90_Rstar: "1",
+      activeVolumeFraction: "1",
+      r90Delta: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_PROFILE_IMPORT_STAGE2_PREP",
+    module: "shared/starsim-fusion-profile-artifact.ts",
+    stage: "reduced-order",
+    notes:
+      "Artifact contract for StarSim fusion profile validation with safe-language and hSpectralFit guardrails.",
+    checks: [
+      { type: "test", path: "tests/starsim-fusion-profile-artifact.spec.ts" },
+    ],
+    units: {
+      claimIdCount: "1",
+      citationCount: "1",
+      caveatCount: "1",
+      uncertaintyNoteCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_BENCHMARK_STAGE2_CANDIDATE",
+    module: "shared/starsim-fusion-benchmark-runner.ts",
+    stage: "diagnostic",
+    notes:
+      "Benchmark runner for StarSim fusion profile packs with closure, uncertainty, blockers, and Stage 2 candidate verdicts.",
+    motivation:
+      "Make profile-grounded StarSim fusion claims auditable through deterministic benchmark reports while preserving proxy-only QST boundaries.",
+    conceptualWaypoints: [
+      "Compute benchmark verdicts from imported profile validations.",
+      "Block Stage 2 candidate readiness without metadata, profile hashes, closure, and uncertainty.",
+      "Emit citation-backed reports without direct ER=EPR, propulsion, stress-energy, or CL4 claims.",
+    ],
+    checks: [
+      { type: "test", path: "tests/starsim-fusion-benchmark-runner.spec.ts" },
+      { type: "test", path: "tests/starsim-fusion-benchmark-verdict.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/starsim-fusion-benchmark-runner.spec.ts",
+      },
+      {
+        type: "fixture",
+        path: "tests/fixtures/starsim-fusion-benchmarks/plan.fixture.json",
+      },
+      {
+        type: "doc",
+        path: "docs/research/starsim-fusion-benchmark-stage2-candidate.md",
+      },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/starsim-fusion-benchmark.claims.json",
+      },
+    ],
+    units: {
+      profileCount: "1",
+      passedClosureCount: "1",
+      failedClosureCount: "1",
+      warningCount: "1",
+      channelAgreementRate: "1",
+      fusionZoneAgreementRate: "1",
+      uncertaintyCoverageRate: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_BENCHMARK_STAGE2_CANDIDATE",
+    module: "shared/starsim-fusion-uncertainty.ts",
+    stage: "diagnostic",
+    notes:
+      "Interval and fixture Monte Carlo uncertainty propagation for benchmark profile outputs.",
+    checks: [
+      { type: "test", path: "tests/starsim-fusion-uncertainty.spec.ts" },
+      { type: "stability", path: "tests/starsim-fusion-uncertainty.spec.ts" },
+    ],
+    units: {
+      samples: "1",
+      ppFraction: "1",
+      cnoFraction: "1",
+      tripleAlphaFraction: "1",
+      r90_Rstar: "1",
+      activeVolumeFraction: "1",
+      luminosityClosureRelErr: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_BENCHMARK_STAGE2_CANDIDATE",
+    module: "shared/starsim-fusion-profile-closure.ts",
+    stage: "diagnostic",
+    notes: "Observable closure checks for StarSim fusion benchmark reports.",
+    checks: [
+      { type: "test", path: "tests/starsim-fusion-profile-closure.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/starsim-fusion-profile-closure.spec.ts",
+      },
+    ],
+    units: {
+      effectiveTemperatureFromLR_K: "Theta",
+      surfaceGravityLogg_cgs: "1",
+      luminosityClosureRelErr: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_BENCHMARK_STAGE2_CANDIDATE",
+    module: "shared/starsim-fusion-benchmark-safe-language.ts",
+    stage: "diagnostic",
+    notes: "Safe-language renderer for StarSim fusion benchmark reports.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/starsim-fusion-benchmark-safe-language.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/starsim-fusion-benchmark-safe-language.spec.ts",
+      },
+    ],
+    units: {
+      forbiddenPhraseCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_EXTERNAL_REPRO_STAGE2_GATE",
+    module: "shared/starsim-fusion-stage2-gate.ts",
+    stage: "diagnostic",
+    notes:
+      "External-reproduction Stage 2 gate for StarSim fusion benchmark reports with MESA/GYRE metadata, solar closure, blockers, and proxy-only boundaries.",
+    motivation:
+      "Require solver fingerprints and observational closures before treating StarSim fusion profiles as ready for Stage 2 review.",
+    conceptualWaypoints: [
+      "Require MESA profile, inlist, network, and reaction-rate metadata.",
+      "Gate solar neutrino and optional asteroseismic closure without certification.",
+      "Block ER=EPR, propulsion, stress-energy, Planck-constant, and CL0-CL4 overclaims.",
+    ],
+    checks: [
+      { type: "test", path: "tests/starsim-fusion-stage2-gate.spec.ts" },
+      { type: "stability", path: "tests/starsim-fusion-stage2-gate.spec.ts" },
+      {
+        type: "fixture",
+        path: "tests/fixtures/starsim-fusion-stage2-gate/solar-mesa-repro.fixture.json",
+      },
+      {
+        type: "doc",
+        path: "docs/research/starsim-fusion-external-repro-stage2-gate.md",
+      },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/starsim-fusion-stage2-gate.claims.json",
+      },
+    ],
+    units: {
+      blockerCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+      uncertaintyNoteCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_EXTERNAL_REPRO_STAGE2_GATE",
+    module: "shared/starsim-fusion-neutrino-closure.ts",
+    stage: "diagnostic",
+    notes:
+      "Solar neutrino residual closure for StarSim fusion Stage 2 gate review.",
+    checks: [
+      { type: "test", path: "tests/starsim-fusion-neutrino-closure.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/starsim-fusion-neutrino-closure.spec.ts",
+      },
+    ],
+    units: {
+      ppFlux: "L^-2 T^-1",
+      be7Flux: "L^-2 T^-1",
+      pepFlux: "L^-2 T^-1",
+      b8Flux: "L^-2 T^-1",
+      cnoFlux: "L^-2 T^-1",
+      maxRelErr: "1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_EXTERNAL_REPRO_STAGE2_GATE",
+    module: "shared/starsim-fusion-asteroseismic-closure.ts",
+    stage: "diagnostic",
+    notes:
+      "GYRE-style asteroseismic closure summaries for Stage 2 gate review.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/starsim-fusion-asteroseismic-closure.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/starsim-fusion-asteroseismic-closure.spec.ts",
+      },
+    ],
+    units: {
+      largeSeparation_uHz: "T^-1",
+      smallSeparation_uHz: "T^-1",
+      modeCount: "1",
+      maxFrequencyResidual_uHz: "T^-1",
+    },
+  },
+  {
+    tag: "STARSIM_FUSION_EXTERNAL_REPRO_STAGE2_GATE",
+    module: "shared/starsim-fusion-stage2-gate-safe-language.ts",
+    stage: "diagnostic",
+    notes: "Safe-language renderer for Stage 2 gate reports.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/starsim-fusion-stage2-gate-safe-language.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/starsim-fusion-stage2-gate-safe-language.spec.ts",
+      },
+    ],
+    units: {
+      forbiddenPhraseCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_SOLAR_REFERENCE_REPRO_RUN_V1",
+    module: "shared/starsim-solar-reference-run.ts",
+    stage: "diagnostic",
+    notes:
+      "Canonical solar reference reproduction runner that composes fixture/import solver policy, profile validation, benchmark handoff, and Stage 2 gate handoff.",
+    motivation:
+      "Create the first replayable solar reference artifact that can feed the Stage 2 gate while clearly separating fixture-only and solver-backed evidence.",
+    conceptualWaypoints: [
+      "Explicit runtime policy prevents silent fixture fallback.",
+      "Solar profile validation, benchmark, and Stage 2 gate artifacts are linked.",
+      "Safe reports preserve proxy-only QST and no direct ER=EPR boundary.",
+    ],
+    checks: [
+      { type: "test", path: "tests/starsim-solar-reference-run.spec.ts" },
+      { type: "stability", path: "tests/starsim-solar-reference-run.spec.ts" },
+      {
+        type: "fixture",
+        path: "tests/fixtures/starsim-solar-reference/solar-reference-plan.fixture.json",
+      },
+      {
+        type: "doc",
+        path: "docs/research/starsim-solar-reference-repro-run-v1.md",
+      },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/starsim-solar-reference-run.claims.json",
+      },
+    ],
+    units: {
+      runCount: "1",
+      closureStatusCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_SOLAR_REFERENCE_REPRO_RUN_V1",
+    module: "server/modules/starsim/external/mesa-solar-runner.ts",
+    stage: "diagnostic",
+    notes:
+      "MESA solar runtime adapter with explicit fixture-only and unavailable external solver behavior.",
+    checks: [
+      { type: "test", path: "tests/mesa-solar-runner.spec.ts" },
+      { type: "stability", path: "tests/mesa-solar-runner.spec.ts" },
+    ],
+    units: {
+      profileHash: "1",
+      inlistHash: "1",
+      runtimeStatus: "1",
+    },
+  },
+  {
+    tag: "STARSIM_SOLAR_REFERENCE_REPRO_RUN_V1",
+    module: "server/modules/starsim/external/gyre-summary-import.ts",
+    stage: "diagnostic",
+    notes: "GYRE summary import helper for optional solar oscillation closure.",
+    checks: [
+      { type: "test", path: "tests/gyre-summary-import.spec.ts" },
+      { type: "stability", path: "tests/gyre-summary-import.spec.ts" },
+    ],
+    units: {
+      largeSeparation_uHz: "T^-1",
+      smallSeparation_uHz: "T^-1",
+      modeCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_SOLAR_REFERENCE_REPRO_RUN_V1",
+    module: "shared/starsim-solar-reference-safe-language.ts",
+    stage: "diagnostic",
+    notes: "Safe-language renderer for solar reference reproduction reports.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/starsim-solar-reference-safe-language.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/starsim-solar-reference-safe-language.spec.ts",
+      },
+    ],
+    units: {
+      forbiddenPhraseCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_SOLAR_MESA_DOCKER_REPRO_V1",
+    module: "server/modules/starsim/external/mesa-runtime-adapter.ts",
+    stage: "diagnostic",
+    notes:
+      "External/import MESA runtime adapter with strict no-fixture-fallback policy and hash requirements.",
+    motivation:
+      "Move the solar reference pipeline from fixture-only routing toward auditable MESA output import and eventual solver reproduction.",
+    conceptualWaypoints: [
+      "Reject fixture_only mode in the MESA repro tool.",
+      "Require inlist, profile, history, and run-log hashes for reproduced claims.",
+      "Feed parsed MESA output through profile validation, benchmark, and Stage 2 gate contracts.",
+    ],
+    checks: [
+      { type: "test", path: "tests/mesa-runtime-adapter.spec.ts" },
+      { type: "stability", path: "tests/mesa-runtime-adapter.spec.ts" },
+      {
+        type: "fixture",
+        path: "ops/mesa/solar-reference/mesa-runtime-policy.import-fixture.json",
+      },
+      {
+        type: "doc",
+        path: "docs/research/starsim-solar-mesa-docker-repro-v1.md",
+      },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/starsim-solar-mesa-repro.claims.json",
+      },
+    ],
+    units: {
+      inlistHash: "1",
+      profileHash: "1",
+      historyHash: "1",
+      runLogHash: "1",
+    },
+  },
+  {
+    tag: "STARSIM_SOLAR_MESA_DOCKER_REPRO_V1",
+    module: "server/modules/starsim/external/mesa-output-parser.ts",
+    stage: "diagnostic",
+    notes:
+      "MESA-like profile/history parser for StarSim solar fusion profile imports.",
+    checks: [
+      { type: "test", path: "tests/mesa-output-parser.spec.ts" },
+      { type: "stability", path: "tests/mesa-output-parser.spec.ts" },
+    ],
+    units: {
+      radius_Rstar: "1",
+      shellMass_g: "M",
+      temperature_K: "Theta",
+      density_g_cm3: "M L^-3",
+      epsNuc_erg_g_s: "L^2 T^-3",
+    },
+  },
+  {
+    tag: "STARSIM_SOLAR_MESA_DOCKER_REPRO_V1",
+    module: "shared/starsim-solar-mesa-repro-artifact.ts",
+    stage: "diagnostic",
+    notes:
+      "Artifact contract for MESA solar reproduction/import reports with QST boundaries.",
+    checks: [
+      { type: "test", path: "tests/starsim-solar-mesa-repro-artifact.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/starsim-solar-mesa-repro-artifact.spec.ts",
+      },
+    ],
+    units: {
+      claimIdCount: "1",
+      citationCount: "1",
+      caveatCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_SOLAR_MESA_DOCKER_REPRO_V1",
+    module: "shared/starsim-solar-mesa-repro-safe-language.ts",
+    stage: "diagnostic",
+    notes: "Safe-language renderer for MESA solar reproduction/import reports.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/starsim-solar-mesa-repro-safe-language.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/starsim-solar-mesa-repro-safe-language.spec.ts",
+      },
+    ],
+    units: {
+      forbiddenPhraseCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+    },
+  },
+  {
+    tag: "STARSIM_ACCORDION_GALACTIC_DYNAMICS_NULL_MODEL_V1",
+    module: "shared/starsim-accordion-cosmology-context.ts",
+    stage: "diagnostic",
+    notes:
+      "Observable Universe Accordion cosmology context with bound-system expansion guardrails.",
+    motivation:
+      "Use Accordion coordinates as cosmological context without turning bound stars or galaxies into local Hubble-flow claims.",
+    conceptualWaypoints: [
+      "Map redshift to scale factor when present.",
+      "Mark galaxies and stellar cores as bound systems that require local dynamics.",
+      "Preserve proxy-only QST boundaries.",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/starsim-accordion-cosmology-context.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/starsim-accordion-cosmology-context.spec.ts",
+      },
+      {
+        type: "doc",
+        path: "docs/research/starsim-accordion-galactic-dynamics-null-model-v1.md",
+      },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/starsim-accordion-galactic-dynamics.claims.json",
+      },
+    ],
+    units: {
+      redshift: "1",
+      scaleFactor: "1",
+      cosmicTime_Gyr: "T",
+      lookbackTime_Gyr: "T",
+      comovingDistance_Mpc: "L",
+      properDistance_Mpc: "L",
+    },
+  },
+  {
+    tag: "STARSIM_ACCORDION_GALACTIC_DYNAMICS_NULL_MODEL_V1",
+    module: "shared/starsim-galactic-rotation-controls.ts",
+    stage: "diagnostic",
+    notes:
+      "Galactic rotation null controls for baryonic, dark-matter, MOND, and SPARC-like reference comparisons.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/starsim-galactic-rotation-controls.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/starsim-galactic-rotation-controls.spec.ts",
+      },
+      {
+        type: "fixture",
+        path: "tests/fixtures/starsim-accordion/sparc-rotation-curve.fixture.json",
+      },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/starsim-accordion-galactic-dynamics.claims.json",
+      },
+    ],
+    units: {
+      radius_kpc: "L",
+      observedVelocity_km_s: "L T^-1",
+      modelVelocity_km_s: "L T^-1",
+      baryonicVelocity_km_s: "L T^-1",
+      residual_km_s: "L T^-1",
+      rmsResidual_km_s: "L T^-1",
+    },
+  },
+  {
+    tag: "STARSIM_ACCORDION_GALACTIC_DYNAMICS_NULL_MODEL_V1",
+    module: "shared/starsim-accordion-galactic-null-model.ts",
+    stage: "diagnostic",
+    notes:
+      "Composes Accordion context, StarSim star nodes, fusion priors, rotation controls, and proxy-only QST annotations into a null-model report.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/starsim-accordion-galactic-null-model.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/starsim-accordion-galactic-null-model.spec.ts",
+      },
+      {
+        type: "fixture",
+        path: "tests/fixtures/starsim-accordion/accordion-local-volume.fixture.json",
+      },
+      {
+        type: "doc",
+        path: "docs/research/starsim-accordion-galactic-dynamics-null-model-v1.md",
+      },
+    ],
+    units: {
+      nodeCount: "1",
+      localDensityContrast: "1",
+      velocityDispersion_km_s: "L T^-1",
+      clusteringEntropy_nats: "1",
+      streamCoherence: "1",
+      erDensityProxy: "1",
+    },
+  },
+  {
+    tag: "STARSIM_ACCORDION_GALACTIC_DYNAMICS_NULL_MODEL_V1",
+    module: "shared/starsim-galactic-dynamics-safe-language.ts",
+    stage: "diagnostic",
+    notes:
+      "Safe-language renderer blocking direct ER=EPR, wormhole, propulsion, stress-energy, hydrostatic-rotation, and CL4 overclaims.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/starsim-galactic-dynamics-safe-language.spec.ts",
+      },
+      {
+        type: "test",
+        path: "tests/starsim-galactic-dynamics-artifact.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/starsim-galactic-dynamics-safe-language.spec.ts",
+      },
+    ],
+    units: {
+      forbiddenPhraseCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+      uncertaintyNoteCount: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_TINY_SYK_EXACT_DIAG_V1",
+    module: "shared/er-epr-majorana-operators.ts",
+    stage: "diagnostic",
+    notes:
+      "Tiny Clifford/Majorana operator construction for the Stage 1 SYK-like toy solver.",
+    checks: [
+      { type: "test", path: "tests/er-epr-majorana-operators.spec.ts" },
+      { type: "stability", path: "tests/er-epr-majorana-operators.spec.ts" },
+      { type: "doc", path: "docs/research/er-epr-tiny-syk-exact-diag-v1.md" },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/er-epr-tiny-syk.claims.json",
+      },
+    ],
+    units: {
+      nMajoranas: "1",
+      dimension: "1",
+      maxDiagonalError: "1",
+      maxOffDiagonalError: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_TINY_SYK_EXACT_DIAG_V1",
+    module: "shared/er-epr-tiny-syk-hamiltonian.ts",
+    stage: "diagnostic",
+    notes:
+      "Seeded q=4 tiny SYK-like Hamiltonian and double-trace-like two-sided coupling builder.",
+    checks: [
+      { type: "test", path: "tests/er-epr-tiny-syk-hamiltonian.spec.ts" },
+      { type: "stability", path: "tests/er-epr-tiny-syk-hamiltonian.spec.ts" },
+      {
+        type: "fixture",
+        path: "tests/fixtures/er-epr-tiny-syk/tiny-syk-plan.fixture.json",
+      },
+    ],
+    units: {
+      seed: "1",
+      mu: "1",
+      hamiltonianHash: "1",
+      nonCommutativityIndex: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_TINY_SYK_EXACT_DIAG_V1",
+    module: "shared/er-epr-tiny-syk.ts",
+    stage: "diagnostic",
+    notes:
+      "Tiny two-sided SYK-like solver backend that emits raw telemetry through the existing solver adapter.",
+    motivation:
+      "Move ER_EPR_STAGE1 from fixture-only raw scores toward repo-local toy-solver telemetry while preserving model-internal and proxy-only boundaries.",
+    conceptualWaypoints: [
+      "Generate seeded Hamiltonian and raw telemetry.",
+      "Normalize telemetry through ER_EPR_STAGE1_SOLVER_ADAPTER_V1.",
+      "Record hashes, controls, citations, uncertainty notes, and non-promotion caveats.",
+    ],
+    checks: [
+      { type: "test", path: "tests/er-epr-tiny-syk-telemetry.spec.ts" },
+      { type: "test", path: "tests/er-epr-tiny-syk-evolution.spec.ts" },
+      { type: "stability", path: "tests/er-epr-tiny-syk-telemetry.spec.ts" },
+      { type: "doc", path: "docs/research/er-epr-tiny-syk-exact-diag-v1.md" },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/er-epr-tiny-syk.claims.json",
+      },
+    ],
+    units: {
+      teleportationFidelityRaw: "1",
+      entanglementEntropy_nats: "1",
+      leftRightMutualInformation: "1",
+      timeDelayEstimate: "T",
+      operatorSize: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_TINY_SYK_EXACT_DIAG_V1",
+    module: "shared/er-epr-tiny-syk-safe-language.ts",
+    stage: "diagnostic",
+    notes:
+      "Safe-language renderer for tiny SYK reports, blocking real-universe, NHM2, stress-energy, and CL4 overclaims.",
+    checks: [
+      { type: "test", path: "tests/er-epr-tiny-syk-safe-language.spec.ts" },
+      { type: "test", path: "tests/er-epr-tiny-syk-artifact.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/er-epr-tiny-syk-safe-language.spec.ts",
+      },
+    ],
+    units: {
+      forbiddenPhraseCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+      uncertaintyNoteCount: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_TINY_SYK_VALIDATION_SWEEP_V1",
+    module: "shared/er-epr-tiny-syk-validation-sweep.ts",
+    stage: "diagnostic",
+    notes:
+      "Validation sweep aggregating seeded tiny SYK-like runs, required controls, numerical honesty, and entropy washout.",
+    motivation:
+      "Require repeatability across a declared ensemble before any model-internal ER=EPR-like support language is allowed.",
+    conceptualWaypoints: [
+      "Expand seeds and toy-model parameters into candidate runs.",
+      "Aggregate required control leakage and diagnostic blockers.",
+      "Require monotonic QST entropy-stretch demotion.",
+    ],
+    checks: [
+      { type: "test", path: "tests/er-epr-tiny-syk-validation-sweep.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/er-epr-tiny-syk-validation-sweep.spec.ts",
+      },
+      {
+        type: "fixture",
+        path: "tests/fixtures/er-epr-tiny-syk-validation/sweep-plan.fixture.json",
+      },
+      {
+        type: "doc",
+        path: "docs/research/er-epr-tiny-syk-validation-sweep-v1.md",
+      },
+      {
+        type: "policy",
+        path: "docs/knowledge/math-claims/er-epr-tiny-syk-validation.claims.json",
+      },
+    ],
+    units: {
+      totalCandidateRuns: "1",
+      candidatePassRate: "1",
+      controlLeakageCount: "1",
+      entropyWashoutPassCount: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_TINY_SYK_VALIDATION_SWEEP_V1",
+    module: "shared/er-epr-tiny-syk-convergence.ts",
+    stage: "diagnostic",
+    notes: "Numerical-method honesty checks for tiny SYK validation sweeps.",
+    checks: [
+      { type: "test", path: "tests/er-epr-tiny-syk-convergence.spec.ts" },
+      { type: "stability", path: "tests/er-epr-tiny-syk-convergence.spec.ts" },
+    ],
+    units: {
+      numericalTolerance: "1",
+      maxObservedDelta: "1",
+      methodCount: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_TINY_SYK_VALIDATION_SWEEP_V1",
+    module: "shared/er-epr-tiny-syk-control-aggregate.ts",
+    stage: "diagnostic",
+    notes:
+      "Required-control aggregation for wrong-sign, no-coupling, disentangled, shuffled, random-matrix, and spin-chain controls.",
+    checks: [
+      { type: "test", path: "tests/er-epr-tiny-syk-control-aggregate.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/er-epr-tiny-syk-control-aggregate.spec.ts",
+      },
+    ],
+    units: {
+      controlLeakageMax: "1",
+      leakageCount: "1",
+      missingRequiredControlCount: "1",
+    },
+  },
+  {
+    tag: "ER_EPR_TINY_SYK_VALIDATION_SWEEP_V1",
+    module: "shared/er-epr-tiny-syk-validation-safe-language.ts",
+    stage: "diagnostic",
+    notes:
+      "Safe-language renderer for tiny SYK validation reports, blocking real-universe, NHM2, stress-energy, exact-label, and CL4 overclaims.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/er-epr-tiny-syk-validation-safe-language.spec.ts",
+      },
+      {
+        type: "test",
+        path: "tests/er-epr-tiny-syk-validation-artifact.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/er-epr-tiny-syk-validation-safe-language.spec.ts",
+      },
+    ],
+    units: {
+      forbiddenPhraseCount: "1",
+      claimIdCount: "1",
+      citationCount: "1",
+      uncertaintyNoteCount: "1",
+    },
+  },
+  {
+    tag: "DP_COLLAPSE",
+    module: "shared/dp-collapse.ts",
+    stage: "exploratory",
+    notes:
+      "Diosi-Penrose collapse estimator from mass-density difference, with symmetric self/cross bookkeeping, branch-grid origin/containment metadata, and a softened source-potential equivalence audit.",
+    checks: [{ type: "test", path: "tests/dp-collapse.spec.ts" }],
+    units: {
+      ell_m: "L",
+      r_c_m: "L",
+      deltaE_J: "M L^2 T^-2",
+      tau_s: "T",
+      tau_ms: "T",
+      mass_a_kg: "M",
+      mass_b_kg: "M",
+      overlap_mass_kg: "M",
+      boundary_shell_mass_fraction_a: "1",
+      boundary_shell_mass_fraction_b: "1",
+      source_potential_deltaE_J: "M L^2 T^-2",
+      potential_min_m2_s2: "L^2 T^-2",
+      potential_max_m2_s2: "L^2 T^-2",
+    },
+  },
+  {
+    tag: "DP_COLLAPSE",
+    module: "server/services/dp-adapters.ts",
+    stage: "exploratory",
+    notes: "Adapters from stress-energy fields to DP mass-density grids.",
+    checks: [{ type: "test", path: "tests/dp-adapters.spec.ts" }],
+    units: {
+      rho_kg_m3: "M L^-3",
+      energy_density: "M L^-1 T^-2",
+    },
+  },
+  {
+    tag: "DP_COLLAPSE",
+    module: "server/services/dp-adapter-build.ts",
+    stage: "exploratory",
+    notes: "Build DP adapter inputs from stress-energy and GR evolve bricks.",
+    checks: [
+      { type: "test", path: "tests/collapse-benchmark.phase2.routes.spec.ts" },
+    ],
+    units: {
+      ell_m: "L",
+      rho_kg_m3: "M L^-3",
+      energy_density: "M L^-1 T^-2",
+    },
+  },
+  {
+    tag: "DP_COLLAPSE",
+    module: "shared/dp-planner.ts",
+    stage: "exploratory",
+    notes: "DP planning calculator schema (visibility, detectability, tau).",
+    checks: [{ type: "test", path: "tests/dp-planner.spec.ts" }],
+    units: {
+      gamma_dp_s: "T^-1",
+      tau_s: "T",
+      tau_ms: "T",
+      deltaE_J: "M L^2 T^-2",
+    },
+  },
+  {
+    tag: "DP_COLLAPSE",
+    module: "server/services/dp-planner.ts",
+    stage: "exploratory",
+    notes: "DP planning calculator (visibility decay, detectability ratio).",
+    checks: [{ type: "test", path: "tests/dp-planner.spec.ts" }],
+    units: {
+      gamma_dp_s: "T^-1",
+      tau_s: "T",
+      tau_ms: "T",
+      deltaE_J: "M L^2 T^-2",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_STAGE1",
+    module: "shared/casimir-lifshitz.ts",
+    stage: "reduced-order",
+    notes:
+      "Equilibrium planar Matsubara/reflection-coefficient solver with ideal-reference convergence and explicit material/finite-geometry claim gates.",
+    checks: [{ type: "test", path: "tests/casimir-lifshitz.spec.ts" }],
+    units: {
+      gap_m: "L",
+      temperature_K: "Theta",
+      free_energy_per_area_J_m2: "M T^-2",
+      pressure_Pa: "M L^-1 T^-2",
+      force_N: "M L T^-2",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_STAGE1",
+    module: "shared/casimir-dp-inference.ts",
+    stage: "reduced-order",
+    notes:
+      "Independent-binomial visibility power approximation and uncertainty-whitened dynamics-signature diagnostic; neither identifies collapse on its own.",
+    checks: [
+      { type: "test", path: "tests/casimir-dp-next-computations.spec.ts" },
+    ],
+    units: {
+      baseline_rate_s: "T^-1",
+      target_additional_rate_s: "T^-1",
+      observation_time_s: "T",
+      baseline_visibility: "1",
+      alternative_visibility: "1",
+      shots_per_setting: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_DATA_READINESS",
+    module: "shared/casimir-optical-response.ts",
+    stage: "reduced-order",
+    notes:
+      "Real-axis loss to imaginary-axis permittivity conversion with SHA-256, calibration, spectral-coverage, tail-registration, and uncertainty gates; synthetic validation cannot close measured-material authority.",
+    checks: [{ type: "test", path: "tests/casimir-optical-response.spec.ts" }],
+    units: {
+      omega_rad_s: "T^-1",
+      xi_rad_s: "T^-1",
+      epsilon_imag: "1",
+      epsilon_i_xi: "1",
+      standard_uncertainty: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_DATA_READINESS",
+    module: "shared/casimir-dp-data-readiness.ts",
+    stage: "diagnostic",
+    notes:
+      "Acquisition-sidecar hash/calibration/covariance validation and Fisher-z secondary-correlation power sizing; collapse identification remains source-gated.",
+    checks: [
+      { type: "test", path: "tests/casimir-dp-data-readiness.spec.ts" },
+      { type: "stability", path: "tests/casimir-dp-data-readiness.spec.ts" },
+    ],
+    units: {
+      acquisition_window_s: "T",
+      covariance: "varies",
+      null_correlation: "1",
+      alternative_correlation: "1",
+      paired_windows: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_OR_PHASE_STAGE2",
+    module: "shared/casimir-dp-phase-coherence.ts",
+    stage: "diagnostic",
+    notes:
+      "Ordinary branch-action phase integration, four-quadrature two-port interference, exponential visibility/rate conversion, projected-force phase, and ambient-gravity phase/tilt controls; none identifies objective collapse.",
+    checks: [
+      { type: "test", path: "tests/casimir-dp-phase-coherence.spec.ts" },
+      { type: "stability", path: "tests/casimir-dp-phase-coherence.spec.ts" },
+    ],
+    units: {
+      branch_energy_J: "M L^2 T^-2",
+      action_difference_J_s: "M L^2 T^-1",
+      boundary_phase_contrast_rad: "1",
+      visibility: "1",
+      coherence_rate_s: "T^-1",
+      projected_differential_force_N: "M L T^-2",
+      vertical_projection_m: "L",
+      tilt_rad: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_OR_PHASE_STAGE2",
+    module: "shared/casimir-dp-or-phase-stage2.ts",
+    stage: "diagnostic",
+    notes:
+      "Three-lane OR-motivated plausibility ledger combining DP pairwise/potential identities, fixed-branch boundary invariance, branch perturbation, ordinary phase/interference, ambient-gravity controls, upstream hashes, and a fail-closed unregistered bridge.",
+    checks: [
+      { type: "test", path: "tests/casimir-dp-or-phase-stage2.spec.ts" },
+      { type: "stability", path: "tests/casimir-dp-or-phase-stage2.spec.ts" },
+    ],
+    units: {
+      particle_mass_kg: "M",
+      compton_frequency_Hz: "T^-1",
+      dp_characteristic_frequency_Hz: "T^-1",
+      deltaE_G_J: "M L^2 T^-2",
+      tau_OR_s: "T",
+      boundary_phase_rad: "1",
+      ambient_gravity_phase_rad: "1",
+      branch_separation_m: "L",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_PROPOSAL_CLOSURE",
+    module: "shared/casimir-dp-proposal-readiness.ts",
+    stage: "diagnostic",
+    notes:
+      "Proposal-readiness evaluator for the transverse-branch sample-and-hold architecture, literature Casimir-Polder scale, phase-to-force stability bound, systematics coverage, commissioning dependencies, power, blinding, model separation, and claim ceilings.",
+    checks: [
+      { type: "test", path: "tests/casimir-dp-proposal-closure.spec.ts" },
+      { type: "stability", path: "tests/casimir-dp-proposal-closure.spec.ts" },
+    ],
+    units: {
+      particle_mass_kg: "M",
+      c4_J_m4: "M L^6 T^-2",
+      casimir_polder_potential_J: "M L^2 T^-2",
+      casimir_polder_force_N: "M L T^-2",
+      maximum_differential_force_noise_N: "M L T^-2",
+      single_charge_electric_field_equivalent_V_m: "M L T^-3 I^-1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_EVIDENCE_MAP_STAGE3",
+    module: "shared/casimir-dp-complex-coherence.ts",
+    stage: "diagnostic",
+    notes:
+      "Complex-coherence, independent phase-conditioning, path-swap, echo, and decay-shape discriminator. Synthetic recovery cannot identify objective collapse.",
+    checks: [
+      { type: "test", path: "tests/casimir-dp-complex-coherence.spec.ts" },
+      { type: "stability", path: "tests/casimir-dp-complex-coherence.spec.ts" },
+    ],
+    units: {
+      analysis_phase_rad: "1",
+      coherence_re: "1",
+      coherence_im: "1",
+      visibility: "1",
+      phase_rad: "1",
+      hold_time_s: "T",
+      chi: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_EVIDENCE_MAP_STAGE3",
+    module: "shared/casimir-dp-qed-green-noise.ts",
+    stage: "reduced-order",
+    notes:
+      "Measurement-constrained reduced-order material/Green/noise budget with shared mean and fluctuation receipts; measured apparatus closure remains not ready.",
+    checks: [
+      { type: "test", path: "tests/casimir-dp-qed-green-noise.spec.ts" },
+      { type: "stability", path: "tests/casimir-dp-qed-green-noise.spec.ts" },
+    ],
+    units: {
+      frequency_Hz: "T^-1",
+      omega_rad_s: "T^-1",
+      potential_J: "M L^2 T^-2",
+      force_N: "M L T^-2",
+      force_noise_N2_Hz: "M^2 L^2 T^-3",
+      energy_noise_J2_Hz: "M^2 L^4 T^-3",
+      phase_rad: "1",
+      chi: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_EVIDENCE_MAP_STAGE3",
+    module: "shared/casimir-dp-dp-companion.ts",
+    stage: "exploratory",
+    notes:
+      "Separates the Penrose lifetime envelope from one named regularized dynamical-DP companion calculation. The exploratory DP self-energy dependency constrains the lane claim.",
+    checks: [
+      { type: "test", path: "tests/casimir-dp-dp-companion.spec.ts" },
+      { type: "stability", path: "tests/casimir-dp-dp-companion.spec.ts" },
+    ],
+    units: {
+      physical_cutoff_m: "L",
+      numerical_softening_m: "L",
+      deltaE_G_J: "M L^2 T^-2",
+      tau_OR_s: "T",
+      gamma_OR_s: "T^-1",
+      diffusion_kg2_m2_s3: "M^2 L^2 T^-3",
+      heating_W: "M L^2 T^-3",
+      radiation_rate_s: "T^-1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_EVIDENCE_MAP_STAGE3",
+    module: "shared/casimir-dp-gravity-upper-bound.ts",
+    stage: "reduced-order",
+    notes:
+      "Signed complete-apparatus scalar energy ledger and ordinary weak-field mass, weight, metric, and phase upper bounds; tensor claims remain blocked without a conserved source.",
+    checks: [
+      { type: "test", path: "tests/casimir-dp-gravity-upper-bound.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-gravity-upper-bound.spec.ts",
+      },
+    ],
+    units: {
+      delta_energy_J: "M L^2 T^-2",
+      delta_mass_kg: "M",
+      weight_N: "M L T^-2",
+      potential_m2_s2: "L^2 T^-2",
+      metric_h00: "1",
+      phase_rad: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_EVIDENCE_MAP_STAGE3",
+    module: "shared/casimir-dp-model-comparison.ts",
+    stage: "diagnostic",
+    notes:
+      "Blinded held-out comparison of a composite ordinary-physics null against named nested DP and only registered bridge extensions, with power and identifiability gates.",
+    checks: [
+      { type: "test", path: "tests/casimir-dp-model-comparison.spec.ts" },
+      { type: "stability", path: "tests/casimir-dp-model-comparison.spec.ts" },
+    ],
+    units: {
+      observed_value: "varies",
+      predicted_value: "varies",
+      standard_uncertainty: "varies",
+      standardized_residual: "1",
+      predictive_score: "1",
+      power: "1",
+      signature_correlation: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_EVIDENCE_MAP_STAGE3",
+    module: "shared/casimir-dp-manifold-kernel-registry.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed schema and consistency validator for a proposed tensor/noise-to-metric-to-coherence kernel. Candidate kernels remain exploratory and registration is not validation.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-manifold-kernel-registry.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-manifold-kernel-registry.spec.ts",
+      },
+    ],
+    units: {
+      registry_status: "1",
+      conservation_residual: "1",
+      covariance_min_eigenvalue: "varies",
+      physical_rate_s: "T^-1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_EVIDENCE_MAP_STAGE3",
+    module: "shared/casimir-dp-evidence-map-stage3.ts",
+    stage: "diagnostic",
+    notes:
+      "Hash-linked Stage-3 authority rail, run-order ledger, cross-axis signatures, and outcome-to-claim map. Per-lane least-mature ceilings remain explicit.",
+    checks: [
+      { type: "test", path: "tests/casimir-dp-evidence-map-stage3.spec.ts" },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-evidence-map-stage3.spec.ts",
+      },
+    ],
+    units: {
+      run_stage: "1",
+      gate_status: "1",
+      maximum_claim: "1",
+      evidence_class: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_POLARIZATION_CONGRUENCE_STAGE4",
+    module: "shared/casimir-dp-polarization-qed-control.ts",
+    stage: "reduced-order",
+    notes:
+      "Polarization-resolved reduced-order macroscopic-QED control with Jones/Stokes state physicality, TE/TM-to-circular basis invariance, reciprocal/nonreciprocal reflection response, mirror parity, matched controls, double contrasts, sensitivities, and limiting cases. Synthetic coefficients are not an apparatus Green-tensor solution.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-polarization-qed-control.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-polarization-qed-control.spec.ts",
+      },
+    ],
+    units: {
+      phase_rad: "1",
+      ramsey_chi: "1",
+      coherence_decay_rate_s: "T^-1",
+      axial_force_N: "M L T^-2",
+      heating_W: "M L^2 T^-3",
+      axial_torque_N_m: "M L^2 T^-2",
+      trap_shift_rad_s: "T^-1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_POLARIZATION_CONGRUENCE_STAGE4",
+    module: "shared/casimir-dp-radiative-thermal-closure.ts",
+    stage: "exploratory",
+    notes:
+      "Planck/FDT thermal-radiative control with explicit h/hbar and nu/omega normalization, numerical Stefan-Boltzmann recovery, near/far-field routing, detailed balance, zero-point separation, recoil, noise, heating, decoherence, and covariance. The far-field fixture is a synthetic greybody benchmark.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-radiative-thermal-closure.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-radiative-thermal-closure.spec.ts",
+      },
+    ],
+    units: {
+      frequency_Hz: "T^-1",
+      omega_rad_s: "T^-1",
+      temperature_K: "Theta",
+      sigma_W_m2_K4: "M T^-3 Theta^-4",
+      net_power_W: "M L^2 T^-3",
+      recoil_force_N: "M L T^-2",
+      power_noise_W2_Hz: "M^2 L^4 T^-5",
+      decoherence_rate_s: "T^-1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_POLARIZATION_CONGRUENCE_STAGE4",
+    module: "shared/casimir-dp-tensor-dimensional-congruence.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed validator for SI dimensions, semantic quantity identities, tensor rank/symmetry, frame/basis/gauge maps, h/hbar, nu/omega, PSD Jacobians, FDT, conservation, covariance, receipts, and recovery limits. Equal inverse-time dimensions remain same_dimension_not_connected without a sourced transfer kernel.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-tensor-dimensional-congruence.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-tensor-dimensional-congruence.spec.ts",
+      },
+    ],
+    units: {
+      convention_relative_error: "1",
+      spectral_jacobian_relative_error: "1",
+      conservation_residual: "1",
+      covariance_min_eigenvalue: "varies",
+      compton_omega_rad_s: "T^-1",
+      dp_inverse_timescale_s: "T^-1",
+      cavity_omega_rad_s: "T^-1",
+      numerical_bridge_output: "blocked",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_POLARIZATION_CONGRUENCE_STAGE4",
+    module: "shared/casimir-dp-polarization-congruence-stage4.ts",
+    stage: "diagnostic",
+    notes:
+      "Hash-linked Stage-4 orchestrator that expands the ordinary-physics null with polarization-QED and thermal/FDT controls, reuses the named DP manifest without mutation, admits only a frozen registered numerical bridge, and maps synthetic predictions to explicit nonclaims.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-polarization-congruence-stage4.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-polarization-congruence-stage4.spec.ts",
+      },
+    ],
+    units: {
+      run_stage: "1",
+      gate_status: "1",
+      model_state: "1",
+      evidence_class: "1",
+      maximum_claim: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_QED_SCALE_HIERARCHY_STAGE4_1",
+    module: "shared/casimir-dp-qed-scale-hierarchy-calibration.ts",
+    stage: "reduced-order",
+    notes:
+      "Source-backed CODATA 2022 electron Compton, Rydberg, Bohr-radius, classical-electron-radius, and leading reduced-mass hydrogen identity calibration with explicit uncertainty, covariance, literal, rounding, namespace, and correction-ledger gates. The diagnostic wrapper preserves Stage-4's semantic non-bridge and cannot support Casimir, DP, collapse, manifold, resonance, polarization, or viability claims.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-qed-scale-hierarchy-calibration.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-qed-scale-hierarchy-calibration.spec.ts",
+      },
+    ],
+    units: {
+      fine_structure_alpha: "1",
+      compton_frequency_Hz: "T^-1",
+      rydberg_frequency_Hz: "T^-1",
+      electron_mass_kg: "M",
+      rydberg_energy_J: "M L^2 T^-2",
+      hartree_energy_J: "M L^2 T^-2",
+      reduced_compton_wavelength_m: "L",
+      bohr_radius_m: "L",
+      classical_electron_radius_m: "L",
+      calibration_gate: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_ELECTRON_MASS_HIGGS_ANCHOR_STAGE4_2A",
+    module: "shared/casimir-dp-electron-mass-higgs-anchor-stage4-2a.ts",
+    stage: "diagnostic",
+    notes:
+      "Source-backed, theory-assisted Penning/bound-electron mass replay with correlated CODATA conversions, a conditional Standard Model tree-level Yukawa parameterization, collider upper-bound semantics, and a fail-closed zero bridge into Casimir, DP, collapse, manifolds, or physical viability.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-electron-mass-higgs-anchor-stage4-2a.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-electron-mass-higgs-anchor-stage4-2a.spec.ts",
+      },
+    ],
+    units: {
+      electron_relative_atomic_mass: "1",
+      electron_mass_kg: "M",
+      electron_rest_energy_J: "M L^2 T^-2",
+      fermi_scale_GeV: "M L^2 T^-2",
+      electron_yukawa_tree: "1",
+      compton_frequency_Hz: "T^-1",
+      calibration_gate: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_PLANCK_SOLAR_CALIBRATION_STAGE4_2A",
+    module: "shared/casimir-dp-planck-solar-calibration-stage4-2a.ts",
+    stage: "diagnostic",
+    notes:
+      "Source-backed Planck spectral-density and Stefan-Boltzmann closure with a frozen TSIS Wien color-temperature diagnostic and a separate IAU luminosity-radius bolometric effective temperature. Shared constants and dimensions are calibration dependencies, not DP evidence.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-planck-solar-calibration-stage4-2a.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-planck-solar-calibration-stage4-2a.spec.ts",
+      },
+    ],
+    units: {
+      frequency_Hz: "T^-1",
+      omega_rad_s: "T^-1",
+      photon_energy_J: "M L^2 T^-2",
+      planck_radiance_lambda: "M L^-1 T^-3",
+      stefan_boltzmann_constant: "M T^-3 Theta^-4",
+      color_temperature_K: "Theta",
+      bolometric_effective_temperature_K: "Theta",
+      calibration_gate: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_APPARATUS_COHERENCE_RESIDUAL_STAGE4_2B",
+    module: "shared/casimir-dp-apparatus-scale-transport-stage4-2b.ts",
+    stage: "diagnostic",
+    notes:
+      "Composition-aware apparatus and complete-joint-system branch-density ledger with mass conservation, branch-swap, boundary-equivalence, covariance-ancestry, and sensitivity-weighted mismatch gates. Design-class branch states remain distinct from experimentally demonstrated preparation.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-apparatus-scale-transport-stage4-2b.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-apparatus-scale-transport-stage4-2b.spec.ts",
+      },
+    ],
+    units: {
+      total_mass_kg: "M",
+      branch_separation_m: "L",
+      smearing_length_m: "L",
+      hold_time_s: "T",
+      density_l1_mismatch_kg: "M",
+      scale_transport_gate: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_APPARATUS_COHERENCE_RESIDUAL_STAGE4_2B",
+    module: "shared/casimir-dp-apparatus-spectral-thermometry-stage4-2b.ts",
+    stage: "diagnostic",
+    notes:
+      "Response-corrected synthetic apparatus spectral thermometry with detector response, reflected/stray subtraction, non-blackbody and LTE diagnostics, covariance propagation, and boundary-inclusive/free-space recovery. It is not measured apparatus thermometry.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-apparatus-spectral-thermometry-stage4-2b.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-apparatus-spectral-thermometry-stage4-2b.spec.ts",
+      },
+    ],
+    units: {
+      wavelength_m: "L",
+      detector_power_W: "M L^2 T^-3",
+      spectral_covariance_W2: "M^2 L^4 T^-6",
+      temperature_estimate_K: "Theta",
+      jump_rate_s: "T^-1",
+      thermometry_gate: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_APPARATUS_COHERENCE_RESIDUAL_STAGE4_2B",
+    module: "shared/casimir-dp-apparatus-response-covariance-stage4-2b.ts",
+    stage: "diagnostic",
+    notes:
+      "Frozen sensor-forward and nuisance-response model that separates physical disturbance from sensor self-noise, preserves complex cross spectra, and constructs full measured/prediction/shared-calibration residual covariance. Raw sensor PSDs and mean Casimir pressure are not admissible substitutes.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-apparatus-response-covariance-stage4-2b.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-apparatus-response-covariance-stage4-2b.spec.ts",
+      },
+    ],
+    units: {
+      angular_frequency_rad_s: "T^-1",
+      hold_time_s: "T",
+      branch_energy_J: "M L^2 T^-2",
+      energy_difference_psd: "M^2 L^4 T^-3",
+      response_covariance_gate: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_APPARATUS_COHERENCE_RESIDUAL_STAGE4_2B",
+    module: "shared/casimir-dp-dp-scaling-forecast-stage4-2b.ts",
+    stage: "diagnostic",
+    notes:
+      "Frozen named regularized nonrelativistic Markovian mass-density DP forecast with E_G convergence, sub-voxel sensitivity, mass/separation/time scaling, companion reconciliation, and a conditional boundary null only under complete joint-system equivalence. No Casimir modifier is inserted into the registered generator.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-dp-scaling-forecast-stage4-2b.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-dp-scaling-forecast-stage4-2b.spec.ts",
+      },
+    ],
+    units: {
+      mass_kg: "M",
+      radius_m: "L",
+      branch_separation_m: "L",
+      E_G_J: "M L^2 T^-2",
+      Gamma_DP_s: "T^-1",
+      dp_forecast_gate: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_APPARATUS_COHERENCE_RESIDUAL_STAGE4_2B",
+    module: "shared/casimir-dp-apparatus-coherence-residual-stage4-2b.ts",
+    stage: "diagnostic",
+    notes:
+      "Pilot-frozen complex-coherence comparator using a raw Re/Im likelihood or coverage-qualified Gaussian log visibility, exact on/off pairing, full positive-definite covariance, immutable row ordering, and explicit confirmatory-leakage and post-hoc-retuning rejection. Synthetic recovery is not measured residual evidence.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-apparatus-coherence-residual-stage4-2b.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-apparatus-coherence-residual-stage4-2b.spec.ts",
+      },
+    ],
+    units: {
+      complex_coherence: "1",
+      residual_log_visibility: "1",
+      residual_phase_rad: "1",
+      residual_covariance: "1",
+      coherence_residual_gate: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_APPARATUS_COHERENCE_RESIDUAL_STAGE4_2B",
+    module: "shared/casimir-dp-apparatus-identifiability-stage4-2b.ts",
+    stage: "diagnostic",
+    notes:
+      "Nuisance-profiled signature-rank, conditioning, cosine-separation, power, coverage, companion-SNR, required-acquisition, and apparatus go/no-go forecast. An underpowered no-go constrains the frozen apparatus design and does not falsify DP.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-apparatus-identifiability-stage4-2b.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-apparatus-identifiability-stage4-2b.spec.ts",
+      },
+    ],
+    units: {
+      whitened_signature: "1",
+      fisher_information: "1",
+      achieved_power: "1",
+      companion_snr: "1",
+      required_windows: "1",
+      identifiability_gate: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_IDENTIFIABILITY_REDESIGN_STAGE4_2C",
+    module: "shared/casimir-dp-control-response-stage4-2c.ts",
+    stage: "diagnostic",
+    notes:
+      "Runtime H compiles physical-axis numerical design assumptions into 30 raw complex control responses, real/imaginary block covariance, shared-calibration ancestry, sensor-self-noise covariance, Cholesky whitening, and an explicit round-trip receipt. These values are not measured apparatus response or covariance.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-control-response-stage4-2c.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2c-campaign.spec.ts",
+      },
+    ],
+    units: {
+      raw_complex_control_response: "1",
+      response_standard_uncertainty: "1",
+      block_covariance: "1",
+      whitened_signature: "1",
+      covariance_roundtrip_residual: "1",
+      control_response_gate: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_IDENTIFIABILITY_REDESIGN_STAGE4_2C",
+    module: "shared/casimir-dp-apparatus-redesign-stage4-2c.ts",
+    stage: "diagnostic",
+    notes:
+      "Runtimes I/J transport a preregistered bounded apparatus catalogue through the unchanged Stage-4.2B DP generator, append covariance-whitened control contrasts, enforce authority and design bounds, and select the minimum-burden candidate only after cosine, conditioning, power, false-positive, and companion-SNR gates pass. No confirmatory fit or Casimir-to-collapse bridge is admitted.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-apparatus-redesign-stage4-2c.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2c-campaign.spec.ts",
+      },
+    ],
+    units: {
+      candidate_mass_kg: "M",
+      candidate_radius_m: "L",
+      branch_separation_m: "L",
+      hold_time_s: "T",
+      Gamma_DP_s: "T^-1",
+      maximum_signature_cosine: "1",
+      normalized_gram_condition: "1",
+      achieved_power: "1",
+      false_positive_rate: "1",
+      companion_snr: "1",
+      required_windows: "1",
+      redesign_gate: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_IDENTIFIABILITY_REDESIGN_STAGE4_2C",
+    module: "shared/casimir-dp-acquisition-packets-stage4-2c.ts",
+    stage: "diagnostic",
+    notes:
+      "Runtime L emits calibration, pilot, confirmatory, and independent-replication packet schemas with frozen exclusions, covariance ancestry, custody, and unblinding rules. Confirmatory ingestion before freeze and post-freeze response, covariance, candidate, DP, or exclusion refitting fail closed; no packet contains acquired data.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-acquisition-packets-stage4-2c.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2c-campaign.spec.ts",
+      },
+    ],
+    units: {
+      packet_schema_gate: "1",
+      freeze_gate: "1",
+      custody_gate: "1",
+      automatic_unblinding_allowed: "1",
+      physical_pilot_readiness: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_CROSS_SCALE_METROLOGY_STAGE4_2D",
+    module: "shared/casimir-dp-cross-scale-metrology-stage4-2d.ts",
+    stage: "diagnostic",
+    notes:
+      "Source-bounded Stark, Zeeman, circular-polarization, and blackbody dynamic-Stark calibration projections with propagated synthetic covariance, plus Schwarzschild compactness, material-yield crossover, and Jeans pressure-support recovery. Spinor representation remains distinct from mass and collapse; only the unchanged registered branch-density relation is admitted to Gamma_DP.",
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-cross-scale-metrology-stage4-2d.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2d-campaign.spec.ts",
+      },
+    ],
+    units: {
+      electric_field_V_m: "M L T^-3 I^-1",
+      magnetic_flux_density_T: "M T^-2 I^-1",
+      spectroscopic_shift_Hz: "T^-1",
+      spectroscopic_covariance_Hz2: "T^-2",
+      schwarzschild_radius_m: "L",
+      compactness: "1",
+      yield_crossover_radius_m: "L",
+      jeans_length_m: "L",
+      jeans_mass_kg: "M",
+      free_fall_time_s: "T",
+      observable_bridge_edges_added: "1",
+    },
+  },
+  {
+    tag: "PROOF_MATH",
+    module: "shared/curvature-proxy.ts",
+    stage: "reduced-order",
+    notes: "Curvature proxy helpers shared by proof pack and UI.",
+    checks: [{ type: "test", path: "tests/proof-pack.spec.ts" }],
+    units: {
+      kappa_drive: "L^-2",
+      kappa_body: "L^-2",
+      kappa_u: "L^-2",
+    },
+  },
+  {
+    tag: "PROOF_MATH",
+    module: "client/src/physics/curvature.ts",
+    stage: "reduced-order",
+    notes: "Client curvature proxy helpers for proof displays.",
+    checks: [{ type: "test", path: "tests/proof-pack.spec.ts" }],
+    units: {
+      kappaDrive: "L^-2",
+      kappaDriveFromPower: "L^-2",
+      kappaBody: "L^-2",
+      potatoEfficiency: "1",
+    },
+  },
+  {
+    tag: "PROOF_MATH",
+    module: "client/src/lib/warp-proof-math.ts",
+    stage: "reduced-order",
+    notes: "Warp proof helper math (guards + proxy conversions).",
+    checks: [{ type: "test", path: "tests/proof-pack.spec.ts" }],
+    units: {
+      casimirPressure_Pa: "M L^-1 T^-2",
+      electrostaticPressure_Pa: "M L^-1 T^-2",
+      restoringPressure_Pa: "M L^-1 T^-2",
+      margin_Pa: "M L^-1 T^-2",
+      maxStroke_pm: "L",
+      kappaDriveProxy: "L^-2",
+    },
+  },
+  {
+    tag: "PROOF_MATH",
+    module: "server/helix-proof-pack.ts",
+    stage: "reduced-order",
+    notes: "Proof pack builder for pipeline-derived proof metrics.",
+    checks: [{ type: "test", path: "tests/proof-pack.spec.ts" }],
+    units: {
+      power_avg_W: "M L^2 T^-3",
+      power_avg_MW: "M L^2 T^-3",
+      duty_effective: "1",
+      hull_area_m2: "L^2",
+      tile_area_m2: "L^2",
+      tile_count: "1",
+      kappa_drive: "L^-2",
+      M_exotic_kg: "M",
+      U_static_J: "M L^2 T^-2",
+      TS_ratio: "1",
+      zeta: "1",
+    },
+  },
+  {
+    tag: "HALOBANK_SOLAR",
+    module: "server/modules/halobank-solar/time-core.ts",
+    stage: "reduced-order",
+    notes:
+      "Deterministic UTC/TAI/TT/TCG/TDB/TCB conversion core for HaloBank solar proofs.",
+    checks: [{ type: "test", path: "tests/halobank-solar-routes.spec.ts" }],
+    units: {
+      tai_minus_utc_s: "T",
+      tt_minus_utc_s: "T",
+      tdb_minus_tt_s: "T",
+      tcb_minus_tdb_s: "T",
+      tcg_minus_tt_s: "T",
+    },
+  },
+  {
+    tag: "HALOBANK_SOLAR",
+    module: "server/modules/halobank-solar/ephemeris-core.ts",
+    stage: "diagnostic",
+    notes:
+      "Deterministic vector state core with BCRS/GCRS framing, observer handling, and compatibility exports.",
+    checks: [
+      { type: "test", path: "tests/halobank-solar-routes.spec.ts" },
+      { type: "snapshot", path: "tests/halobank-solar-routes.spec.ts" },
+    ],
+    units: {
+      pos_AU: "L",
+      vel_AU_per_day: "L T^-1",
+      light_time_s: "T",
+      ra_deg: "1",
+      dec_deg: "1",
+    },
+  },
+  {
+    tag: "HALOBANK_SOLAR",
+    module: "server/modules/halobank-solar/derived.ts",
+    stage: "diagnostic",
+    notes:
+      "Derived proof modules for Mercury precession, eclipse timing, and resonance-libration gates.",
+    checks: [
+      { type: "test", path: "tests/halobank-solar-derived.spec.ts" },
+      { type: "snapshot", path: "tests/halobank-solar-derived.spec.ts" },
+    ],
+    units: {
+      mercury_arcsec_per_century: "1",
+      eclipse_contact_gap_deg: "1",
+      resonance_theta_span_deg: "1",
+      resonance_ratio_error: "1",
+    },
+  },
+  {
+    tag: "HALOBANK_SOLAR",
+    module: "server/routes/halobank-solar.ts",
+    stage: "diagnostic",
+    notes:
+      "API contracts for vectors and derived proof modules with deterministic provenance/fail-id gate semantics.",
+    checks: [
+      { type: "test", path: "tests/halobank-solar-routes.spec.ts" },
+      { type: "test", path: "tests/halobank-solar-derived.spec.ts" },
+      { type: "snapshot", path: "tests/halobank-solar-routes.spec.ts" },
+    ],
+    units: {
+      gate_delta_value: "varies",
+      gate_delta_limit: "varies",
+    },
+  },
+  {
+    tag: "CURVATURE_LEVERAGE",
+    module: "shared/curvature-leverage.ts",
+    stage: "diagnostic",
+    notes:
+      "Scale-normalized curvature leverage contract with non-promoting NHM2 full-solve records.",
+    motivation:
+      "Curvature leverage is a dimensionless diagnostic bridge; it must stay separate from source validation and promotion.",
+    conceptualWaypoints: [
+      "raw leverage is abs(kappa) times lever length squared",
+      "response weighting is separate from raw leverage",
+      "NHM2 records route through metric-required tensor refs",
+      "promotionAllowed remains false by construction",
+    ],
+    checks: [
+      { type: "test", path: "tests/curvature-leverage.spec.ts" },
+      { type: "test", path: "tests/curvature-leverage-claims.spec.ts" },
+      { type: "snapshot", path: "tests/curvature-leverage.spec.ts" },
+    ],
+    units: {
+      kappa_m2: "L^-2",
+      leverLength_m: "L",
+      leverage: "1",
+      responseGain: "1",
+      closureQuality: "1",
+      tensorNorm_m2: "L^-2",
+    },
+  },
+  {
+    tag: "CURVATURE_LEVERAGE",
+    module: "scripts/curvature-leverage-full-solve-report.ts",
+    stage: "diagnostic",
+    notes:
+      "NHM2 full-solve curvature leverage report generator from metric-required regional tensor artifacts.",
+    motivation:
+      "The report makes the tensor-first leverage route auditable from equation IDs and claim IDs to full-solve artifacts.",
+    conceptualWaypoints: [
+      "load metric-required regional tensor evidence",
+      "convert SI energy-density tensor magnitudes to curvature units when needed",
+      "compute regional abs(kappa) times lever length squared",
+      "emit explicit observer, QEI, conservation, and promotion gates",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/curvature-leverage-full-solve-report.spec.ts",
+      },
+      { type: "test", path: "tests/curvature-leverage-claims.spec.ts" },
+      {
+        type: "snapshot",
+        path: "tests/curvature-leverage-full-solve-report.spec.ts",
+      },
+    ],
+    units: {
+      tensorNormInput: "varies",
+      tensorNorm_m2: "L^-2",
+      leverLength_m: "L",
+      leverage: "1",
+      residualRelLInf: "1",
+    },
+  },
+  {
+    tag: "CURVATURE_LEVERAGE",
+    module: "scripts/curvature-leverage-benchmark-ladder.ts",
+    stage: "diagnostic",
+    notes:
+      "Cross-scale curvature leverage benchmark ladder for compactness, quantum floors, raw Casimir energy, external observables, and NHM2 regional comparisons.",
+    motivation:
+      "The ladder gives curvature leverage a known diagnostic scale without converting external observables into NHM2 validation.",
+    conceptualWaypoints: [
+      "body-density leverage reduces to compactness",
+      "quantum and raw Casimir fixtures expose microscopic gravity leverage floors",
+      "marginKind separates identity checks, constant anchors, model self references, and empirical references",
+      "NHM2 regions are compared against the ladder without changing source-closure gates",
+      "sweep artifacts verify expected log-log scaling for fixed-curvature lever length changes",
+      "promotionAllowed remains false for benchmark and NHM2 comparison records",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/curvature-leverage-benchmark-ladder.spec.ts",
+      },
+      { type: "test", path: "tests/curvature-leverage-claims.spec.ts" },
+      {
+        type: "snapshot",
+        path: "tests/curvature-leverage-benchmark-ladder.spec.ts",
+      },
+    ],
+    units: {
+      leverage: "1",
+      referenceLeverage: "1",
+      relativeError: "1",
+      sigmaMargin: "1",
+      marginKind: "1",
+      ordersFromReference: "1",
+      ordersAboveRawCasimir1km: "1",
+      ordersBelowBlackHoleHorizon: "1",
+      expectedLogLogSlope: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_CAUSAL_CONE_CLOCK_STAGE4_2E",
+    module: "shared/casimir-dp-causal-cone-clock-stage4-2e.ts",
+    stage: "diagnostic",
+    notes: "Recovers ADM local causal cones, weak-field clocks, radial-null propagation, and separate ideal-Casimir GR and QED propagation screens while preserving zero collapse bridges.",
+    motivation: "Ordinary causal and timing effects must be separated from any collapse interpretation.",
+    conceptualWaypoints: ["local cone and clock recoveries are conventional GR controls", "ideal Casimir curvature is an incomplete scalar screen", "standard Diósi dynamics remain boundary independent"],
+    checks: [{ type: "test", path: "tests/casimir-dp-causal-cone-clock-stage4-2e.spec.ts" }, { type: "stability", path: "tests/casimir-dp-stage4-2e-campaign.spec.ts" }],
+    units: { proper_time_s: "T", phase_rad: "1", curvature_screen: "L^-2" },
+  },
+  {
+    tag: "CASIMIR_DP_MAXWELL_MACROSCOPIC_QED_CLOSURE_STAGE4_2F",
+    module: "shared/casimir-dp-maxwell-macroscopic-qed-closure-stage4-2f.ts",
+    stage: "diagnostic",
+    notes: "Recovers covariant Maxwell, polarization, Green/FDT, ideal-Casimir, and exact named-Diósi identities while finite-apparatus authority remains blocked.",
+    motivation: "The ordinary electromagnetic response and tested collapse model require explicit, nonbridged executable definitions.",
+    conceptualWaypoints: ["Green/FDT response remains ordinary physics", "the Gaussian Diósi convention and companion are frozen", "no Casimir-to-collapse edge is admitted"],
+    checks: [{ type: "test", path: "tests/casimir-dp-maxwell-macroscopic-qed-closure-stage4-2f.spec.ts" }, { type: "stability", path: "tests/casimir-dp-stage4-2f-campaign.spec.ts" }],
+    units: { green_response: "1", dp_rate_s_inv: "T^-1", heating_W: "M L^2 T^-3" },
+  },
+  {
+    tag: "CASIMIR_DP_EMPIRICAL_FEASIBILITY_PILOT_STAGE4_2G",
+    module: "shared/casimir-dp-empirical-feasibility-pilot-stage4-2g.ts",
+    stage: "diagnostic",
+    notes: "Binds one provenance-defined apparatus identity to Diósi coherence, companion, packet-ingestion, and identifiability gates without measured authority.",
+    motivation: "A physical pilot requires one consistent object, likelihood, custody chain, and measured packet.",
+    conceptualWaypoints: ["one mass-density identity feeds coherence and companion forecasts", "synthetic packets have no empirical authority", "all promotion gates fail closed"],
+    checks: [{ type: "test", path: "tests/casimir-dp-empirical-feasibility-pilot-stage4-2g.spec.ts" }, { type: "stability", path: "tests/casimir-dp-stage4-2g-campaign.spec.ts" }],
+    units: { dp_rate_s_inv: "T^-1", visibility: "1", heating_W: "M L^2 T^-3" },
+  },
+  {
+    tag: "CASIMIR_DP_COMMISSIONING_INTAKE_STAGE4_2H",
+    module: "shared/casimir-dp-commissioning-intake-stage4-2h.ts",
+    stage: "diagnostic",
+    notes: "Defines strict instrument, calibration, product, raw-column, partition, custody, and replication intake contracts for the unacquired apparatus.",
+    motivation: "Measured claims require validated provenance and acquisition semantics before analysis.",
+    conceptualWaypoints: ["blank intake is not evidence", "synthetic compilation tests schema only", "measured and mechanism gates remain closed"],
+    checks: [{ type: "test", path: "tests/casimir-dp-commissioning-intake-stage4-2h.spec.ts" }, { type: "stability", path: "tests/casimir-dp-stage4-2h-campaign.spec.ts" }],
+    units: { packet_count: "1", authority_count: "1" },
+  },
+  {
+    tag: "CASIMIR_DP_BOUNDARY_BRANCH_INTERACTION_STAGE4_2I",
+    module: "shared/casimir-dp-boundary-branch-interaction-stage4-2i.ts",
+    stage: "diagnostic",
+    notes: "Implements the four-cell complex-coherence cross-ratio and custody contract while standard matched-history Diósi attenuation cancels algebraically.",
+    motivation: "Boundary-superposition interaction must be tested separately from the primary collapse comparator.",
+    conceptualWaypoints: ["complex phase and magnitude are retained", "Diósi cancellation requires matched histories", "non-unit cross-ratio is initially an interaction anomaly"],
+    checks: [{ type: "test", path: "tests/casimir-dp-boundary-branch-interaction-stage4-2i.spec.ts" }, { type: "stability", path: "tests/casimir-dp-stage4-2i-campaign.spec.ts" }],
+    units: { cross_ratio: "1", phase_rad: "1", covariance: "1" },
+  },
+  {
+    tag: "CASIMIR_DP_SCHRODINGER_MASS_DENSITY_STAGE4_2J",
+    module: "shared/casimir-dp-schrodinger-mass-density-stage4-2j.ts",
+    stage: "diagnostic",
+    notes:
+      "Separates Hamiltonian phase from ordinary and Diósi contraction, compares effective-Gaussian and same-R0 homogeneous-sphere mass representations, and returns conservative environmental and preparation screens without physical promotion.",
+    motivation:
+      "A coherence residual becomes scientifically interpretable only after its theory lane, mass-density representation, ordinary backgrounds, and model-conditional inverse are explicit and fail closed.",
+    conceptualWaypoints: [
+      "Hamiltonian branch energy rotates complex phase without intrinsic contraction",
+      "the frozen Diósi term contracts the off-diagonal element through E_G over hbar",
+      "a DP-equivalent residual energy is conditional inference rather than collected gravitational energy",
+      "the same physical Gaussian regularization is retained across mass representations",
+      "missing constituent maps and failed gas screens reject promotion without changing the registered law",
+      "hydrogen and QED energy-frequency comparisons remain dimensional nonbridges",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-schrodinger-mass-density-stage4-2j.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2j-campaign.spec.ts",
+      },
+    ],
+    units: {
+      E_G_J: "M L^2 T^-2",
+      Gamma_DP_s: "T^-1",
+      hold_time_s: "T",
+      visibility_ratio: "1",
+      branch_energy_difference_J: "M L^2 T^-2",
+      sphere_radius_m: "L",
+      branch_separation_m: "L",
+      regularization_length_m: "L",
+      collision_rate_s: "T^-1",
+      pressure_Pa: "M L^-1 T^-2",
+      temperature_K: "varies",
+      dp_to_rydberg_energy_ratio: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_MICROSCOPIC_EM_CLOSURE_STAGE4_2K",
+    module: "shared/casimir-dp-microscopic-em-closure-stage4-2k.ts",
+    stage: "diagnostic",
+    notes:
+      "Connects synthetic ground-state and material polarizability to an ideal-planar Green/scattering screen, exposes branch-orientation and phase-jitter sensitivity, validates ordinary four-cell subtraction, and blocks empirical attribution until finite geometry and QLBE inputs exist.",
+    motivation:
+      "A Casimir-adjacent coherence residual is interpretable only after ordinary boundary phase, material response, geometry, phase noise, and gas scattering are quantitatively closed.",
+    conceptualWaypoints: [
+      "ground-state transition sums determine polarizability rather than a literal virtual-photon density",
+      "causal material response and scattering Green tensors determine ordinary Casimir energy",
+      "normal and tangential branch orientations are inequivalent and must be registered",
+      "Gaussian phase jitter produces an ordinary coherence contraction",
+      "the four-cell statistic removes the registered ordinary interaction while standard boundary-independent DP cancels",
+      "QLBE and finite-geometry readiness fail closed with zero observable bridge edges",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-microscopic-em-closure-stage4-2k.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2k-campaign.spec.ts",
+      },
+    ],
+    units: {
+      epsilon_relative: "1",
+      polarizability_SI: "varies",
+      U_CP_J: "M L^2 T^-2",
+      phase_rad: "1",
+      phase_jitter_rad: "1",
+      Gamma_gas_s: "T^-1",
+      branch_separation_m: "L",
+      surface_gap_m: "L",
+      hold_time_s: "T",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_EMPIRICAL_AUTHORITY_STAGE4_2L",
+    module: "shared/casimir-dp-empirical-authority-stage4-2l.ts",
+    stage: "diagnostic",
+    notes:
+      "Freezes the reference 3D geometry, evaluates a finite-rectangle electromagnetic surrogate, propagates a synthetic phase-response covariance, screens a species-resolved isotropic QLBE proxy, compares state-preparation scale, audits the current Diósi lower bound, and quantifies mass-density representation dependence without promoting synthetic inputs.",
+    motivation:
+      "The empirical pilot must remain closed until apparatus geometry, measured spectra, phase covariance, gas scattering, state preparation, external constraints, and mass-density authority are independently demonstrated.",
+    conceptualWaypoints: [
+      "the engineering geometry is frozen while as-built metrology remains absent",
+      "the solid-angle rectangle calculation is a finite-size diagnostic and not a CAD/mesh Maxwell Green tensor",
+      "phase-response Jacobians expose the alignment and covariance precision required by the DP-scale coherence target",
+      "species-resolved gas proxies identify pressure requirements but do not replace measured differential scattering amplitudes",
+      "state-preparation comparisons are scale diagnostics rather than platform feasibility evidence",
+      "external bounds and mass-density envelopes are kept model-specific with zero Casimir-to-collapse bridge edges",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-empirical-authority-stage4-2l.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2l-campaign.spec.ts",
+      },
+    ],
+    units: {
+      sphere_center_m: "L",
+      branch_vector_m: "L",
+      finite_geometry_factor: "1",
+      branch_energy_J: "M L^2 T^-2",
+      phase_jacobian_rad_per_m: "L^-1",
+      phase_jacobian_rad_per_rad: "1",
+      phase_sigma_rad: "1",
+      Gamma_QLBE_s: "T^-1",
+      pressure_Pa: "M L^-1 T^-2",
+      state_preparation_mass_ratio: "1",
+      E_G_J: "M L^2 T^-2",
+      external_bound_ratio: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_APPARATUS_SEARCH_STAGE4_2M",
+    module: "shared/casimir-dp-apparatus-search-stage4-2m.ts",
+    stage: "diagnostic",
+    notes:
+      "Searches a frozen 200-candidate apparatus domain and selects the leading bounded commissioning design under the unchanged registered Diósi generator and transported electromagnetic, gas, preparation, identifiability, power, companion, density, and external-bound screens.",
+    motivation:
+      "The Stage-4.2L no-go requires a bounded numerical redesign before scarce measured subsystem commissioning can be targeted.",
+    conceptualWaypoints: [
+      "the certified Stage-4.2L receipt is verified before candidate evaluation",
+      "the named Diósi generator and cutoff remain frozen",
+      "three candidates pass all synthetic gates; candidate 002 defines the leading narrow commissioning target",
+      "transported phase, gas, covariance, preparation, companion, and bound quantities remain non-empirical",
+      "standard boundary-independent Diósi dynamics remain separate from the Casimir control",
+      "no physical pilot, collapse, manifold, or viability claim is promoted",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-apparatus-search-stage4-2m.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2m-campaign.spec.ts",
+      },
+    ],
+    units: {
+      radius_m: "L",
+      mass_kg: "M",
+      branch_separation_m: "L",
+      hold_time_s: "T",
+      gap_m: "L",
+      E_G_J: "M L^2 T^-2",
+      Gamma_DP_s: "T^-1",
+      phase_sigma_rad: "1",
+      gas_to_dp_ratio: "1",
+      power: "1",
+      companion_snr: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_MATERIAL_THERMAL_ORDINARY_NULL_STAGE4_2N",
+    module: "shared/casimir-dp-material-thermal-ordinary-null-stage4-2n.ts",
+    stage: "diagnostic",
+    notes:
+      "Binds the leading Stage-4.2M commissioning design to a synthetic specimen-loss conversion, finite-geometry Green/FDT phase and coherence-loss calculation, zero-coupling and infinite-distance recoveries, Planck-Stefan-Boltzmann accounting recovery, controlled intervention replay, and a four-cell ordinary complex-coherence null.",
+    motivation:
+      "Measured residual attribution requires an explicit ordinary-response chain in the same complex-coherence space as the proposed signal before any Diósi comparison can be interpreted.",
+    conceptualWaypoints: [
+      "candidate 002 and the frozen Diósi exponents are immutable upstream comparators",
+      "Kramers-Kronig conversion propagates the supplied synthetic material-loss uncertainties without claiming a measured specimen spectrum",
+      "finite-geometry Green response supplies ordinary mean phase while two-sided FDT spectra supply ordinary contraction and covariance",
+      "zero coupling, infinite distance, Planck-Stefan-Boltzmann, detailed balance, and intervention recoveries test the software chain",
+      "the four-cell cross ratio exposes a boundary-by-superposition interaction in complex coherence",
+      "thermal response is single counted and the Diósi comparator is not combined with the ordinary null",
+      "all empirical, collapse, manifold, and viability claims remain fail closed with zero bridge edges",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-material-thermal-ordinary-null-stage4-2n.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "scripts/research/run-casimir-dp-material-thermal-ordinary-null-stage4-2n.ts",
+      },
+    ],
+    units: {
+      omega_rad_s: "T^-1",
+      epsilon_imaginary_axis: "1",
+      branch_potential_J: "M L^2 T^-2",
+      phase_rad: "1",
+      chi: "1",
+      coherence: "1",
+      covariance_phase_chi: "1",
+      dp_exponent_comparator: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_PUBLIC_DATA_COMPONENT_VALIDATION_STAGE4_2O",
+    module: "shared/casimir-dp-public-data-component-validation-stage4-2o.ts",
+    stage: "diagnostic",
+    notes:
+      "Authenticates and replays four independent public measurement records for complex fringe extraction, paired boundary-response extraction, held-out multichannel covariance/residual handling, and external Diósi-bound provenance without constructing a cross-apparatus estimator.",
+    motivation:
+      "Before commissioning the integrated apparatus, constituent numerical operations should be exercised on real data while preserving the difference between component validation and joint-protocol evidence.",
+    conceptualWaypoints: [
+      "complete external source files are authenticated before compact numerical extraction",
+      "the sodium Fourier coefficient is a measured fringe-transfer observable rather than the proposed sphere density-matrix element",
+      "the superconducting-drum replay is a measured boundary/drive response rather than an apparatus-matched ordinary null",
+      "LISA Pathfinder validates classical train/held-out covariance and residual handling only",
+      "the Gran Sasso parameter-free exclusion record does not adjudicate the registered R0=100 nm comparator without a model-matched recast",
+      "cross-apparatus covariance fusion, a shared likelihood, transported residuals, and observable bridges are forbidden",
+      "joint-protocol evidence, collapse identification, manifold dynamics, and physical viability remain fail closed",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-public-data-component-validation-stage4-2o.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2o-campaign.spec.ts",
+      },
+    ],
+    units: {
+      fringe_coefficient: "1",
+      visibility: "1",
+      phase_rad: "1",
+      spectral_centroid_Hz: "T^-1",
+      covariance_standardized: "1",
+      residual_standardized: "1",
+      energy_keV: "M L^2 T^-2",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_PROPER_TIME_WORLDLINE_CLOSURE_STAGE4_2P",
+    module: "shared/casimir-dp-proper-time-worldline-closure-stage4-2p.ts",
+    stage: "diagnostic",
+    notes:
+      "Closes the leading apparatus's ordinary relativistic phase budget by integrating weak-field branch proper time and propagating Earth gravity, gradients, local masses, rotation, kinematics, clock/control covariance, frequency-resolved echo response, and internal-energy time-dilation bounds.",
+    motivation:
+      "A gravitationally induced signed unitary phase can mimic or obscure the complex-coherence residual unless the worldlines and phase-cancellation transfer are explicitly derived and empirically commissioned.",
+    conceptualWaypoints: [
+      "differential proper time depends on branch potential and velocity differences rather than separation alone",
+      "the branch action transfers proper time to ordinary signed matter-wave phase",
+      "a horizontal nominal branch has zero linear Earth-redshift term while tilt covariance remains highly amplified",
+      "frequency-resolved echo and path swap act on signed phase, not on the positive frozen Diósi exponent",
+      "internal-energy time-dilation dephasing is bounded as an ordinary reduced-state effect without a Compton-clock claim",
+      "measured worldlines, gravity gradient, local-mass CAD, tilt spectrum, echo response, and clock covariance remain absent",
+      "no proper-time-to-collapse or Casimir-to-collapse bridge is registered",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-proper-time-worldline-closure-stage4-2p.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2p-campaign.spec.ts",
+      },
+    ],
+    units: {
+      delta_tau_s: "T",
+      potential_m2_s2: "L^2 T^-2",
+      velocity_squared_m2_s2: "L^2 T^-2",
+      phase_rad: "1",
+      tilt_asd_rad_per_sqrt_Hz: "T^1/2",
+      sagnac_area_m2: "L^2",
+      internal_energy_variance_J2: "M^2 L^4 T^-4",
+      coherence_visibility: "1",
+      dios_i_exponent: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_SUPERCONDUCTING_BOUNDARY_CONTROL_STAGE4_2Q",
+    module: "shared/casimir-dp-superconducting-boundary-control-stage4-2q.ts",
+    stage: "diagnostic",
+    notes:
+      "Binds the leading apparatus and prior ordinary-null/component/proper-time evidence to a synthetic normal-versus-superconducting boundary-control assessment without modifying the frozen Diósi generator.",
+    motivation:
+      "A boundary-state contrast can validate and stress the ordinary electromagnetic response chain while providing an axis orthogonal to the primary mass-separation-time collapse discriminator.",
+    conceptualWaypoints: [
+      "zero DC resistance is separated from nonzero finite-frequency surface impedance",
+      "London/Anderson-Higgs screening is an in-medium electromagnetic response rather than the Standard-Model Higgs field",
+      "normal and superconducting responses propagate through ordinary phase and contraction in complex-coherence space",
+      "the unchanged boundary-independent Diósi factor cancels from the superconducting-to-normal ratio",
+      "temperature, magnetic-field, vortex, trap, and matched-specimen confounders are scored before control selection",
+      "the condensation-energy mass equivalent is an ordinary stress-energy upper bound only",
+      "BEC is retained as a conditional replication platform requiring a many-body density contract",
+      "measured authority, collapse identification, manifold dynamics, and physical viability remain fail closed",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-superconducting-boundary-control-stage4-2q.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2q-campaign.spec.ts",
+      },
+    ],
+    units: {
+      london_penetration_depth_m: "L",
+      surface_impedance_ohm: "M L^2 T^-3 I^-2",
+      effective_photon_mass_kg: "M",
+      phase_rad: "1",
+      chi: "1",
+      boundary_contrast_snr: "1",
+      condensation_energy_J: "M L^2 T^-2",
+      condensation_mass_equivalent_kg: "M",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_INTEGRATED_FEASIBILITY_PILOT_STAGE4_2R",
+    module: "shared/casimir-dp-integrated-feasibility-pilot-stage4-2r.ts",
+    stage: "diagnostic",
+    notes:
+      "Binds the leading apparatus and authenticated Stage-4.2O/P/Q evidence to a fail-closed same-apparatus empirical-input audit, quantitative Diósi acquisition target, and four-cell boundary-interaction nonbridge.",
+    motivation:
+      "The physical pilot must not begin until state preparation, apparatus response, covariance, environment, companion, and exact-bound authorities coexist under one custody and likelihood contract.",
+    conceptualWaypoints: [
+      "the primary held-out contraction follows the unchanged mass-separation-hold-time Diósi comparator",
+      "the four-cell cross-ratio tests boundary-by-superposition nonfactorization and cancels standard boundary-independent Diósi loss",
+      "the conditional visibility loss divided by the registered SNR floor defines an acquisition precision target rather than measured sensitivity",
+      "public component records are not fused into same-apparatus covariance or likelihood",
+      "eight content-addressed and custodied empirical authorities are mandatory before pilot authorization",
+      "train-holdout separation, blinding, covariance-drift control, and uncertainty propagation remain fail closed",
+      "no Casimir-to-collapse kernel or observable bridge is registered",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-integrated-feasibility-pilot-stage4-2r.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2r-campaign.spec.ts",
+      },
+    ],
+    units: {
+      gaussian_exponent: "1",
+      visibility: "1",
+      visibility_loss: "1",
+      coherence_magnitude_sigma: "1",
+      phase_sigma_rad: "1",
+      covariance_relative_drift: "1",
+      four_cell_cross_ratio: "1",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_RETARDED_SOURCE_PROPAGATION_STAGE4_2S",
+    module: "shared/casimir-dp-retarded-source-propagation-stage4-2s.ts",
+    stage: "diagnostic",
+    notes:
+      "Recovers causal transverse radiation and polarization identities, classifies source scales by kL, and maps a synthetic retarded Green response into ordinary complex-coherence phase, contraction, recoil, and heating without modifying the frozen Diósi generator.",
+    motivation:
+      "Time-dependent boundary, trap, compensation, and readout sources must enter the ordinary null through measured waveforms and a finite-geometry causal response before a missing coherence residual can be attributed.",
+    conceptualWaypoints: [
+      "field-line kinks are retained only as a visualization; Maxwell equations with retarded boundary conditions supply the derivation",
+      "the acceleration field is transverse, causal, proportional to inverse distance, and recovers Larmor energy flux",
+      "TE/TM and circular polarization remain bases of the same transverse projector",
+      "the 0.5-Hz boundary label is geometrically quasistatic while optical and switching spectra require separate propagation audits",
+      "branch Green response maps to ordinary phase, loss, recoil, heating, and a complex-coherence nuisance vector",
+      "synthetic branch fields verify algebra and are not apparatus forecasts",
+      "seven measured same-apparatus authorities remain mandatory before ordinary-null integration",
+      "the frozen Diósi law is unchanged and zero Casimir-to-collapse bridge edges are added",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-retarded-source-propagation-stage4-2s.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-stage4-2s-campaign.spec.ts",
+      },
+    ],
+    units: {
+      electric_field_V_m: "M L T^-3 I^-1",
+      retarded_delay_s: "T",
+      radiated_power_W: "M L^2 T^-3",
+      propagation_scale_kL: "1",
+      phase_rad: "1",
+      chi: "1",
+      absorbed_power_W: "M L^2 T^-3",
+      recoil_momentum_diffusion: "M^2 L^2 T^-3",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_PENROSE_BRANCH_GEOMETRY_CANDIDATE",
+    module: "shared/casimir-dp-penrose-candidate-theory-stage0.ts",
+    stage: "exploratory",
+    notes:
+      "Boundary-independent Penrose-inspired relational branch-geometry ansatz. It freezes the comparison problem, symbolic limits, nonbridges, outcomes, and falsifiers but supplies no generative dynamics or numerical prediction.",
+    motivation:
+      "Penrose's lifetime argument identifies a missing theory problem; the repository needs a versioned Stage-0 object that exposes rather than fills its missing branch-correspondence and dynamics steps.",
+    conceptualWaypoints: [
+      "two matter-geometry branch objects are distinct from the registered Gaussian-regularized Diósi generator",
+      "tau approximately hbar over E_I is a heuristic scale and not a survival distribution",
+      "ordinary proper-time response remains signed unitary phase",
+      "the intrinsic candidate is boundary independent at fixed branch difference",
+      "no Casimir, Compton-frequency, virtual-particle, superconducting, or NHM2 proxy bridge is inferred",
+      "no numerical prediction, model-comparison row, empirical validation, or physical viability is granted",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-penrose-candidate-theory-stage0.spec.ts",
+      },
+    ],
+    units: {
+      branch_stress_difference: "M L^-1 T^-2",
+      metric_difference: "1",
+      incompatibility_energy_J: "M L^2 T^-2",
+      lifetime_s: "T",
+      coherence_re: "1",
+      coherence_im: "1",
+      phase_rad: "1",
+      contraction_exponent: "1",
+      candidate_rate_s: "T^-1",
+      numerical_output: "blocked",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_PENROSE_BRANCH_GEOMETRY_PREFLIGHT",
+    module: "shared/casimir-dp-penrose-candidate-preflight.ts",
+    stage: "diagnostic",
+    notes:
+      "Fail-closed completeness validator for branch correspondence, invariant incompatibility, equivalence recovery, reduction dynamics, probability, causality, energy balance, recovery limits, complex coherence, companion predictions, nonbridges, and falsifiers. Passing is definition completeness only.",
+    motivation:
+      "A deterministic preflight prevents the Stage-0 theory object or an optional Casimir extension from entering numerical comparison before its missing scientific structures are supplied.",
+    conceptualWaypoints: [
+      "authority integrity is checked before theory completeness",
+      "branch correspondence fails before a covariant incompatibility functional can be asserted",
+      "Markovian candidates require a CPTP contract and non-Markovian candidates require a separate consistency analysis",
+      "boundary-independent candidates preserve the fixed-branch null",
+      "optional boundary extensions delegate to the existing manifold-kernel registry",
+      "definition completeness never implies empirical validation or model-comparison admission",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-penrose-candidate-theory-stage0.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-penrose-candidate-theory-stage0-campaign.spec.ts",
+      },
+    ],
+    units: {
+      authority_integrity: "1",
+      conservation_residual: "1",
+      constraint_residual: "1",
+      weak_field_recovery_residual: "1",
+      candidate_status: "1",
+      numerical_prediction_permission: "blocked",
+    },
+  },
+  {
+    tag: "CASIMIR_DP_PENROSE_RELATIONAL_CORRESPONDENCE_STAGE0_1",
+    module: "shared/casimir-dp-penrose-relational-correspondence-stage0-1.ts",
+    stage: "exploratory",
+    notes:
+      "Branch-blind apparatus-landmark correspondence benchmark for a static weak-field laboratory domain. Synthetic identity, inverse, independent-rigid-coordinate-relabeling, common-input-equality, alternate-reference, declared-6R0-support, and Gaussian E_G recovery gates may pass while physical correspondence authority and all collapse outputs remain blocked.",
+    motivation:
+      "Penrose's branch-geometry argument requires a declared event-comparison convention before raw branch tensors or a Newtonian source difference can be interpreted physically.",
+    conceptualWaypoints: [
+      "a common relational label space and two branch embeddings replace pointwise coordinate identification",
+      "the superposed probe cannot be the sole anchor because that could align away the tested displacement",
+      "independent rigid coordinate redescriptions must leave pulled-back fixture data unchanged",
+      "at least two branch-blind reference sets bound correspondence nonuniqueness before coherence data are examined",
+      "the registered Gaussian Newtonian E_G is a recovery target rather than a new invariant functional",
+      "same-apparatus worldline, clock, landmark, density-support, and covariance packets remain absent",
+      "no lifetime distribution, collapse rate, coherence prediction, Casimir modifier, empirical validation, or model-comparison admission is produced",
+    ],
+    checks: [
+      {
+        type: "test",
+        path: "tests/casimir-dp-penrose-relational-correspondence-stage0-1.spec.ts",
+      },
+      {
+        type: "stability",
+        path: "tests/casimir-dp-penrose-relational-correspondence-stage0-1-campaign.spec.ts",
+      },
+    ],
+    units: {
+      relational_coordinate_m: "L",
+      branch_map_jacobian: "1",
+      map_roundtrip_residual_m: "L",
+      coordinate_relabel_residual_m: "L",
+      reference_choice_spread: "1",
+      weak_field_recovery_energy_J: "M L^2 T^-2",
+      weak_field_recovery_relative_error: "1",
+      collapse_output: "blocked",
+    },
+  },
+  {
+    tag: "SOLAR_KHI_NANOFLARE_DIAGNOSTIC",
+    module: "server/services/essence/solar-khi-analysis.ts",
+    stage: "diagnostic",
+    notes:
+      "Deterministic native-cadence measurement of photospheric boundary-dip spacing, exponential KHI growth, phase propagation, mixing-scale diffusivity, and MFBD/speckle agreement.",
+    motivation:
+      "FastCam quantities must be computed from native-resolution temporal observables rather than captions, 300-second p-mode bins, or AIA 193 energy calibration.",
+    conceptualWaypoints: [
+      "repeated dark boundary dips provide a wavelength distribution",
+      "log-amplitude regression supplies growth rate and uncertainty",
+      "time-distance ridge regression supplies phase-speed magnitude and uncertainty",
+      "MFBD and speckle products are compared under registered relative tolerances",
+      "published ranges are validation references rather than forced outputs",
+      "the result remains diagnostic numerical evidence",
+    ],
+    checks: [
+      { type: "test", path: "tests/solar-khi-analysis.spec.ts" },
+      { type: "stability", path: "tests/star-watcher-khi-route.spec.ts" },
+    ],
+    units: {
+      wavelength_m: "L",
+      growth_rate_s_inv: "T^-1",
+      phase_speed_m_s: "L T^-1",
+      turbulent_diffusivity_m2_s: "L^2 T^-1",
+      e_folding_time_s: "T",
+    },
+  },
+  {
+    tag: "SOLAR_KHI_NANOFLARE_DIAGNOSTIC",
+    module: "shared/theory/solar-khi-nanoflare-theory-badges.ts",
+    stage: "diagnostic",
+    notes:
+      "Governed cross-scale solar badge branch with observable identities, scale envelopes, falsifiers, held-out predictive gates, and a classical-only flux-rope branch boundary.",
+    motivation:
+      "The proposed fusion-to-transport-to-KHI-to-braiding-to-nanoflare staircase needs explicit evidence promotion gates and must not conflate coherence kinds.",
+    conceptualWaypoints: [
+      "fusion supplies a slow energy-transport boundary condition rather than photospheric quantum phase",
+      "KHI observation, diffusivity, Poynting flux, braiding, and nanoflare population occupy distinct layers",
+      "the KHI-to-nanoflare edge is predictive and held-out before it can be interpreted",
+      "time-shuffled and spatially displaced negative controls are mandatory",
+      "topology branch entropy is classical posterior uncertainty rather than density-matrix coherence",
+    ],
+    checks: [
+      {
+        type: "stability",
+        path: "shared/theory/__tests__/solar-khi-nanoflare-theory-badges.spec.ts",
+      },
+      { type: "policy", path: "configs/physics-root-leaf-manifest.v1.json" },
+      { type: "test", path: "tests/solar-khi-root-leaf-manifest.spec.ts" },
+    ],
+    units: {
+      khi_wavelength_m: "L",
+      khi_growth_rate_s_inv: "T^-1",
+      khi_phase_speed_m_s: "L T^-1",
+      khi_turbulent_diffusivity_m2_s: "L^2 T^-1",
+      poynting_flux_W_m2: "M T^-3",
+      nanoflare_energy_J: "M L^2 T^-2",
+      topology_branch_entropy: "1",
+    },
+  },
+];

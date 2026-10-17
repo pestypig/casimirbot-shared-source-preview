@@ -1,0 +1,501 @@
+import type {
+  HelixCapabilityLaneBackendSelectionDecision,
+  HelixCapabilityLaneCostClass,
+  HelixCapabilityLaneId,
+  HelixCapabilityLaneLatencyClass,
+  HelixCapabilityLanePrivacyClass,
+} from "./helix-capability-lane";
+import type {
+  HelixCapabilityLaneSessionEvent,
+  HelixCapabilityLaneSessionHealth,
+  HelixCapabilityLaneSessionPermissions,
+  HelixCapabilityLaneSessionStatus,
+} from "./helix-capability-lane-session";
+import type { HelixAgentRuntimeId } from "./helix-agent-runtime";
+import type { HelixCapabilityLaneMailLoopDebugSummary } from "./helix-capability-lane-mail-loop";
+
+export const HELIX_CAPABILITY_LANE_GOAL_BINDING_SCHEMA =
+  "helix.capability_lane.goal_binding.v1" as const;
+export const HELIX_CAPABILITY_LANE_GOAL_BINDING_EVENT_SCHEMA =
+  "helix.capability_lane.goal_binding_event.v1" as const;
+export const HELIX_CAPABILITY_LANE_GOAL_BINDING_DEBUG_SUMMARY_SCHEMA =
+  "helix.capability_lane.goal_binding_debug_summary.v1" as const;
+export const HELIX_CAPABILITY_LANE_GOAL_REPORT_DECISION_SCHEMA =
+  "helix.capability_lane.goal_report_decision.v1" as const;
+export const HELIX_CAPABILITY_LANE_GOAL_DISPATCH_PLAN_SCHEMA =
+  "helix.capability_lane.goal_dispatch_plan.v1" as const;
+export const HELIX_CAPABILITY_LANE_GOAL_DISPATCH_ADMISSION_SCHEMA =
+  "helix.capability_lane.goal_dispatch_admission.v1" as const;
+export const HELIX_CAPABILITY_LANE_GOAL_DISPATCH_READINESS_SCHEMA =
+  "helix.capability_lane.goal_dispatch_readiness.v1" as const;
+
+export type HelixCapabilityLaneGoalActivationPolicy =
+  | "manual"
+  | "while_goal_active"
+  | "on_source_event";
+
+export type HelixCapabilityLaneGoalAttentionPolicy =
+  | "quiet_until_salient"
+  | "report_each_observation"
+  | "manual_review";
+
+export type HelixCapabilityLaneGoalStopCondition =
+  | "manual_stop"
+  | "goal_complete"
+  | "source_stopped"
+  | "session_stopped";
+
+export type HelixCapabilityLaneGoalReportPolicy =
+  | "debug_only"
+  | "terminal_authorized_summary"
+  | "ask_on_salience";
+
+export type HelixCapabilityLaneGoalQuietBehavior =
+  | "record_only"
+  | "surface_badge"
+  | "wake_on_salience";
+
+export type HelixCapabilityLaneGoalReportAction =
+  | "record_only"
+  | "surface_badge"
+  | "wake_on_salience"
+  | "request_terminal_authority"
+  | "manual_review"
+  | "stopped";
+
+export type HelixCapabilityLaneGoalReportDecision = {
+  schema: typeof HELIX_CAPABILITY_LANE_GOAL_REPORT_DECISION_SCHEMA;
+  action: HelixCapabilityLaneGoalReportAction;
+  reason: string;
+  summary_text: string;
+  attention_policy: HelixCapabilityLaneGoalAttentionPolicy;
+  report_policy: HelixCapabilityLaneGoalReportPolicy;
+  quiet_behavior: HelixCapabilityLaneGoalQuietBehavior;
+  quiet_behavior_applied: boolean;
+  wake_expected: boolean;
+  surface_badge_expected: boolean;
+  terminal_report_requested: boolean;
+  terminal_report_authorized: boolean;
+  terminal_report_requires_authority: true;
+  terminal_authority_status: "not_terminal_authority" | "pending_helix_terminal_authority";
+  evidence_ref: string | null;
+  mail_loop_ref: string | null;
+  receipt_ref: string | null;
+  reentry_required: true;
+  context_role: "tool_evidence";
+  answer_authority: false;
+  assistant_answer: false;
+  terminal_eligible: false;
+  raw_content_included: false;
+};
+
+export type HelixCapabilityLaneGoalDispatchTarget =
+  | "none"
+  | "ui_badge"
+  | "ask_wake"
+  | "terminal_authority_review"
+  | "manual_review";
+
+export type HelixCapabilityLaneGoalDispatchPlan = {
+  schema: typeof HELIX_CAPABILITY_LANE_GOAL_DISPATCH_PLAN_SCHEMA;
+  target: HelixCapabilityLaneGoalDispatchTarget;
+  status: "planned_not_dispatched";
+  reason: string;
+  source_report_action: HelixCapabilityLaneGoalReportAction;
+  goal_binding_id: string;
+  goal_id: string;
+  lane_session_id: string;
+  selected_runtime_agent_provider: HelixAgentRuntimeId;
+  requested_backend_provider?: string | null;
+  selected_backend_provider?: string | null;
+  fallback_backend_provider?: string | null;
+  backend_selection_reason?: string | null;
+  cost_class?: HelixCapabilityLaneCostClass | "unknown" | null;
+  latency_class?: HelixCapabilityLaneLatencyClass | "unknown" | null;
+  privacy_class?: HelixCapabilityLanePrivacyClass | "unknown" | null;
+  session_control_key?: string | null;
+  source_binding_key?: string | null;
+  source_identity_key?: string | null;
+  latest_mail_loop_observation_key?: string | null;
+  lane_id: HelixCapabilityLaneId;
+  source_id?: string | null;
+  source_hash?: string | null;
+  source_kind?: string | null;
+  source_projection_target?: string | null;
+  account_locale?: string | null;
+  latest_event_id?: string | null;
+  session_event_count?: number | null;
+  has_observation?: boolean;
+  latest_chunk_id?: string | null;
+  latest_chunk_index?: number | null;
+  latest_source_id?: string | null;
+  latest_source_hash?: string | null;
+  latest_source_kind?: string | null;
+  latest_target_language?: string | null;
+  latest_dedupe_key?: string | null;
+  latest_source_event_id?: string | null;
+  latest_source_event_ms?: number | null;
+  latest_observed_at_ms?: number | null;
+  latest_freshness_status?: string | null;
+  source_text_hash?: string | null;
+  source_text_char_count?: number | null;
+  latest_projection_target?: string | null;
+  target_language?: string | null;
+  latest_cancel_requested?: boolean | null;
+  latest_mail_loop_wake_kind?: "mailbox_wake" | "none" | null;
+  permissions: HelixCapabilityLaneSessionPermissions;
+  evidence_ref: string | null;
+  mail_loop_ref: string | null;
+  receipt_ref: string | null;
+  requires_live_mail_loop: boolean;
+  requires_terminal_authority: boolean;
+  side_effects_executed: false;
+  wake_dispatched: false;
+  badge_projected: false;
+  terminal_report_emitted: false;
+  terminal_authority_status: "not_terminal_authority" | "pending_helix_terminal_authority";
+  reentry_required: true;
+  context_role: "tool_evidence";
+  answer_authority: false;
+  assistant_answer: false;
+  terminal_eligible: false;
+  raw_content_included: false;
+};
+
+export type HelixCapabilityLaneGoalDispatchAdmissionStatus =
+  | "admitted_debug_only"
+  | "admitted_projection_only"
+  | "eligible_waiting_for_mail_loop"
+  | "eligible_pending_terminal_authority"
+  | "eligible_manual_review"
+  | "blocked";
+
+export type HelixCapabilityLaneGoalDispatchAdmission = {
+  schema: typeof HELIX_CAPABILITY_LANE_GOAL_DISPATCH_ADMISSION_SCHEMA;
+  status: HelixCapabilityLaneGoalDispatchAdmissionStatus;
+  reason: string;
+  target: HelixCapabilityLaneGoalDispatchTarget;
+  goal_binding_id: string;
+  goal_id: string;
+  lane_session_id: string;
+  selected_runtime_agent_provider: HelixAgentRuntimeId;
+  requested_backend_provider?: string | null;
+  selected_backend_provider?: string | null;
+  fallback_backend_provider?: string | null;
+  backend_selection_reason?: string | null;
+  cost_class?: HelixCapabilityLaneCostClass | "unknown" | null;
+  latency_class?: HelixCapabilityLaneLatencyClass | "unknown" | null;
+  privacy_class?: HelixCapabilityLanePrivacyClass | "unknown" | null;
+  session_control_key?: string | null;
+  source_binding_key?: string | null;
+  source_identity_key?: string | null;
+  latest_mail_loop_observation_key?: string | null;
+  lane_id: HelixCapabilityLaneId;
+  source_id?: string | null;
+  source_hash?: string | null;
+  source_kind?: string | null;
+  source_projection_target?: string | null;
+  account_locale?: string | null;
+  latest_event_id?: string | null;
+  session_event_count?: number | null;
+  has_observation?: boolean;
+  latest_chunk_id?: string | null;
+  latest_chunk_index?: number | null;
+  latest_source_id?: string | null;
+  latest_source_hash?: string | null;
+  latest_source_kind?: string | null;
+  latest_target_language?: string | null;
+  latest_dedupe_key?: string | null;
+  latest_source_event_id?: string | null;
+  latest_source_event_ms?: number | null;
+  latest_observed_at_ms?: number | null;
+  latest_freshness_status?: string | null;
+  source_text_hash?: string | null;
+  source_text_char_count?: number | null;
+  latest_projection_target?: string | null;
+  target_language?: string | null;
+  latest_cancel_requested?: boolean | null;
+  latest_mail_loop_wake_kind?: "mailbox_wake" | "none" | null;
+  permissions: HelixCapabilityLaneSessionPermissions;
+  evidence_ref: string | null;
+  mail_loop_ref: string | null;
+  receipt_ref: string | null;
+  blocked_reason: string | null;
+  requires_live_mail_loop: boolean;
+  requires_terminal_authority: boolean;
+  side_effects_allowed: false;
+  side_effects_executed: false;
+  wake_dispatch_allowed: false;
+  badge_projection_allowed: false;
+  terminal_report_allowed: false;
+  terminal_authority_status: "not_terminal_authority" | "pending_helix_terminal_authority";
+  reentry_required: true;
+  context_role: "tool_evidence";
+  answer_authority: false;
+  assistant_answer: false;
+  terminal_eligible: false;
+  raw_content_included: false;
+};
+
+export type HelixCapabilityLaneGoalDispatchReadiness = {
+  schema: typeof HELIX_CAPABILITY_LANE_GOAL_DISPATCH_READINESS_SCHEMA;
+  total_plans: number;
+  total_admissions: number;
+  admitted_count: number;
+  blocked_count: number;
+  pending_wake_count: number;
+  pending_terminal_authority_count: number;
+  projection_only_count: number;
+  manual_review_count: number;
+  debug_only_count: number;
+  blocked_reasons: string[];
+  next_lane_ids: HelixCapabilityLaneId[];
+  next_lane_session_ids: string[];
+  next_runtime_agent_providers?: HelixAgentRuntimeId[];
+  next_requested_backend_providers?: string[];
+  next_selected_backend_providers?: string[];
+  next_fallback_backend_providers?: string[];
+  next_backend_selection_reasons?: string[];
+  next_cost_classes?: Array<HelixCapabilityLaneCostClass | "unknown">;
+  next_latency_classes?: Array<HelixCapabilityLaneLatencyClass | "unknown">;
+  next_privacy_classes?: Array<HelixCapabilityLanePrivacyClass | "unknown">;
+  next_session_control_keys?: string[];
+  next_source_binding_keys?: string[];
+  next_source_identity_keys?: string[];
+  next_mail_loop_observation_keys?: string[];
+  next_dispatch_targets: HelixCapabilityLaneGoalDispatchTarget[];
+  next_goal_binding_ids: string[];
+  next_source_ids?: string[];
+  next_source_hashes?: string[];
+  next_source_kinds?: string[];
+  next_source_projection_targets?: string[];
+  next_account_locales?: string[];
+  next_latest_event_ids?: string[];
+  next_session_event_counts?: number[];
+  next_has_observation?: boolean;
+  all_next_have_observation?: boolean;
+  next_chunk_ids?: string[];
+  next_chunk_indexes?: number[];
+  next_latest_source_ids?: string[];
+  next_latest_source_hashes?: string[];
+  next_latest_source_kinds?: string[];
+  next_latest_target_languages?: string[];
+  next_dedupe_keys?: string[];
+  next_source_event_ids?: string[];
+  next_source_event_mses?: number[];
+  next_observed_at_mses?: number[];
+  next_source_text_hashes?: string[];
+  next_source_text_char_counts?: number[];
+  next_projection_targets?: string[];
+  next_target_languages?: string[];
+  next_freshness_statuses?: string[];
+  next_cancel_requested?: boolean;
+  next_mail_loop_wake_kinds?: ("mailbox_wake" | "none")[];
+  live_mail_loop_required_count: number;
+  terminal_authority_required_count: number;
+  any_live_mail_loop_required: boolean;
+  any_terminal_authority_required: boolean;
+  all_admitted_permissions_non_mutating: boolean;
+  next_evidence_refs: string[];
+  next_receipt_refs: string[];
+  side_effects_allowed: false;
+  side_effects_executed: false;
+  wake_dispatch_allowed: false;
+  badge_projection_allowed: false;
+  terminal_report_allowed: false;
+  terminal_report_emitted: false;
+  context_role: "tool_evidence";
+  answer_authority: false;
+  assistant_answer: false;
+  terminal_eligible: false;
+  raw_content_included: false;
+};
+
+export type HelixCapabilityLaneGoalBindingEvent = {
+  schema: typeof HELIX_CAPABILITY_LANE_GOAL_BINDING_EVENT_SCHEMA;
+  event_id: string;
+  goal_binding_id: string;
+  goal_id: string;
+  lane_session_id: string;
+  lane_id: HelixCapabilityLaneId;
+  event:
+    | "bound"
+    | "attention_updated"
+    | "mail_loop_recorded"
+    | "report_requested"
+    | "stopped";
+  at_ms: number;
+  reason: string;
+  lane_session_status: HelixCapabilityLaneSessionStatus;
+  lane_session_health: HelixCapabilityLaneSessionHealth;
+  lane_session_observation_ref: string | null;
+  source_id?: string | null;
+  source_hash?: string | null;
+  source_kind?: string | null;
+  source_projection_target?: string | null;
+  account_locale?: string | null;
+  latest_chunk_id?: string | null;
+  latest_chunk_index?: number | null;
+  latest_source_id?: string | null;
+  latest_source_hash?: string | null;
+  latest_source_kind?: string | null;
+  latest_target_language?: string | null;
+  latest_dedupe_key?: string | null;
+  latest_source_event_id?: string | null;
+  latest_source_event_ms?: number | null;
+  latest_observed_at_ms?: number | null;
+  latest_freshness_status?: string | null;
+  source_text_hash?: string | null;
+  source_text_char_count?: number | null;
+  latest_projection_target?: string | null;
+  target_language?: string | null;
+  latest_cancel_requested?: boolean | null;
+  mail_loop_ref?: string | null;
+  receipt_ref: string | null;
+  terminal_authority_status: "not_terminal_authority" | "pending_helix_terminal_authority";
+  reentry_required: true;
+  context_role: "tool_evidence";
+  answer_authority: false;
+  assistant_answer: false;
+  terminal_eligible: false;
+  raw_content_included: false;
+};
+
+export type HelixCapabilityLaneGoalBinding = {
+  schema: typeof HELIX_CAPABILITY_LANE_GOAL_BINDING_SCHEMA;
+  goal_binding_id: string;
+  goal_id: string;
+  lane_session_id: string;
+  lane_id: HelixCapabilityLaneId;
+  selected_runtime_agent_provider: HelixAgentRuntimeId;
+  selected_backend_provider: string | null;
+  backend_selection_decision: HelixCapabilityLaneBackendSelectionDecision;
+  cost_class: HelixCapabilityLaneCostClass | "unknown" | null;
+  latency_class: HelixCapabilityLaneLatencyClass | "unknown" | null;
+  privacy_class: HelixCapabilityLanePrivacyClass | "unknown" | null;
+  fallback_backend_provider: string | null;
+  lane_session_status: HelixCapabilityLaneSessionStatus;
+  lane_session_health: HelixCapabilityLaneSessionHealth;
+  lane_session_source_id: string | null;
+  lane_session_source_hash?: string | null;
+  lane_session_source_binding_key?: string | null;
+  lane_session_source_text_hash?: string | null;
+  lane_session_source_text_char_count?: number | null;
+  lane_session_source_identity_key?: string | null;
+  lane_session_source_kind: string | null;
+  lane_session_projection_target: string | null;
+  lane_session_account_locale: string | null;
+  lane_session_permissions: HelixCapabilityLaneSessionPermissions;
+  lane_session_last_observation_ref: string | null;
+  lane_session_last_receipt_ref: string | null;
+  latest_lane_session_event: HelixCapabilityLaneSessionEvent | null;
+  lane_session_debug_history: HelixCapabilityLaneSessionEvent[];
+  latest_mail_loop_summary: HelixCapabilityLaneMailLoopDebugSummary | null;
+  lane_session_mail_loop_refs: string[];
+  activation_policy: HelixCapabilityLaneGoalActivationPolicy;
+  attention_policy: HelixCapabilityLaneGoalAttentionPolicy;
+  stop_condition: HelixCapabilityLaneGoalStopCondition;
+  report_policy: HelixCapabilityLaneGoalReportPolicy;
+  quiet_behavior: HelixCapabilityLaneGoalQuietBehavior;
+  status: "bound" | "stopped";
+  last_report_ref: string | null;
+  debug_history: HelixCapabilityLaneGoalBindingEvent[];
+  backend_provider_becomes_root_agent: false;
+  final_reports_require_terminal_authority: true;
+  context_role: "tool_evidence";
+  answer_authority: false;
+  assistant_answer: false;
+  terminal_eligible: false;
+  raw_content_included: false;
+};
+
+export type HelixCapabilityLaneGoalBindingDebugSummary = {
+  schema: typeof HELIX_CAPABILITY_LANE_GOAL_BINDING_DEBUG_SUMMARY_SCHEMA;
+  goal_binding_id: string;
+  goal_binding_key: string;
+  goal_id: string;
+  lane_session_id: string;
+  lane_id: HelixCapabilityLaneId;
+  selected_runtime_agent_provider: HelixAgentRuntimeId;
+  selected_backend_provider: string | null;
+  backend_selection_decision: HelixCapabilityLaneBackendSelectionDecision;
+  cost_class: HelixCapabilityLaneCostClass | "unknown" | null;
+  latency_class: HelixCapabilityLaneLatencyClass | "unknown" | null;
+  privacy_class: HelixCapabilityLanePrivacyClass | "unknown" | null;
+  fallback_backend_provider: string | null;
+  lifecycle_action: HelixCapabilityLaneSessionEventAction | null;
+  session_lifecycle_action: HelixCapabilityLaneSessionEventAction | null;
+  session_action: HelixCapabilityLaneSessionEventAction | null;
+  session_status: HelixCapabilityLaneSessionStatus;
+  session_health: HelixCapabilityLaneSessionHealth;
+  source_id: string | null;
+  source_hash?: string | null;
+  source_kind: string | null;
+  source_projection_target: string | null;
+  account_locale: string | null;
+  session_control_key: string | null;
+  source_binding_key: string | null;
+  source_identity_key: string | null;
+  permissions: HelixCapabilityLaneSessionPermissions;
+  permission_profile: string;
+  last_observation_ref: string | null;
+  last_receipt_ref: string | null;
+  latest_event_id: string | null;
+  session_event_count: number;
+  has_observation: boolean;
+  latest_chunk_id?: string | null;
+  latest_chunk_index?: number | null;
+  latest_source_id?: string | null;
+  latest_source_hash?: string | null;
+  latest_source_kind?: string | null;
+  latest_target_language?: string | null;
+  latest_dedupe_key?: string | null;
+  latest_source_event_id?: string | null;
+  latest_source_event_ms?: number | null;
+  latest_observed_at_ms?: number | null;
+  latest_freshness_status?: string | null;
+  source_text_hash?: string | null;
+  source_text_char_count?: number | null;
+  latest_projection_target?: string | null;
+  target_language?: string | null;
+  latest_cancel_requested?: boolean | null;
+  latest_mail_loop_wake_kind?: "mailbox_wake" | "none" | null;
+  latest_observation_key: string | null;
+  latest_session_event: HelixCapabilityLaneSessionEvent | null;
+  latest_mail_loop_summary: HelixCapabilityLaneMailLoopDebugSummary | null;
+  latest_mail_loop_observation_lane_session_id?: string | null;
+  latest_mail_loop_observation_key?: string | null;
+  mail_loop_refs: string[];
+  report_decision: HelixCapabilityLaneGoalReportDecision;
+  report_summary_text: string;
+  dispatch_plan: HelixCapabilityLaneGoalDispatchPlan;
+  dispatch_admission: HelixCapabilityLaneGoalDispatchAdmission;
+  latest_goal_binding_event: HelixCapabilityLaneGoalBindingEvent | null;
+  activation_policy: HelixCapabilityLaneGoalActivationPolicy;
+  attention_policy: HelixCapabilityLaneGoalAttentionPolicy;
+  stop_condition: HelixCapabilityLaneGoalStopCondition;
+  report_policy: HelixCapabilityLaneGoalReportPolicy;
+  quiet_behavior: HelixCapabilityLaneGoalQuietBehavior;
+  binding_status: "bound" | "stopped";
+  last_report_ref: string | null;
+  backend_provider_becomes_root_agent: false;
+  final_reports_require_terminal_authority: true;
+  terminal_authority_status: "not_terminal_authority" | "pending_helix_terminal_authority";
+  reentry_required: true;
+  context_role: "tool_evidence";
+  answer_authority: false;
+  assistant_answer: false;
+  terminal_eligible: false;
+  raw_content_included: false;
+};
+
+export type HelixCapabilityLaneGoalBindingResult = {
+  ok: boolean;
+  goal_binding: HelixCapabilityLaneGoalBinding | null;
+  blocked_reason: string | null;
+  context_role: "tool_evidence";
+  answer_authority: false;
+  assistant_answer: false;
+  terminal_eligible: false;
+  raw_content_included: false;
+};

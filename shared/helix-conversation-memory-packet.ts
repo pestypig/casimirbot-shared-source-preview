@@ -1,0 +1,131 @@
+export const HELIX_CONVERSATION_MEMORY_PACKET_SCHEMA =
+  "helix.conversation_memory_packet.v1" as const;
+
+export type HelixConversationMemoryReference = {
+  phrase: string;
+  refers_to_turn_id: string;
+  refers_to_item_id?: string | null;
+  refers_to_artifact_ref?: string | null;
+  refers_to_kind:
+    | "prior_user_goal"
+    | "prior_assistant_answer"
+    | "prior_plan"
+    | "prior_failure"
+    | "prior_evidence"
+    | "pending_user_input";
+  confidence: "high" | "medium" | "low";
+  reason: string;
+};
+
+export type HelixUnresolvedTaskFrame = {
+  id: string;
+  kind:
+    | "math_geometry_triangle"
+    | "calculator_problem"
+    | "code_debugging"
+    | "research_task"
+    | "general_clarification";
+  created_turn_id: string;
+  updated_turn_id: string;
+  status: "missing_slots" | "ready_to_solve" | "resolved" | "abandoned";
+  original_user_request: string;
+  known_slots: Record<string, unknown>;
+  missing_slots: string[];
+  constraints: string[];
+  assumptions: string[];
+  source_terminal_artifact_id?: string | null;
+  source_request_user_input_id?: string | null;
+  allowed_next_actions: Array<
+    | "ask_user"
+    | "merge_clarification"
+    | "route_calculator"
+    | "route_tool"
+    | "answer_directly"
+  >;
+};
+
+export type HelixContextResumeFrame = {
+  id: string;
+  schema: "helix.pasted_text_attachment_resume_frame.v1";
+  thread_id?: string | null;
+  session_id?: string | null;
+  source_request_id: string;
+  source_turn_id: string;
+  source_message_id?: string | null;
+  original_prompt: string;
+  pasted_attachment_id?: string | null;
+  pasted_attachment_sha256?: string | null;
+  context_compaction_job_id?: string | null;
+  created_at_ms?: number | null;
+  installed_at_ms?: number | null;
+  status?: "pending" | "installed" | "failed";
+  supersedes_resume_frame_ids?: string[];
+  attachment_artifact_refs: string[];
+  attachment_previews: string[];
+  turn_input_item_count: number;
+  terminal_eligible: false;
+  assistant_answer: false;
+  raw_content_included: false;
+};
+
+export type HelixContextResumeFrameSelectionDebug = {
+  selected_context_resume_frame_id?: string | null;
+  selected_context_resume_source_turn_id?: string | null;
+  selected_context_resume_reason: string;
+  current_thread_id?: string | null;
+  current_session_id?: string | null;
+  candidate_context_resume_frame_ids: string[];
+  rejected_context_resume_frames: Array<{
+    frame_id: string;
+    source_turn_id?: string | null;
+    status?: string | null;
+    reason: string;
+  }>;
+};
+
+export type HelixConversationMemoryAllowedUse =
+  | "pronoun_binding_only"
+  | "conversational_continuity"
+  | "reuse_prior_evidence_refs"
+  | "pending_request_resolution"
+  | "blocked";
+
+export type HelixConversationMemoryPacket = {
+  schema: typeof HELIX_CONVERSATION_MEMORY_PACKET_SCHEMA;
+
+  thread_id: string;
+  current_turn_id: string;
+  session_id?: string | null;
+
+  memory_scope: "current_thread";
+  selector_version: "v1";
+
+  recent_user_goals: string[];
+  recent_assistant_answers: string[];
+
+  resolved_references: HelixConversationMemoryReference[];
+
+  reusable_evidence_refs: string[];
+  forbidden_or_stale_refs: string[];
+
+  open_failures: string[];
+  pending_user_inputs: string[];
+  unresolved_task_frames: HelixUnresolvedTaskFrame[];
+  context_resume_frames: HelixContextResumeFrame[];
+  context_resume_frame_selection?: HelixContextResumeFrameSelectionDebug | null;
+
+  latest_plan_summary?: string | null;
+  latest_answer_summary?: string | null;
+  latest_failure_summary?: string | null;
+
+  continuity_summary: string;
+  missing_or_uncertain: string[];
+
+  allowed_for_current_goal: boolean;
+  allowed_reason: string;
+  allowed_use: HelixConversationMemoryAllowedUse;
+
+  terminal_eligible: false;
+  assistant_answer: false;
+  raw_content_included: false;
+};
