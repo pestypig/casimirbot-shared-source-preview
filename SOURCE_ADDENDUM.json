@@ -1,0 +1,538 @@
+{
+  "schema": "casimirbot.shared_remainder_source_selection.v1",
+  "status": "source-only-publication-reviewed",
+  "sourceCommit": "0b2aa26db3d0c7d08af27c371a3cf618f7561f58",
+  "sourceBoundary": "Committed code-like shared paths absent from the published 1477-file selection",
+  "files": [
+    {
+      "path": "shared/__tests__/helix-brokerage-environment.spec.ts",
+      "sha256": "07d05640c7017f20c40ea4014df7a2535128007bdedfdb2ab8beefb8bdcf2bfc",
+      "bytes": 3152
+    },
+    {
+      "path": "shared/__tests__/helix-installed-account-services.spec.ts",
+      "sha256": "dc0946a307741f7a31b7dd4ec7919a4e2f157b9325041dafadf146b844113550",
+      "bytes": 2754
+    },
+    {
+      "path": "shared/__tests__/helix-minecraft-combat.spec.ts",
+      "sha256": "c96d7368350dc7e208bef12c93bdcdb9f2f0f38e7f0df0936ab8925d2cbe326d",
+      "bytes": 4144
+    },
+    {
+      "path": "shared/__tests__/helix-public-ui-control-inventory.test.ts",
+      "sha256": "bb9b8e35ef3e8630f0ca12c4b39f98bfc432e134ba8064464a15680766151123",
+      "bytes": 10703
+    },
+    {
+      "path": "shared/__tests__/helix-reasoning-binding-public-controls.test.ts",
+      "sha256": "84343a139ca7cc6d726927d0b943ff3a9d34bc4b45f4a6265e41487582b77bf9",
+      "bytes": 1407
+    },
+    {
+      "path": "shared/__tests__/realtime-texture-pack-visual-direction.spec.ts",
+      "sha256": "5fb653e604dabc594ca1612c2476546c45caec944e76b45c1bff250ae8582363",
+      "bytes": 23334
+    },
+    {
+      "path": "shared/contracts/__tests__/casimir-formal-artifact-family-audit.v1.spec.ts",
+      "sha256": "bd13fc61098f65def9a866ec366489daedae50070e1e046232b8b3319202fe0a",
+      "bytes": 4327
+    },
+    {
+      "path": "shared/contracts/__tests__/casimir-formal-artifact-generation-lineage-audit.v1.spec.ts",
+      "sha256": "5fbbe04edf0cd37e1708229a1ab3a2b28454377eb02dab5f8d8ffa33a53e874e",
+      "bytes": 3324
+    },
+    {
+      "path": "shared/contracts/__tests__/casimir-spec-benchmark-case-pack.v1.spec.ts",
+      "sha256": "98b617dd19fc3daa5d426e4a21f1a0d250461bfe84a2390bbc36dd88b75ac9a3",
+      "bytes": 44996
+    },
+    {
+      "path": "shared/contracts/__tests__/casimir-spec-benchmark-freeze-readiness.v1.spec.ts",
+      "sha256": "7f7c1bcb2d1bcb9e636311ae5cd4f9e5e78cb7ddf9e26dfd772cff2c3379445c",
+      "bytes": 13044
+    },
+    {
+      "path": "shared/contracts/__tests__/casimir-spec-benchmark-policy-consistency.v1.spec.ts",
+      "sha256": "8920d81db90442bb369281439b2c00378ec7a8c65901ff8c9050f4765de3044a",
+      "bytes": 10000
+    },
+    {
+      "path": "shared/contracts/__tests__/casimir-spec-scientific-claim-ir.v1.spec.ts",
+      "sha256": "0948e1fc6cbba8e77df3f2f3a4501a6d68e8b110367038a58d19a826504f4362",
+      "bytes": 26746
+    },
+    {
+      "path": "shared/contracts/__tests__/civilization-traversability-atlas.v1.spec.ts",
+      "sha256": "70c138fddfb42e1652b6cfe96fed668d1987986deb99ec91f41704d684fe3cb3",
+      "bytes": 3521
+    },
+    {
+      "path": "shared/contracts/__tests__/doc-equation-action-manifest.v1.spec.ts",
+      "sha256": "02f68ec90ce277b21d5800bdb995817f642cd78fe5f1375b72cd1160ef654570",
+      "bytes": 6044
+    },
+    {
+      "path": "shared/contracts/__tests__/helix-runtime-tool-confirmation.v1.spec.ts",
+      "sha256": "5205e92efb373bdcfaf37ac445d5480c43a62cbbf5ba4a6ae5ea8effe11b5fcc",
+      "bytes": 4329
+    },
+    {
+      "path": "shared/contracts/__tests__/helix-theory-frontier-vector-field-tool-receipt.v1.spec.ts",
+      "sha256": "0a4e5a87e8b593af82b22b9c817b27a168e8237c6d12a8aaac249136aedc9290",
+      "bytes": 3249
+    },
+    {
+      "path": "shared/contracts/__tests__/nhm2-conformally-flat-needle-connected-noise-diagnostic-cubature-policy.v1.spec.ts",
+      "sha256": "9d818157c79607238cd42367bbc3ef127613b9ba4375b1509ae23a4f14f67f6f",
+      "bytes": 40611
+    },
+    {
+      "path": "shared/contracts/__tests__/physics-atlas.v1.spec.ts",
+      "sha256": "7d27b933dd563dc13c81af4f32090bf41de302e7e7e44f3d840b28b344651b44",
+      "bytes": 1246
+    },
+    {
+      "path": "shared/contracts/__tests__/theory-badge-graph.v1.spec.ts",
+      "sha256": "e0079c3e4cbb3ff8687d91133fe6a68dd4b397c320e2e266f0fe1a5fdc3893ae",
+      "bytes": 1885
+    },
+    {
+      "path": "shared/contracts/__tests__/theory-experiment-procedure.v1.spec.ts",
+      "sha256": "7271e589dc3b464abff50e5ee70364c6f20e0558ce9263f8eecfbc122cc89050",
+      "bytes": 11033
+    },
+    {
+      "path": "shared/contracts/__tests__/theory-frontier-search.v1.spec.ts",
+      "sha256": "316db1876cc9fea9778156688e110a1d12e3506acb16a8a23b35a48d87b94c6b",
+      "bytes": 7676
+    },
+    {
+      "path": "shared/contracts/__tests__/theory-runtime-account-policy.spec.ts",
+      "sha256": "1b91479c81219065de409843fbb8fdbb15194cb0c68b515ce0e9017a5ffdcf46",
+      "bytes": 1611
+    },
+    {
+      "path": "shared/contracts/helix-runtime-tool-confirmation.v1.ts",
+      "sha256": "4b944733abb46f323ce61b9a88a3d508eb0325db95ddcad5a840f62bfc132eca",
+      "bytes": 10920
+    },
+    {
+      "path": "shared/contracts/helix-shared-live-room-mcp-delegation.v1.ts",
+      "sha256": "0cf317dacb7c38477c28104f2b80ea9b8b4769a13cd7d881efdeccbccd3d0c99",
+      "bytes": 10203
+    },
+    {
+      "path": "shared/contracts/nhm2-conformally-flat-needle-connected-noise-diagnostic-cubature-policy.v1.ts",
+      "sha256": "e526c2126682c4d665e359c1755213e71f1d5aa46f85f5a7fce09b007970e909",
+      "bytes": 73414
+    },
+    {
+      "path": "shared/environment-private-install.ts",
+      "sha256": "9a7b685f0585b9731357aa98320f7a5c96bc5fa4248521b4054c15f59dfee2a4",
+      "bytes": 1356
+    },
+    {
+      "path": "shared/environment-private-runtime.ts",
+      "sha256": "4d0f98ef4a8e738c4d6e93e56e85bb8bd22df76a0835968e5ef6180f2adcb786",
+      "bytes": 1283
+    },
+    {
+      "path": "shared/essence-debate.ts",
+      "sha256": "8bfc2219e6bbaac740b86e31dbd36a28526de92e8d78522ae5a2398293c857c1",
+      "bytes": 7560
+    },
+    {
+      "path": "shared/helix-account-session.ts",
+      "sha256": "08e6c610bce887997cefa022bd1cccb17d19b30c1610b5b7320f3c63ef5ed0d0",
+      "bytes": 14673
+    },
+    {
+      "path": "shared/helix-installed-account-services.ts",
+      "sha256": "7c07a638885654793df0e12b6bcde4fd09d536d5e2bbfbcb1a15bd7e29c7087c",
+      "bytes": 6264
+    },
+    {
+      "path": "shared/helix-language-model-policy.ts",
+      "sha256": "8eea5a91f0191069f757af12093eb764eee63d22ad7cc04ec92dcccabcb9a995",
+      "bytes": 19913
+    },
+    {
+      "path": "shared/helix-public-ui-affordance.ts",
+      "sha256": "3b5da3b3d39c4630ad48d63b06136f81c13e379a92c048dd18c08e05a8bde60a",
+      "bytes": 14800
+    },
+    {
+      "path": "shared/helix-public-ui-control-catalog.generated.ts",
+      "sha256": "fa2588cf94b6e4e582769555d1e2e388f0a58f06296e5393fcdf42dcf2f569f1",
+      "bytes": 146035
+    },
+    {
+      "path": "shared/helix-realtime-session.ts",
+      "sha256": "e0ae88f65b3818f8a4479e8813e55ce877946cfa79af492700e395b42c4ce617",
+      "bytes": 9349
+    },
+    {
+      "path": "shared/interface-translation-job.ts",
+      "sha256": "250b7d3831a27904edf73866d84b662d52ff48259793f33af0edacf20dd7b499",
+      "bytes": 1016
+    },
+    {
+      "path": "shared/needle-hull-mark2-cavity-contract.ts",
+      "sha256": "a0b7f89819412339a40f099d01aa93fe372fc6b04863fb52650753577d0034aa",
+      "bytes": 13197
+    },
+    {
+      "path": "shared/nhm2-blocks.ts",
+      "sha256": "0de4c3cd262f8b5897a1b8bce28a555ac1b75f4bb27e37b4f0899fca113cce25",
+      "bytes": 14696
+    },
+    {
+      "path": "shared/nhm2-solve-state.ts",
+      "sha256": "ea7cb28d56ce32ae3d0d9130d14cb49280e040a1d39e6f196a61a25700c1a677",
+      "bytes": 33721
+    },
+    {
+      "path": "shared/solar-observation-replay.ts",
+      "sha256": "e7b5141bb393eb55ae43404157b9ed4cd68ec7d9b0c5e5fa1dac5e23ddc8b5cc",
+      "bytes": 7266
+    },
+    {
+      "path": "shared/solar-package-evidence-view.ts",
+      "sha256": "da3e911c4fba90d26698c44a91213f77b1a0afca47092cfdcd8bb0107cdccff9",
+      "bytes": 9207
+    },
+    {
+      "path": "shared/solar-research-evidence-index.ts",
+      "sha256": "07da327b388f77a248ba99c8a67d58bfe0640db6069c2f528b949cc90a240e8a",
+      "bytes": 5004
+    },
+    {
+      "path": "shared/solar-research-evidence-package.ts",
+      "sha256": "e412cdb8907e6e7ead1a61149ba93e3c4c6358cccabfb517d1bd4ddc77b19abe",
+      "bytes": 3753
+    },
+    {
+      "path": "shared/starsim-solar-reference-run.ts",
+      "sha256": "7b19d809e23a10fe8b69a9fb4af3b3050a621d00be67db01de4c091f19f82c19",
+      "bytes": 13260
+    },
+    {
+      "path": "shared/theory/__tests__/astrochemistry-prebiotic-theory-badges.spec.ts",
+      "sha256": "f90b638c52780af544b8d4217a525aec83240513a078dba60200eb443c8c6c65",
+      "bytes": 20861
+    },
+    {
+      "path": "shared/theory/__tests__/atomic-radiation-state-theory-badges.spec.ts",
+      "sha256": "84c38e98439bd5d4f21963a3f6e474be2a8bd449878675fb8c74636f20c3a0de",
+      "bytes": 5859
+    },
+    {
+      "path": "shared/theory/__tests__/bosonic-dark-matter-screen-theory-badges.spec.ts",
+      "sha256": "3949a3eda7696394465c3d0c4b51d52044d8c4fffdf4fcce38720b3d043fdfe8",
+      "bytes": 2901
+    },
+    {
+      "path": "shared/theory/__tests__/casimir-cavity-theory-badges.spec.ts",
+      "sha256": "353d3acb718d7c82eac5e80d7063d601982adb7f7338b596a9ad492e02a78ee4",
+      "bytes": 6569
+    },
+    {
+      "path": "shared/theory/__tests__/casimir-dp-study-theory-badges.spec.ts",
+      "sha256": "58480d7068e4fdd4a18671e7072a559ced4d22bf6c04a3435725721e7c871fd6",
+      "bytes": 73910
+    },
+    {
+      "path": "shared/theory/__tests__/collective-mode-synchrony-theory-badges.spec.ts",
+      "sha256": "10322d356c760812fca4f2b98a711d7aa575d6e067ab3ff65a08e17631a093ac",
+      "bytes": 11644
+    },
+    {
+      "path": "shared/theory/__tests__/compound-run-contract-smoke.spec.ts",
+      "sha256": "1c8040fd7d67d1a6b4946577466e75c310f345491501ba12a36572f33f9ac27b",
+      "bytes": 1313
+    },
+    {
+      "path": "shared/theory/__tests__/cosmic-distance-ladder-badges.spec.ts",
+      "sha256": "5cc8e84f76d57e1fb7aae04a5999364c8a503ec227230bb76dbd0a36c74eeb76",
+      "bytes": 2648
+    },
+    {
+      "path": "shared/theory/__tests__/cross-scale-connective-tissue-theory-badges.spec.ts",
+      "sha256": "48adb7dc50c19121c95dadb8c3b2f6363bc0af738d71f7aafd70b22cccd89dfb",
+      "bytes": 11593
+    },
+    {
+      "path": "shared/theory/__tests__/curvature-collapse-loadout.spec.ts",
+      "sha256": "7153350b4646f93e78aed91762c3f68ab03db1272ba9269f559bf7e73540da16",
+      "bytes": 3852
+    },
+    {
+      "path": "shared/theory/__tests__/curvature-collapse-theory-badges.spec.ts",
+      "sha256": "14e67bff3f859b1793568031631502c907f3452c91b97565af7fe9a761585eca",
+      "bytes": 3087
+    },
+    {
+      "path": "shared/theory/__tests__/evolutionary-biophysics-theory-badges.spec.ts",
+      "sha256": "43b93d94980a31ebabec1df06e59fd59eb6b13cf657f4a8587c18e55be0b95c0",
+      "bytes": 6918
+    },
+    {
+      "path": "shared/theory/__tests__/foundational-physics-bridge-theory-badges.spec.ts",
+      "sha256": "17d12d67c693e802811e06fbbefcda7cd004954a6562a287f95c6a2dc80197c5",
+      "bytes": 5584
+    },
+    {
+      "path": "shared/theory/__tests__/galactic-dynamics-loadout.spec.ts",
+      "sha256": "41de0655d298132e2cab056375bf632ac74e15a60b4750a29ff8f95a5fffac8f",
+      "bytes": 1888
+    },
+    {
+      "path": "shared/theory/__tests__/galactic-dynamics-theory-badges.spec.ts",
+      "sha256": "3d3a633cb574e62bb23c657137b1a55de2ccb13225fe54be9214be52af3cc792",
+      "bytes": 1144
+    },
+    {
+      "path": "shared/theory/__tests__/granular-tidal-love-number-theory-badges.spec.ts",
+      "sha256": "e453afe3036d85f56105d9de7bd6a7908776eccb5fcdd4f8d512997a906c9508",
+      "bytes": 3349
+    },
+    {
+      "path": "shared/theory/__tests__/helix-physics-calculation-context-planner.spec.ts",
+      "sha256": "0a9a418d2a67f8afdd20e6e08389f7eafcb30034b1b5e7331aa68a77012b1155",
+      "bytes": 2050
+    },
+    {
+      "path": "shared/theory/__tests__/helix-theory-badge-graph.spec.ts",
+      "sha256": "cbd1d1ccd84b8fe38d2430ed0edd38e8190b1ca027aa50934a278eaefece402e",
+      "bytes": 2839
+    },
+    {
+      "path": "shared/theory/__tests__/low-temperature-quantum-bounds-theory-badges.spec.ts",
+      "sha256": "f61a1c94ad4cde8adb29977ffde6ceeddbacfcc8373772a691efd749f346817f",
+      "bytes": 8756
+    },
+    {
+      "path": "shared/theory/__tests__/nhm2-full-solve-theory-badges.spec.ts",
+      "sha256": "8882cf861cc554c230089e3539cb94452df6857040426227df45f49ae887c7b2",
+      "bytes": 61434
+    },
+    {
+      "path": "shared/theory/__tests__/nhm2-runtime-field-map.spec.ts",
+      "sha256": "36a880681e51f56697ca9d9d41950fecac818bd9f7f6910c45805236a93cbbe2",
+      "bytes": 11733
+    },
+    {
+      "path": "shared/theory/__tests__/nuclear-binding-first-principles-theory-badges.spec.ts",
+      "sha256": "b7ed251f606d57e0e0f5dd4bebdd4765766ca8799cbaec2e466dbcf967b82b6e",
+      "bytes": 8601
+    },
+    {
+      "path": "shared/theory/__tests__/orch-or-coherence-theory-badges.spec.ts",
+      "sha256": "82f32bee6021147d9444eac3c20f6841fb4345820e12515b8c883a5b2d810758",
+      "bytes": 3276
+    },
+    {
+      "path": "shared/theory/__tests__/periodic-element-origin-theory-badges.spec.ts",
+      "sha256": "77e51a7ffddb2c83e1768601a3fbd92075ef2d3a07e21d020eef747281fff2bd",
+      "bytes": 7647
+    },
+    {
+      "path": "shared/theory/__tests__/phase-of-matter-theory-badges.spec.ts",
+      "sha256": "ddcff8bda8151276f7ff208999ea7e106035b2e7219313b4c992b364d462e8a0",
+      "bytes": 22585
+    },
+    {
+      "path": "shared/theory/__tests__/physics-atlas-blocks.spec.ts",
+      "sha256": "740c2416a49fede7cb4a0c0fdf14bffdb46e838c9e654ced50fddbfad7c48ba6",
+      "bytes": 11185
+    },
+    {
+      "path": "shared/theory/__tests__/physics-atlas-lens.spec.ts",
+      "sha256": "8d0d0c1a518400a9dc5359661e117585808a74f261b5ffbcb44eed59d63b5171",
+      "bytes": 1627
+    },
+    {
+      "path": "shared/theory/__tests__/preboundary-bioenergetics-theory-badges.spec.ts",
+      "sha256": "c4f04e6d872ead3d9a2b6a5fc742a57482765d61f12d2cbdc792577c94aa87b2",
+      "bytes": 4826
+    },
+    {
+      "path": "shared/theory/__tests__/qei-stress-energy-loadout.spec.ts",
+      "sha256": "bff0d10ea493dc8751d7cb01aa8561bdd3929749a9cc3ddd7f7a9aadb2c8e29f",
+      "bytes": 1689
+    },
+    {
+      "path": "shared/theory/__tests__/relativity-history-theory-badges.spec.ts",
+      "sha256": "76c0020579e932649f4b21183786706d18f697a328409ccb8ade054c670b009c",
+      "bytes": 7712
+    },
+    {
+      "path": "shared/theory/__tests__/solar-khi-nanoflare-theory-badges.spec.ts",
+      "sha256": "c075bda1d63918b40070eca26783d50290afa201c373373322e709b68b54cbf3",
+      "bytes": 3004
+    },
+    {
+      "path": "shared/theory/__tests__/solar-spectrum-theory-badges.spec.ts",
+      "sha256": "b456c60d45e2be5b4d59d230c6618afb60eed1397b1e8d04f386a26cc647ed61",
+      "bytes": 3659
+    },
+    {
+      "path": "shared/theory/__tests__/solar-stellar-reference-theory-badges.spec.ts",
+      "sha256": "90d8b33d93b254a77fdcb14d435d9f517ad71ca78c31872cd37ac6f0aef044e9",
+      "bytes": 3562
+    },
+    {
+      "path": "shared/theory/__tests__/starsim-stellar-evolution-map.spec.ts",
+      "sha256": "79bae380b4ae26d80c0ee37548b97e6b86122817494de53f0e7a98a69ac2259e",
+      "bytes": 2489
+    },
+    {
+      "path": "shared/theory/__tests__/starsim-theory-badges.spec.ts",
+      "sha256": "44d61bce6c7e178e39146296a7475ef3e982fd8002a73c9274fc173b472b7b35",
+      "bytes": 4380
+    },
+    {
+      "path": "shared/theory/__tests__/stellar-spectroscopy-astrochemistry-theory-badges.spec.ts",
+      "sha256": "2405845afada9a190b2ee29cc563c339c74a04b33c8a2b9987c4994b5cfc7a81",
+      "bytes": 5331
+    },
+    {
+      "path": "shared/theory/__tests__/theory-badge-overlap-locator.spec.ts",
+      "sha256": "648fb27110dba56fd7701a063b0ee66e75e77fa99076f40bf666de37e2e3dad7",
+      "bytes": 5337
+    },
+    {
+      "path": "shared/theory/__tests__/theory-calculator-loadout.spec.ts",
+      "sha256": "a513485f3978aee14b339de114e9ef2a4dd7ba54569628a4d04fbd53a6cf0606",
+      "bytes": 4212
+    },
+    {
+      "path": "shared/theory/__tests__/theory-compound-run-builder.spec.ts",
+      "sha256": "fc582b331ebad834516a91c0d6d34f0191eec0c60f902302089f43a8cdba8fce",
+      "bytes": 5579
+    },
+    {
+      "path": "shared/theory/__tests__/theory-context-explanation-plan.spec.ts",
+      "sha256": "927e32e4e69259f320e0abd9977d333828d6204496fe024c10409b9b84a99023",
+      "bytes": 3425
+    },
+    {
+      "path": "shared/theory/__tests__/theory-context-reflection-tool.spec.ts",
+      "sha256": "fcd8a58885a08f970ac80dcd2b9c607d4bfab3d6315fa27cbf02adce709ddd69",
+      "bytes": 9980
+    },
+    {
+      "path": "shared/theory/__tests__/theory-context-reflector.spec.ts",
+      "sha256": "4cea71c01e3b82e1e5e47c6936595d141a8128703f4da15a02d1f815d01aa10f",
+      "bytes": 39046
+    },
+    {
+      "path": "shared/theory/__tests__/theory-experiment-execution-closure.spec.ts",
+      "sha256": "7c87cfdea559a4d4465fc9cb3eeb8078169ca8cbf1e3a7654a2ab8e1c97e7da0",
+      "bytes": 26416
+    },
+    {
+      "path": "shared/theory/__tests__/theory-experiment-procedure-compiler.spec.ts",
+      "sha256": "131ad0cf1fa219b4a7d9e5e7fb3dde4db8d21ebd31b21443b0b62b3b62515c9b",
+      "bytes": 11993
+    },
+    {
+      "path": "shared/theory/__tests__/theory-experiment-procedure-continuation.spec.ts",
+      "sha256": "c71dff809c0a1ab795742802875dd0f20f217e541e95a0ed7b6b5b6bac04bee5",
+      "bytes": 10897
+    },
+    {
+      "path": "shared/theory/__tests__/theory-frontier-conjecture-workbench.spec.ts",
+      "sha256": "0dd5b027438598ad450f9c0facd14aaaf1daf78b251c51eb46ce4194e73b46c3",
+      "bytes": 4647
+    },
+    {
+      "path": "shared/theory/__tests__/theory-frontier-literature-map.spec.ts",
+      "sha256": "8bba261219ed622340bfff37597e608041da954361ed885a652139958b967301",
+      "bytes": 18550
+    },
+    {
+      "path": "shared/theory/__tests__/theory-frontier-search.spec.ts",
+      "sha256": "a642c276925dbd9e1ccae1c575ff8d7590c67b2c3fc62fdea6331902d99bf200",
+      "bytes": 14311
+    },
+    {
+      "path": "shared/theory/__tests__/theory-frontier-vector-field.spec.ts",
+      "sha256": "77f7e4c79ebc01ba1c2909ec7c28a26545ee895c5fced58c1edb96144ad120b1",
+      "bytes": 5935
+    },
+    {
+      "path": "shared/theory/__tests__/theory-physics-inventory-audit.spec.ts",
+      "sha256": "45b6c10361a47aa9add2610a24e9dae99ea02a8b878c6a1289396bb7b2f15eca",
+      "bytes": 3426
+    },
+    {
+      "path": "shared/theory/__tests__/theory-runtime-adapter-gap.spec.ts",
+      "sha256": "8a22d2c90ae0ff3cbdd981285cb6c81149423259977af921968066281dbff93c",
+      "bytes": 6434
+    },
+    {
+      "path": "shared/theory/__tests__/tokamak-plasma-loadout.spec.ts",
+      "sha256": "feacbdcd284679a9a9faf6c043ed66820a338f6c567839eb90f1cf28e26d14c6",
+      "bytes": 1825
+    },
+    {
+      "path": "shared/theory/__tests__/tokamak-plasma-theory-badges.spec.ts",
+      "sha256": "7044cd71ee7322a273fe6b82cd79d6d19fa9041be266c0efdf39373cfbe1df13",
+      "bytes": 1145
+    },
+    {
+      "path": "shared/theory/__tests__/viability-regulation-theory-badges.spec.ts",
+      "sha256": "f6204781d15598e17ac94125e54b1cf359bf2d1934adf2e1db8fdd8777541f3c",
+      "bytes": 6522
+    },
+    {
+      "path": "shared/theory/__tests__/warp-gr-nhm2-loadout.spec.ts",
+      "sha256": "402935a113b5247e5816e369a8dd791b08d5654f320fb3e9a0b98faa452a8f5c",
+      "bytes": 2113
+    },
+    {
+      "path": "shared/theory/helix-theory-badge-graph.ts",
+      "sha256": "47f78d71ae717cfe49e5b24afa8a5526aad943a25f5179e5895fb65e85c3b4ad",
+      "bytes": 45912
+    },
+    {
+      "path": "shared/theory/nhm2-theory-badges.ts",
+      "sha256": "58bb33fd51433c01ed94727b995c901e7c841646bf8beea5e89542112fdc9e9d",
+      "bytes": 109
+    },
+    {
+      "path": "shared/theory/theory-context-reflection-tool.ts",
+      "sha256": "47ce108f73ebe597707638d584dd0216033af57cb842d1d397291e3397eb7973",
+      "bytes": 6849
+    },
+    {
+      "path": "shared/theory/theory-context-reflector.ts",
+      "sha256": "966233ceaaa7c4ec34b7860a40c00160587fc3700c90d1fe1c9c66be968dd882",
+      "bytes": 59177
+    },
+    {
+      "path": "shared/time-dilation-diagnostics.ts",
+      "sha256": "65f6566431efa5dd993b1d1be779c65923e335ab1ee4f1d723a66d4c696420c8",
+      "bytes": 98197
+    },
+    {
+      "path": "shared/trading/__tests__/brokerage-reactive-controller.spec.ts",
+      "sha256": "480f9a418cf50fa58adca6c36a2e07c51ea620c0e448359ea017a1c8965c0b29",
+      "bytes": 6132
+    },
+    {
+      "path": "shared/trading/__tests__/brokerage-reactive-live-shadow.spec.ts",
+      "sha256": "0c23f1fd3e8a4451a246b115060dd07a9154aa05593992f9a825797af9cff85c",
+      "bytes": 7330
+    },
+    {
+      "path": "shared/trading/__tests__/brokerage-reactive-simulation.spec.ts",
+      "sha256": "e40da7db46c4a899381e776ad9e86c318ed37d4b96bc53c7c10da05660d9e0aa",
+      "bytes": 6562
+    }
+  ]
+}
